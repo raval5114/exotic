@@ -1,0 +1,132 @@
+{
+  "info": {
+    "name": "Xotic Elements API",
+    "description": "API collection for testing Xotic dynamic elements endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Homepage",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/elements/page.php?slug=homepage",
+          "host": ["{{base_url}}"],
+          "path": ["api", "elements", "page.php"],
+          "query": [
+            {
+              "key": "slug",
+              "value": "homepage",
+              "description": "Page slug to fetch"
+            }
+          ]
+        },
+        "description": "Fetches the homepage content with all rows and elements"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Custom Page",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/elements/page.php?slug=deals",
+          "host": ["{{base_url}}"],
+          "path": ["api", "elements", "page.php"],
+          "query": [
+            {
+              "key": "slug",
+              "value": "deals",
+              "description": "Page slug to fetch"
+            }
+          ]
+        },
+        "description": "Fetches a custom page by slug"
+      },
+      "response": []
+    },
+    {
+      "name": "List All Pages",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/elements/pages.php",
+          "host": ["{{base_url}}"],
+          "path": ["api", "elements", "pages.php"]
+        },
+        "description": "Returns list of all available pages for mobile app"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Page - Not Found",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/elements/page.php?slug=nonexistent",
+          "host": ["{{base_url}}"],
+          "path": ["api", "elements", "page.php"],
+          "query": [
+            {
+              "key": "slug",
+              "value": "nonexistent",
+              "description": "Non-existent page slug"
+            }
+          ]
+        },
+        "description": "Tests 404 error response"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Page - Missing Slug",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/api/elements/page.php",
+          "host": ["{{base_url}}"],
+          "path": ["api", "elements", "page.php"]
+        },
+        "description": "Tests 400 error response for missing slug parameter"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost/xotic",
+      "type": "string"
+    }
+  ]
+}

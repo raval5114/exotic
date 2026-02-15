@@ -1,0 +1,6 @@
+main                ← ✅ Production-ready code
+└─ dev              ← 🔄 Integration of fully tested features
+   ├─ feature/auth_bloc
+   ├─ feature/client_queries
+   ├─ feature/blog_ui
+   └─ bugfix/service_crash
