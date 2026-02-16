@@ -1,4 +1,3 @@
-import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
 import 'package:exotic/Test/HomepagesTesting/homepage_testing.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
