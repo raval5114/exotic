@@ -1,4 +1,3 @@
-import 'package:exotic/controllers/Homescreen/Homepage/categoriesGrid.dart';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/domains/homesrceen/categories/categories.dart';

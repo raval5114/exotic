@@ -16,23 +16,25 @@ class BannerCarouselWidget extends StatefulWidget {
 class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
-  String? api;
+  String? api = "https://xotic.in/UploadImages/ElementImages/";
   Timer? _timer;
+  BannerContent? content;
+  void onTap() {
+    debugPrint("yas its working");
+  }
 
   @override
   void initState() {
     super.initState();
-
-    if (widget.content.autoplay && widget.content.banners.isNotEmpty) {
-      _timer = Timer.periodic(Duration(milliseconds: widget.content.interval), (
-        _,
-      ) {
+    content = widget.content;
+    if (content!.autoplay && content!.banners.isNotEmpty) {
+      _timer = Timer.periodic(Duration(milliseconds: content!.interval), (_) {
         if (!_controller.hasClients) return;
 
-        _currentIndex = (_currentIndex + 1) % widget.content.banners.length;
+        _currentIndex = (_currentIndex + 1) % content!.banners.length;
         _controller.animateToPage(
           _currentIndex,
-          duration: Duration(milliseconds: widget.content.transitionTime),
+          duration: Duration(milliseconds: content!.transitionTime),
           curve: Curves.easeInOut,
         );
       });
@@ -48,7 +50,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.content.banners.isEmpty) {
+    if (content!.banners.isEmpty) {
       return const SizedBox();
     }
 
@@ -58,25 +60,21 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
           height: 180,
           child: PageView.builder(
             controller: _controller,
-            itemCount: widget.content.banners.length,
+            itemCount: content!.banners.length,
             onPageChanged: (index) {
               setState(() => _currentIndex = index);
             },
             itemBuilder: (context, index) {
-              final banner = widget.content.banners[index];
+              final banner = content!.banners[index];
 
               return GestureDetector(
-                onTap: () {
-                  debugPrint("${banner.imageFile}");
-                },
+                onTap: onTap,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: AppCachedImage(
-                      imageUrl:
-                          "https://xotic.in/UploadImages/ElementImages/" +
-                          banner.imageFile,
+                      imageUrl: api! + banner.imageFile,
                       height: 200,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -88,12 +86,6 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
             },
           ),
         ),
-
-        //
-        // DotsIndicator(
-        //   count: widget.content.banners.length,
-        //   currentIndex: _currentIndex,
-        // ),
       ],
     );
   }

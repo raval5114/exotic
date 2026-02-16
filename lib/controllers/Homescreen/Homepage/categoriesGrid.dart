@@ -35,7 +35,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                 current is HomePageCategoriesFetchedState ||
                 current is HomepageErrorState,
         builder: (context, state) {
-          /// 🔹 Loading shimmer
+          /// Loading shimmer
           if (state is HomepageLoadingState) {
             return GridView.builder(
               shrinkWrap: true,

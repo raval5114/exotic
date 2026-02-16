@@ -1,8 +1,8 @@
 import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
 import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
 import 'package:exotic/data/models/Homepage/elements/Product_grid.dart';
-import 'package:exotic/data/models/Homepage/elements/banner_carosul.dart';
 import 'package:exotic/data/models/Homepage/elements/image_gallery.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/product_gallery.dart';
 import 'package:exotic/data/models/Homepage/elements/product_grid_vertical.dart';
 import 'package:exotic/data/models/Homepage/elements/product_grid_vertical_2.dart';
@@ -82,7 +82,8 @@ class Rows {
 
         case 'product_grid_vertical2':
           return ProductGridVertical2.fromJson(elementData);
-
+        case 'mobile-suggested-products':
+          return MobileSuggestionGrid.fromJson(elementData);
         default:
           print('Unknown element type: $elementType');
           return null;

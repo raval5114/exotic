@@ -1,9 +1,7 @@
 import 'dart:convert';
-
-import 'package:exotic/data/repositories/homescreen/homepage/homepage.dart';
 import 'package:http/http.dart' as http;
 
-class HomepageService implements IHomepageRepo {
+class HomepageService {
   @override
   Future<Map<String, dynamic>> getHomePageData() async {
     try {
