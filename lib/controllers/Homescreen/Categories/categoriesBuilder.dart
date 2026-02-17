@@ -91,7 +91,7 @@ class _CategoriesBuilderState extends State<CategoriesBuilder> {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: Image.asset(
+                            child: Image.network(
                               state.data[index].photo!,
                               width: 45,
                               height: 41,
