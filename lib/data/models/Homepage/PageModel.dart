@@ -64,24 +64,6 @@ class Rows {
 
     try {
       switch (elementType) {
-        case 'banner':
-          return BannerElement.fromJson(elementData);
-        case 'image_gallery':
-          return ImageGallery.fromJson(elementData);
-        case 'product_gallery_1':
-        case 'product_gallery_2':
-        case 'product_gallery_3':
-        case 'product_gallery_4':
-          return ProductGallery.fromJson(elementData);
-
-        case 'product_grid':
-          return ProductGrid.fromJson(elementData);
-
-        case 'product_grid_vertical':
-          return ProductGridVertical.fromJson(elementData);
-
-        case 'product_grid_vertical2':
-          return ProductGridVertical2.fromJson(elementData);
         case 'mobile-suggested-products':
           return MobileSuggestionGrid.fromJson(elementData);
         default:
