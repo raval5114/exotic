@@ -1,20 +1,8 @@
-import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/imageGalleryCarosol.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/productGridVertical.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/productGridVertical2.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/product_gallery.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/product_grid.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
-import 'package:exotic/data/models/Homepage/elements/Product_grid.dart';
-import 'package:exotic/data/models/Homepage/elements/configs/ProductGalleryConfig.dart';
-import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
-import 'package:exotic/data/models/Homepage/elements/image_gallery.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
-import 'package:exotic/data/models/Homepage/elements/product_gallery.dart';
-import 'package:exotic/data/models/Homepage/elements/product_grid_vertical.dart';
-import 'package:exotic/data/models/Homepage/elements/product_grid_vertical_2.dart';
 import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 import 'package:flutter/material.dart';
 
