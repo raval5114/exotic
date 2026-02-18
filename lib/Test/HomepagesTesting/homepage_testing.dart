@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:exotic/Test/HomepagesTesting/homepage_products.dart';
+import 'package:exotic/Test/HomepagesTesting/product.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
@@ -104,7 +105,7 @@ class _HomepageTestingWithServiceComponentState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomepageProvider>().setPage(
-        Pagemodel.fromJson(HomepageData['page']),
+        Pagemodel.fromJson(homepageData['page']),
       );
     });
   }
