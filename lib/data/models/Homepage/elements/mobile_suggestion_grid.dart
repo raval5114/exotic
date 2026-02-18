@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/Items/ProductItem.dart';
+import 'package:exotic/data/models/Homepage/elements/configs/ProductGalleryConfig.dart';
 import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
 import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 
@@ -13,7 +14,7 @@ class MobileSuggestionGrid implements PageElement {
   final String elementType;
 
   @override
-  final List<Items> items;
+  final List<ProductItem> items;
 
   @override
   final String title;
@@ -39,15 +40,5 @@ class MobileSuggestionGrid implements PageElement {
               .map((item) => ProductItem.fromJson(item as Map<String, dynamic>))
               .toList(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'config': config.toJson(),
-      'element_id': elementId,
-      'element_type': elementType,
-      'title': title,
-      'products': items.map((item) => (item as ProductItem).toJson()).toList(),
-    };
   }
 }

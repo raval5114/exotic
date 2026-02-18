@@ -33,6 +33,7 @@ class Productsellerdetailscomponent extends StatelessWidget {
                     sellerName,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -53,6 +54,7 @@ class Productsellerdetailscomponent extends StatelessWidget {
                       Text(
                         ratings.toStringAsFixed(1),
                         style: const TextStyle(
+                          fontFamily: 'Roboto',
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                         ),
@@ -73,6 +75,7 @@ class Productsellerdetailscomponent extends StatelessWidget {
                       Text(
                         "Trusted",
                         style: TextStyle(
+                          fontFamily: 'Roboto',
                           color: Colors.blue,
                           fontWeight: FontWeight.w500,
                         ),

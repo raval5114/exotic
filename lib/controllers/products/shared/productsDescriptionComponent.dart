@@ -5,7 +5,6 @@ import 'package:exotic/controllers/products/src/productImageCarousel.dart';
 import 'package:exotic/controllers/products/src/productRating.dart';
 import 'package:exotic/controllers/products/src/productSizeChart.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ProductsdescriptionComponent extends StatefulWidget {
   final String productName;
@@ -72,7 +71,8 @@ class _ProductsdescriptionComponentState
               children: [
                 Text(
                   widget.productName,
-                  style: GoogleFonts.inter(
+                  style: const TextStyle(
+                    fontFamily: 'Roboto',
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
@@ -91,9 +91,10 @@ class _ProductsdescriptionComponentState
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: SizedBox(
                 width: double.infinity,
-                child: Text(
+                child: const Text(
                   "Free Delivery",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     fontSize: 15,
                     fontWeight: FontWeight.w300,
                   ),

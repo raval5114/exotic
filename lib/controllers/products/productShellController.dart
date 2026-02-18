@@ -11,11 +11,8 @@ import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/view/homescreen/sections/cart.dart';
 import 'package:exotic/view/payment/payment.dart';
-import 'package:exotic/view/products/productScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ProductsShell extends StatefulWidget {
   const ProductsShell({super.key});
@@ -80,16 +77,14 @@ class _ProductsShellState extends State<ProductsShell> {
               }
 
               if (state is FetchSingleProductSuccess) {
-                debugPrint("${state.product}");
-
-                context.read<ProductProvider>().setProduct(
-                  ProductModel.fromJson(state.product['data']),
-                );
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (context.mounted) {
+                    context.read<ProductProvider>().setProduct(
+                      ProductModel.fromJson(state.product['data']),
+                    );
+                  }
+                });
                 return ProductScreenComponent();
-                // Navigator.pushReplacement(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProductScreen()),
-                // );
               }
 
               if (state is FetchProductFailure) {
@@ -191,8 +186,9 @@ class _ProductsShellState extends State<ProductsShell> {
               onPressed: isLoading ? null : () => _addToCart(context),
               child: Text(
                 isLoading ? "Adding..." : "Add to cart",
-                style: GoogleFonts.roboto(
+                style: const TextStyle(
                   color: Colors.white,
+                  fontFamily: 'Roboto',
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),
@@ -222,10 +218,11 @@ class _ProductsShellState extends State<ProductsShell> {
                   ),
                 );
               },
-              child: Text(
+              child: const Text(
                 "Buy Now",
-                style: GoogleFonts.roboto(
+                style: TextStyle(
                   color: Colors.white,
+                  fontFamily: 'Roboto',
                   fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),

@@ -63,22 +63,5 @@ final goRoutes = GoRouter(
             intialPrice: '  ',
           ),
     ),
-    // ShellRoute(
-    //   builder: (context, state, child) {
-    //     return ProductsShell();
-    //   },
-    //   routes: [
-    //     GoRoute(
-    //       path: '/product',
-    //       name: 'product',
-    //       builder: (context, state) => const ProductScreen(),
-    //     ),
-    //     GoRoute(
-    //       path: '/product/loading',
-    //       name: 'loading',
-    //       builder: (context, state) => const ProductScreenLoadingController(),
-    //     ),
-    //   ],
-    // ),
   ],
 );

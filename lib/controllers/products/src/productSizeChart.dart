@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SizeSelector extends StatefulWidget {
   final Map<String, dynamic> productData;
@@ -27,7 +26,8 @@ class _SizeSelectorState extends State<SizeSelector> {
           children: [
             Text(
               'Size',
-              style: GoogleFonts.roboto(
+              style: const TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),

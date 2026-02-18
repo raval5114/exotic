@@ -8,7 +8,10 @@ import 'package:exotic/controllers/Homescreen/Homepage/product_grid.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/Product_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/configs/ProductGalleryConfig.dart';
+import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
 import 'package:exotic/data/models/Homepage/elements/image_gallery.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/product_gallery.dart';
 import 'package:exotic/data/models/Homepage/elements/product_grid_vertical.dart';
 import 'package:exotic/data/models/Homepage/elements/product_grid_vertical_2.dart';
@@ -38,24 +41,16 @@ class _RowPageComponentState extends State<RowPageComponent> {
     List<Widget> parseElementToWidget(List<PageElement> elements) {
       List<Widget> widgets = [];
       for (final element in elements) {
-        if (element is BannerElement) {
-          widgets.add(BannerCarouselWidget(content: element.content));
-        } else if (element is ImageGallery) {
-          widgets.add(ImageGalleryCarouselWidget(content: element.content));
-        } else if (element is ProductGallery) {
+        if (element is MobilePromoBanner) {
+          widgets.add(BannerCarouselWidget(banners: element.items));
+        } else if (element is MobileSuggestionGrid) {
           widgets.add(
-            ProductGalleryWidget(
+            MobileSuggestionProducts(
               title: element.title,
               config: element.config,
               products: element.items,
             ),
           );
-        } else if (element is ProductGrid) {
-          widgets.add(ProductGridWidget(grid: element));
-        } else if (element is ProductGridVertical) {
-          widgets.add(ProductGridVerticalWidget(element: element));
-        } else if (element is ProductGridVertical2) {
-          widgets.add(ProductGridVertical2Widget(products: element.products));
         } else {
           debugPrint('Unhandled PageElement: ${element.runtimeType}');
         }

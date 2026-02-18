@@ -27,7 +27,11 @@ class ProductVariantComponent extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               "Available Variants",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
           const SizedBox(height: 10),
@@ -50,7 +54,6 @@ class ProductVariantComponent extends StatelessWidget {
                     onTap:
                         isEnabled
                             ? () {
-                              /// 🔥 Update provider
                               productProvider.setVariantIndex(index);
                             }
                             : null,
@@ -85,6 +88,7 @@ class ProductVariantComponent extends StatelessWidget {
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
+                              fontFamily: 'Roboto',
                               fontSize: 12,
                               fontWeight:
                                   isSelected

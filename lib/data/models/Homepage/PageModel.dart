@@ -1,5 +1,7 @@
 import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_offer_strip.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 
@@ -59,6 +61,10 @@ class Rows {
 
     try {
       switch (elementType) {
+        case 'mobile-offer-strip':
+          return MobileOfferStrip.fromJson(elementData);
+        case 'mobile-category-grid':
+          return MobileCategoryGrid.fromJson(elementData);
         case 'mobile-suggested-products':
           return MobileSuggestionGrid.fromJson(elementData);
         case 'mobile-promo-banner':

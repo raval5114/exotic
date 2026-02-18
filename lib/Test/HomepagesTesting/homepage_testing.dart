@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:exotic/Test/HomepagesTesting/homepage_products.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
+import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/providers/homepage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exotic/Test/HomepagesTesting/bloc/homepage_testing_bloc.dart';
@@ -97,7 +100,17 @@ class HomepageTestingWithServiceComponent extends StatefulWidget {
 class _HomepageTestingWithServiceComponentState
     extends State<HomepageTestingWithServiceComponent> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomepageProvider>().setPage(
+        Pagemodel.fromJson(HomepageData['page']),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Container(child: Text("Working"));
   }
 }
