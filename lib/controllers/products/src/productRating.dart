@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RatingDisplay extends StatelessWidget {
   final double rating;
@@ -28,7 +27,8 @@ class RatingDisplay extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           rating.toStringAsFixed(1),
-          style: GoogleFonts.roboto(
+          style: TextStyle(
+            fontFamily: 'Roboto',
             color: Colors.green,
             fontWeight: FontWeight.w400,
             fontSize: iconSize - 6,

@@ -1,4 +1,3 @@
-import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
 import 'package:exotic/Test/HomepagesTesting/homepage_testing.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
@@ -64,22 +63,5 @@ final goRoutes = GoRouter(
             intialPrice: '  ',
           ),
     ),
-    // ShellRoute(
-    //   builder: (context, state, child) {
-    //     return ProductsShell();
-    //   },
-    //   routes: [
-    //     GoRoute(
-    //       path: '/product',
-    //       name: 'product',
-    //       builder: (context, state) => const ProductScreen(),
-    //     ),
-    //     GoRoute(
-    //       path: '/product/loading',
-    //       name: 'loading',
-    //       builder: (context, state) => const ProductScreenLoadingController(),
-    //     ),
-    //   ],
-    // ),
   ],
 );

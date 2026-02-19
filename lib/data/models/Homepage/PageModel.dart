@@ -1,11 +1,8 @@
 import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
-import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
-import 'package:exotic/data/models/Homepage/elements/Product_grid.dart';
-import 'package:exotic/data/models/Homepage/elements/banner_carosul.dart';
-import 'package:exotic/data/models/Homepage/elements/image_gallery.dart';
-import 'package:exotic/data/models/Homepage/elements/product_gallery.dart';
-import 'package:exotic/data/models/Homepage/elements/product_grid_vertical.dart';
-import 'package:exotic/data/models/Homepage/elements/product_grid_vertical_2.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_offer_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 
 class Styling {
@@ -64,25 +61,14 @@ class Rows {
 
     try {
       switch (elementType) {
-        case 'banner':
-          return BannerElement.fromJson(elementData);
-        case 'image_gallery':
-          return ImageGallery.fromJson(elementData);
-        case 'product_gallery_1':
-        case 'product_gallery_2':
-        case 'product_gallery_3':
-        case 'product_gallery_4':
-          return ProductGallery.fromJson(elementData);
-
-        case 'product_grid':
-          return ProductGrid.fromJson(elementData);
-
-        case 'product_grid_vertical':
-          return ProductGridVertical.fromJson(elementData);
-
-        case 'product_grid_vertical2':
-          return ProductGridVertical2.fromJson(elementData);
-
+        case 'mobile-offer-strip':
+          return MobileOfferStrip.fromJson(elementData);
+        case 'mobile-category-grid':
+          return MobileCategoryGrid.fromJson(elementData);
+        case 'mobile-suggested-products':
+          return MobileSuggestionGrid.fromJson(elementData);
+        case 'mobile-promo-banner':
+          return MobilePromoBanner.fromJson(elementData);
         default:
           print('Unknown element type: $elementType');
           return null;

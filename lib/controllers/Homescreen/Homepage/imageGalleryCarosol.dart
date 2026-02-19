@@ -19,15 +19,19 @@ class _ImageGalleryCarouselWidgetState
   final PageController _controller = PageController();
   int _currentIndex = 0;
   Timer? _timer;
+  ImageGalleryContent? content;
+
+  ///Image Carosol Event
+  ///
+  /// On Image Click Event
+  void onTap() {}
 
   @override
   void initState() {
     super.initState();
-
-    if (widget.content.autoplay && widget.content.items.isNotEmpty) {
-      _timer = Timer.periodic(Duration(milliseconds: widget.content.interval), (
-        _,
-      ) {
+    content = widget.content;
+    if (content!.autoplay && content!.items.isNotEmpty) {
+      _timer = Timer.periodic(Duration(milliseconds: content!.interval), (_) {
         if (!_controller.hasClients) return;
 
         _currentIndex = (_currentIndex + 1) % widget.content.items.length;
@@ -50,7 +54,7 @@ class _ImageGalleryCarouselWidgetState
 
   @override
   Widget build(BuildContext context) {
-    if (widget.content.items.isEmpty) {
+    if (content!.items.isEmpty) {
       return const SizedBox();
     }
 
@@ -58,7 +62,7 @@ class _ImageGalleryCarouselWidgetState
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 🔹 Gallery Title
-        if (widget.content.galleryTitle.isNotEmpty)
+        if (content!.galleryTitle.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: Text(
@@ -72,24 +76,22 @@ class _ImageGalleryCarouselWidgetState
           height: 180,
           child: PageView.builder(
             controller: _controller,
-            itemCount: widget.content.items.length,
+            itemCount: content!.items.length,
             onPageChanged: (index) {
               setState(() => _currentIndex = index);
             },
             itemBuilder: (context, index) {
-              final item = widget.content.items[index];
+              final item = content!.items[index];
 
               return Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: widget.content.gap / 2,
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    // TODO: open item.linkUrl
-                  },
+                  onTap: onTap,
                   child: Stack(
                     children: [
-                      // 🖼 Image
+                      //Image
                       ClipRRect(
                         borderRadius: BorderRadius.circular(
                           _parseRadius(widget.content.imageRadius),
@@ -153,7 +155,7 @@ class _ImageGalleryCarouselWidgetState
 
         // 🔹 Dots Indicator
         DotsIndicator(
-          count: widget.content.items.length,
+          count: content!.items.length,
           currentIndex: _currentIndex,
         ),
       ],

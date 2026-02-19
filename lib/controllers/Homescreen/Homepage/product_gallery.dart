@@ -1,17 +1,19 @@
-import 'package:exotic/controllers/products/productShellController.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/ProductItem.dart';
-import 'package:exotic/data/models/Homepage/elements/configs/ProductGalleryConfig.dart';
+import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
-class ProductGalleryWidget extends StatelessWidget {
+class MobileSuggestionProducts extends StatelessWidget {
   final String title;
-  final ProductGalleryConfig config;
-  final List<ProductItem> products; // your product model list
+  final MobileSuggestionConfig config;
+  final List<ProductItem> products;
 
-  const ProductGalleryWidget({
+  const MobileSuggestionProducts({
     super.key,
     required this.title,
     required this.config,
@@ -25,25 +27,58 @@ class ProductGalleryWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _Header(
-          title: config.galleryTitle.isNotEmpty ? config.galleryTitle : title,
-          viewMoreUrl: config.viewMoreUrl,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+                fontFamily:
+                    'Roboto', // Falling back to system Roboto or assets if available
+              ),
+            ),
+            if (config.viewAllLink.isNotEmpty)
+              InkWell(
+                onTap: () {
+                  // TODO: Handle view all link
+                },
+                child: const Row(
+                  children: [
+                    Text(
+                      "View All",
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Color(0xFFE94A75), // Brand Color Pink/Red
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 14,
+                      color: Color(0xFFE94A75),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ),
-
-        const SizedBox(height: 12),
-
+        const SizedBox(height: 16),
         SizedBox(
-          height: 260,
+          height: 270,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: products.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            separatorBuilder: (_, __) => const SizedBox(width: 14),
             itemBuilder: (context, index) {
-              return ProductCard(
+              return MobileSuggestionCard(
                 product: products[index],
-                fields: config.fields,
-                ontTap: () {
+                onTap: () {
                   context.read<FetchProductBloc>().add(
                     FetchingSingleProductEvent(
                       productid: products[index].productId.toString(),
@@ -63,68 +98,25 @@ class ProductGalleryWidget extends StatelessWidget {
   }
 }
 
-class _Header extends StatelessWidget {
-  final String title;
-  final String viewMoreUrl;
-  const _Header({required this.title, required this.viewMoreUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          ),
-
-          if (viewMoreUrl.isNotEmpty)
-            InkWell(
-              onTap: () {
-                // TODO: open viewMoreUrl
-              },
-              child: const Text(
-                "View More",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
+class MobileSuggestionCard extends StatelessWidget {
   final ProductItem product;
-  final GalleryFields fields;
-  final VoidCallback ontTap;
+  final VoidCallback onTap;
 
-  const ProductCard({
-    required this.product,
-    required this.fields,
-    required this.ontTap,
-  });
+  const MobileSuggestionCard({required this.product, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: ontTap,
+      onTap: onTap,
       child: Container(
         width: 160,
-        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
@@ -132,78 +124,158 @@ class ProductCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🖼 Image
-            if (fields.image)
-              Expanded(
-                child: Image.network(product.imageUrl, fit: BoxFit.contain),
-              ),
-
-            const SizedBox(height: 6),
-
-            // 🏷 Name
-            if (fields.name)
-              Text(
-                product.name,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
+            // Image Stack
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Container(
+                    height: 160,
+                    width: 160,
+                    color: Colors.grey[50], // Light background for image
+                    child: CachedNetworkImage(
+                      imageUrl: product.imageUrl,
+                      fit: BoxFit.cover,
+                      placeholder:
+                          (context, url) => Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Container(color: Colors.white),
+                          ),
+                      errorWidget:
+                          (context, url, error) => const Center(
+                            child: Icon(
+                              Icons.broken_image_rounded,
+                              color: Colors.grey,
+                            ),
+                          ),
+                    ),
+                  ),
                 ),
-              ),
-
-            const SizedBox(height: 4),
-
-            // 💰 Price row
-            if (fields.price || fields.mrp)
-              Row(
-                children: [
-                  if (fields.price)
-                    Text(
-                      "₹${product.price.sellingPrice}",
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                // Discount Badge overlay
+                if (product.price.discountPercentage > 0)
+                  Positioned(
+                    top: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE94A75),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        "${product.price.discountPercentage}% OFF",
+                        style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
+                  ),
+              ],
+            ),
 
-                  const SizedBox(width: 6),
-
-                  if (fields.mrp)
-                    Text(
-                      "₹${product.price.mrpPrice}",
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.grey,
-                        decoration: TextDecoration.lineThrough,
-                      ),
-                    ),
-                ],
-              ),
-
-            // 🔥 Discount
-            if (fields.discount)
-              Text(
-                "${product.price.discountPercentage}% OFF",
-                style: const TextStyle(
-                  fontSize: 11,
-                  color: Colors.green,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-
-            // ⭐ Rating
-            if (fields.rating && int.parse(product.rating.average) > 0)
-              Row(
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.star, size: 14, color: Colors.orange),
-                  const SizedBox(width: 4),
+                  // Name
                   Text(
-                    product.rating.average.toString(),
-                    style: const TextStyle(fontSize: 12),
+                    product.name,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black87,
+                      height: 1.2,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+
+                  // Rating Row if available
+                  if (int.tryParse(product.rating.average) != null &&
+                      double.parse(product.rating.average) > 0)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green[50],
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.green[100]!),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  product.rating.average,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.green[800],
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                                const SizedBox(width: 2),
+                                Icon(
+                                  Icons.star_rounded,
+                                  size: 10,
+                                  color: Colors.green[800],
+                                ),
+                              ],
+                            ),
+                          ),
+                          // You can add review count here if needed
+                        ],
+                      ),
+                    ),
+
+                  // Price Row
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        "₹${product.price.sellingPrice}",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      if (product.price.mrpPrice > product.price.sellingPrice)
+                        Text(
+                          "₹${product.price.mrpPrice}",
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[500],
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: Colors.grey[500],
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
+            ),
           ],
         ),
       ),

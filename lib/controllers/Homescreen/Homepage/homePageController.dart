@@ -27,8 +27,6 @@ class _HomeScreenMainControllerState extends State<HomeScreenMainController> {
 
   Future<void> _initializeMetaData() async {
     context.read<HomepageBloc>().add(HomepageApiFetcingEvent());
-    final rawData = await getit<CategoriesRepo>().getCategories();
-    final categories = rawData.map((e) => Category.fromJson(e)).toList();
 
     if (!mounted) return;
 
@@ -58,25 +56,6 @@ class _HomeScreenMainControllerState extends State<HomeScreenMainController> {
 
         return const SizedBox.shrink();
       },
-    );
-  }
-
-  Widget _buildShimmer() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
-      child: ListView.builder(
-        itemCount: 6,
-        itemBuilder:
-            (_, __) => Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-      ),
     );
   }
 }

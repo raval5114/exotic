@@ -44,7 +44,11 @@ class ProductDetailsComponent extends StatelessWidget {
         children: [
           const Text(
             "Product Details",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 10),
 
@@ -59,13 +63,21 @@ class ProductDetailsComponent extends StatelessWidget {
                     width: 90,
                     child: Text(
                       detail["key"],
-                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        color: Colors.grey,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                   Expanded(
                     child: Text(
                       detail["value"],
-                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
@@ -82,7 +94,11 @@ class ProductDetailsComponent extends StatelessWidget {
               children: const [
                 Text(
                   "All Details",
-                  style: TextStyle(fontSize: 14, color: Colors.black),
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
                 ),
                 Icon(Icons.arrow_forward_ios, size: 14),
               ],

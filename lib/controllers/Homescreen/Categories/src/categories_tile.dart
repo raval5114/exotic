@@ -44,7 +44,7 @@ class CategoryTile extends StatelessWidget {
                       width: 64,
                       height: 64,
                       child: Image.network(
-                        "$IMAGELINK/${product.url}",
+                        "${product.photo}",
                         errorBuilder:
                             (context, error, stackTrace) =>
                                 const Icon(Icons.broken_image),

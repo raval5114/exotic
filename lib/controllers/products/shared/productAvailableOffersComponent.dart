@@ -45,7 +45,11 @@ class ProductAvailableOffersComponent extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(fontSize: 14, color: Colors.black),
+                    style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
                     children: [
                       TextSpan(
                         text: offer["title"] ?? "",
@@ -68,6 +72,7 @@ class ProductAvailableOffersComponent extends StatelessWidget {
                   child: Text(
                     offer["tncLink"] ?? "T&C",
                     style: const TextStyle(
+                      fontFamily: 'Roboto',
                       color: Colors.blue,
                       fontSize: 13,
                       decoration: TextDecoration.underline,
@@ -99,7 +104,11 @@ class ProductAvailableOffersComponent extends StatelessWidget {
         children: [
           const Text(
             "Available offers",
-            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
           ),
           const SizedBox(height: 10),
           ...offers.map(_buildOfferTile).toList(),

@@ -4,7 +4,7 @@ import 'package:exotic/view/products/productScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:shimmer/shimmer.dart';
 
 class HomePageItemShowingSection extends StatefulWidget {
@@ -92,7 +92,8 @@ class _HomePageItemShowingSectionState
               item['productName'] ?? '',
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.roboto(
+              style: const TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 10,
                 fontWeight: FontWeight.w400,
               ),
@@ -102,7 +103,8 @@ class _HomePageItemShowingSectionState
               children: [
                 Text(
                   '₹${item['discountedPrice']}',
-                  style: GoogleFonts.roboto(
+                  style: const TextStyle(
+                    fontFamily: 'Roboto',
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                   ),
@@ -110,7 +112,8 @@ class _HomePageItemShowingSectionState
                 const SizedBox(width: 6),
                 Text(
                   '₹${item['initialPrice']}',
-                  style: GoogleFonts.roboto(
+                  style: const TextStyle(
+                    fontFamily: 'Roboto',
                     fontSize: 12.5,
                     color: Colors.grey,
                     decoration: TextDecoration.lineThrough,
@@ -145,7 +148,11 @@ class _HomePageItemShowingSectionState
       children: [
         Text(
           widget.title,
-          style: GoogleFonts.roboto(fontWeight: FontWeight.w700, fontSize: 18),
+          style: const TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+          ),
         ),
         const Spacer(),
         InkWell(
