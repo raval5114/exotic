@@ -3,7 +3,6 @@ import 'package:exotic/data/providers/user_login_provider.dart';
 import 'package:exotic/view/auth/Signin/subscreens/password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SigninComponent extends StatefulWidget {
   const SigninComponent({super.key});
@@ -53,7 +52,8 @@ class _SigninComponentState extends State<SigninComponent> {
                   SizedBox(height: 350),
                   Text(
                     'Login',
-                    style: GoogleFonts.raleway(
+                    style: TextStyle(
+                      fontFamily: 'Poppins',
                       fontSize: 52,
                       fontWeight: FontWeight.w700,
                     ),
@@ -63,7 +63,8 @@ class _SigninComponentState extends State<SigninComponent> {
                     children: [
                       Text(
                         'Good to see you back!',
-                        style: GoogleFonts.nunitoSans(
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
                           fontSize: 19,
                           fontWeight: FontWeight.w300,
                         ),
@@ -112,7 +113,8 @@ class _SigninComponentState extends State<SigninComponent> {
                               ? CircularProgressIndicator()
                               : Text(
                                 'Next',
-                                style: GoogleFonts.nunitoSans(
+                                style: TextStyle(
+                                  fontFamily: 'nunitoSans',
                                   color: Colors.white,
                                   fontSize: 22,
                                   fontWeight: FontWeight.w300,
@@ -126,7 +128,8 @@ class _SigninComponentState extends State<SigninComponent> {
                       onPressed: _onCancel,
                       child: Text(
                         'Cancel',
-                        style: GoogleFonts.nunitoSans(
+                        style: TextStyle(
+                          fontFamily: 'nunitoSans',
                           fontSize: 15,
                           color: Colors.black,
                           fontWeight: FontWeight.w300,

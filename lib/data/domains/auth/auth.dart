@@ -99,41 +99,29 @@ class AuthService extends IAuthRepo {
   }
 
   @override
-  Future<void> sendOtpEmail(String email) async {
-    try {
-      // Generate 4-digit OTP
-      final otp = Random().nextInt(9000) + 1000;
+  Future<int> sendOtpEmail(String email) async {
+    final otp = Random().nextInt(9000) + 1000;
 
-      // SMTP Configuration
-      final smtpServer = SmtpServer(
-        'smtpout.secureserver.net',
-        port: 465,
-        ssl: true,
-        username: 'donotreply@xotic.in',
-        password: 'Waploft\$9874',
-      );
+    final smtpServer = SmtpServer(
+      'smtpout.secureserver.net',
+      port: 465,
+      ssl: true,
+      username: 'donotreply@xotic.in',
+      password: 'Waploft\$9874',
+    );
 
-      final message =
-          Message()
-            ..from = Address('donotreply@xotic.in', 'Xotic')
-            ..recipients.add(email)
-            ..subject = 'Your OTP for Verification'
-            ..html =
-                "$otp is your Xotic OTP. Please DO NOT share this OTP with anyone. – Team Xotic";
+    final message =
+        Message()
+          ..from = Address('donotreply@xotic.in', 'Xotic')
+          ..recipients.add(email)
+          ..subject = 'Your OTP for Verification'
+          ..html =
+              "$otp is your Xotic OTP. Please DO NOT share this OTP with anyone. – Team Xotic";
 
-      try {
-        final sendReport = await send(message, smtpServer);
-        print('✅ Email sent: $sendReport');
-        print("Generated OTP: $otp");
-        getit<UserLoginProvider>().setOtp(otp);
-      } on MailerException catch (e) {
-        print('❌ Failed to send email: ${e.message}');
-        for (var p in e.problems) {
-          print('Problem: ${p.code}: ${p.msg}');
-        }
-      }
-    } catch (e) {
-      rethrow;
-    }
+    await send(message, smtpServer);
+
+    print("Generated OTP in service: $otp");
+
+    return otp;
   }
 }

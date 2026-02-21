@@ -1,8 +1,13 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:exotic/Test/HomepagesTesting/homepage_products.dart';
+<<<<<<< HEAD
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/banner_carosol.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_category_grid.dart';
+=======
+import 'package:exotic/Test/HomepagesTesting/product.dart';
+import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
+>>>>>>> bugfix/auth
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
@@ -190,7 +195,7 @@ class _HomepageTestingWithServiceComponentState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<HomepageProvider>().setPage(
-        Pagemodel.fromJson(HomepageData['page']),
+        Pagemodel.fromJson(homepageData['page']),
       );
     });
   }
