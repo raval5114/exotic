@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/banner_carosol.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_3d_icon_tray_component.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_budget_deals_component.dart';
@@ -9,10 +8,6 @@ import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_grid_offe
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_offer_strip.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_sponsored_banner.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/product_gallery.dart';
-=======
-import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/product_gallery.dart';
->>>>>>> bugfix/auth
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_3d_icon_tray.dart';
