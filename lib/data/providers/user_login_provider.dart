@@ -77,13 +77,22 @@ class UserLoginProvider extends ChangeNotifier {
 
   /// Verify if provided OTP matches the stored one and is still valid
   bool verifyOtp(int inputOtp) {
-    if (_otp == -1 || _otpCreatedAt == null) return false;
+    try {
+      if (_otp == null || _otp == -1 || _otpCreatedAt == null) {
+        return false;
+      }
 
-    final isNotExpired =
-        DateTime.now().difference(_otpCreatedAt!).inMinutes < 5;
-    final isMatching = _otp == inputOtp;
+      final isNotExpired =
+          DateTime.now().difference(_otpCreatedAt!).inMinutes < 5;
 
-    return isMatching && isNotExpired;
+      final isMatching = _otp == inputOtp;
+
+      return isMatching && isNotExpired;
+    } catch (e, stackTrace) {
+      debugPrint("OTP verification error: $e");
+      debugPrintStack(stackTrace: stackTrace);
+      return false;
+    }
   }
 
   /// Load OTP and timestamp from SharedPreferences

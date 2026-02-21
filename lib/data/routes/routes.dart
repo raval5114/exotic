@@ -1,3 +1,4 @@
+import 'package:exotic/Test/AuthTesting.dart';
 import 'package:exotic/Test/HomepagesTesting/homepage_testing.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
@@ -15,14 +16,11 @@ import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
 final goRoutes = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/auth',
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes
-    GoRoute(
-      path: '/test',
-      builder: (context, state) => HomepageTestingWithService(),
-    ),
+    GoRoute(path: '/test', builder: (context, state) => AuthTesting()),
     // Auth screen (entry point)
     GoRoute(path: '/auth', builder: (context, state) => AuthMainScreen()),
     GoRoute(

@@ -14,7 +14,6 @@ class SmssendingscreenComponent extends StatefulWidget {
 }
 
 class _SmssendingscreenComponentState extends State<SmssendingscreenComponent> {
-  String _verificationId = '';
   final TextEditingController _otpController = TextEditingController();
 
   String maskEmail(String email) {
@@ -36,13 +35,21 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent> {
   }
 
   void onOtpSubmit() {
+    final otpText = _otpController.text.trim();
+
+    if (otpText.length != 4 || int.tryParse(otpText) == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Enter valid 4 digit OTP")));
+      return;
+    }
+
     context.read<AuthBloc>().add(
-      AuthOTPVerifyingEvent(smsCode: int.parse(_otpController.text.trim())),
+      AuthOTPVerifyingEvent(smsCode: int.parse(otpText)),
     );
   }
 
   void onOtpSend(String email) {
-    context.read<UserLoginProvider>().clearOtp();
     context.read<AuthBloc>().add(AuthOTPSentInternalEvent(email: email));
   }
 
@@ -74,6 +81,9 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+        if (state is AuthOTPSentState) {
+          context.read<UserLoginProvider>().setOtp(state.otp);
         }
       },
       builder: (context, state) {
@@ -137,9 +147,11 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent> {
                           keyboardType: TextInputType.number,
                           textAlign: TextAlign.center,
                           onChanged: (value) {
-                            if (value.length == 4 &&
-                                _verificationId.isNotEmpty) {}
+                            if (value.length == 4) {
+                              onOtpSubmit();
+                            }
                           },
+
                           style: const TextStyle(
                             fontSize: 24,
                             letterSpacing: 16,

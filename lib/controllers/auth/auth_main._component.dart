@@ -2,7 +2,6 @@ import 'package:exotic/view/auth/Signin/signin.dart';
 import 'package:exotic/view/auth/Signup/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class MainAuthComponenState extends StatefulWidget {
   const MainAuthComponenState({super.key});
@@ -58,7 +57,8 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
         },
         child: Text(
           "Let's get started",
-          style: GoogleFonts.nunitoSans(
+          style: TextStyle(
+            fontFamily: 'NunitoSans',
             fontSize: 20,
             fontWeight: FontWeight.w600,
             color: Colors.white,
@@ -86,7 +86,8 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
             height: 26,
             child: Text(
               "already have an account",
-              style: GoogleFonts.nunitoSans(
+              style: TextStyle(
+                fontFamily: 'nunitoSans',
                 fontSize: 15,
                 fontWeight: FontWeight.w300,
               ),

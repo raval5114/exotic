@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Alert types
 enum AlertType { success, error, warning }
@@ -69,7 +68,8 @@ void showCustomAlertBox({
                   child: Text(
                     message,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.raleway(
+                    style: TextStyle(
+                      fontFamily: "Raleway",
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.black87,
@@ -93,7 +93,8 @@ void showCustomAlertBox({
                                 Expanded(
                                   child: Text(
                                     error,
-                                    style: GoogleFonts.nunitoSans(
+                                    style: TextStyle(
+                                      fontFamily: "NunitoSans",
                                       fontSize: 14,
                                       color: Colors.black87,
                                     ),
@@ -122,7 +123,8 @@ void showCustomAlertBox({
                     onPressed: onOkay,
                     child: Text(
                       'Okay',
-                      style: GoogleFonts.nunitoSans(
+                      style: TextStyle(
+                        fontFamily: "NunitoSans",
                         color: Colors.white,
                         fontSize: 16,
                       ),

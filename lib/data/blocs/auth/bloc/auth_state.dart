@@ -47,7 +47,8 @@ final class AuthErrorState extends AuthState {
 /// ===============================
 
 final class AuthOTPSentState extends AuthState {
-  AuthOTPSentState();
+  final int otp;
+  AuthOTPSentState({required this.otp});
 }
 
 final class AuthOTPTimeoutState extends AuthState {

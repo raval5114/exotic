@@ -30,7 +30,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserLoginProvider()),
+        ChangeNotifierProvider(create: (_) => getit<UserLoginProvider>()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => CategoriesProvider()),
         ChangeNotifierProvider(create: (_) => BrandsProvider()),
