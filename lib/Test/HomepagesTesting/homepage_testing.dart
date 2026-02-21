@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:exotic/Test/HomepagesTesting/homepage_products.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/banner_carosol.dart';
+import 'package:exotic/controllers/Homescreen/Homepage/Elements/banner_carosol.dart';
+import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_category_grid.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_grid_offer.dart';
 import 'package:exotic/data/providers/homepage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -99,6 +102,89 @@ class HomepageTestingWithServiceComponent extends StatefulWidget {
 
 class _HomepageTestingWithServiceComponentState
     extends State<HomepageTestingWithServiceComponent> {
+  MobileCategoryGridElement
+  mobileCategoryGridElement = MobileCategoryGridElement.fromJson({
+    "element_id": 149,
+    "element_type": "mobile-category-grid",
+    "title": "test 7",
+    "data": {
+      "items": [
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/a6189afdd765a687.jpg?q=80",
+          "title": "Valentine's",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/f9ebd80a4825f28e.jpg?q=80",
+          "title": "Tshirt...",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d31d524f681630af.jpg?q=80",
+          "title": "Jeans",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/9be859f78d39cc22.jpg?q=80",
+          "title": "Sports Shoes",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/38e2f5617d0edd27.png?q=80",
+          "title": "Watches",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+        {
+          "img":
+              "https://rukminim2.flixcart.com/fk-p-flap/98/98/image/d7eae409dc461a54.jpg?q=80",
+          "title": "Kids",
+          "url": "#",
+        },
+      ],
+    },
+  });
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +197,8 @@ class _HomepageTestingWithServiceComponentState
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Text("Working"));
+    return Container(
+      child: MobileCategoryGridComponent(element: mobileCategoryGridElement),
+    );
   }
 }

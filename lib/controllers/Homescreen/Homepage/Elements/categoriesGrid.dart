@@ -1,6 +1,5 @@
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
-import 'package:exotic/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';

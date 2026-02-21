@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:exotic/Test/HomepagesTesting/product.dart';
 import 'package:exotic/data/repositories/homescreen/homepage/homepage.dart';
 import 'package:exotic/utils/adImages.dart';

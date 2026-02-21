@@ -44,10 +44,7 @@ class _HomeScreenMainControllerState extends State<HomeScreenMainController> {
         if (state is HomepageApiFetchedState) {
           final page = Pagemodel.fromJson(state.data);
 
-          return Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Pagecomponent(pageData: page),
-          );
+          return Pagecomponent(pageData: page);
         }
 
         if (state is HomepageErrorState) {

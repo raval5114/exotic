@@ -1,7 +1,13 @@
 import 'package:exotic/Test/HomepagesTesting/flutter_integration_example.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_3d_icon_tray.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_budget_deals.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_charm_slider.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_feature_slider.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_grid_offer.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_offer_strip.dart';
+import 'package:exotic/data/models/Homepage/elements/mobile_sponsored_banner.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_suggestion_grid.dart';
 import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 
@@ -62,13 +68,25 @@ class Rows {
     try {
       switch (elementType) {
         case 'mobile-offer-strip':
-          return MobileOfferStrip.fromJson(elementData);
+          return MobileOfferStripElement.fromJson(elementData);
         case 'mobile-category-grid':
-          return MobileCategoryGrid.fromJson(elementData);
+          return MobileCategoryGridElement.fromJson(elementData);
         case 'mobile-suggested-products':
           return MobileSuggestionGrid.fromJson(elementData);
         case 'mobile-promo-banner':
           return MobilePromoBanner.fromJson(elementData);
+        case 'mobile-sponsored-banner':
+          return MobileSponsoredBanner.fromJson(elementData);
+        case 'mobile-grid-offers':
+          return MobileGridOffersElement.fromJson(elementData);
+        case 'mobile-featured-slider':
+          return MobileFeaturedSliderElement.fromJson(elementData);
+        case 'mobile-charm-slider':
+          return MobileCharmSliderElement.fromJson(elementData);
+        case 'mobile-3d-icon-tray':
+          return Mobile3DIconTrayElement.fromJson(elementData);
+        case 'mobile-budget-deals':
+          return MobileBudgetDealsElement.fromJson(elementData);
         default:
           print('Unknown element type: $elementType');
           return null;

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/src/dotIndicator.dart';
+import 'package:exotic/controllers/Homescreen/Homepage/Elements/src/dotIndicator.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_banner_items.dart';
 import 'package:exotic/utils/cachedImage.dart';
 import 'package:exotic/utils/image_formatter.dart';
@@ -121,55 +121,51 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                   final item = items[index];
                   return GestureDetector(
                     onTap: () => onTap(item),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Builder(
-                          builder: (context) {
-                            if (item is MobileBannerItems) {
-                              if (!item.imageBase64Url.startsWith('http')) {
-                                try {
-                                  final bytes = base64ToBytes(
-                                    item.imageBase64Url,
-                                  );
-                                  return Image.memory(
-                                    bytes,
-                                    height: height,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  );
-                                } catch (e) {
-                                  debugPrint("Error decoding base64 image: $e");
-                                  return Container(
-                                    height: height,
-                                    width: double.infinity,
-                                    color: Colors.grey[200],
-                                    child: const Icon(Icons.broken_image),
-                                  );
-                                }
-                              } else {
-                                return AppCachedImage(
-                                  imageUrl: item.imageBase64Url,
+                    child: ClipRRect(
+                      child: Builder(
+                        builder: (context) {
+                          if (item is MobileBannerItems) {
+                            if (!item.imageBase64Url.startsWith('http')) {
+                              try {
+                                final bytes = base64ToBytes(
+                                  item.imageBase64Url,
+                                );
+                                return Image.memory(
+                                  bytes,
                                   height: height,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
-                                  borderRadius: BorderRadius.circular(12),
+                                );
+                              } catch (e) {
+                                debugPrint("Error decoding base64 image: $e");
+                                return Container(
+                                  height: height,
+                                  width: double.infinity,
+                                  color: Colors.grey[200],
+                                  child: const Icon(Icons.broken_image),
                                 );
                               }
-                            } else if (item is BannerItem) {
-                              String imageUrl = (api ?? "") + item.imageFile;
+                            } else {
                               return AppCachedImage(
-                                imageUrl: imageUrl,
+                                imageUrl: item.imageBase64Url,
                                 height: height,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                                 borderRadius: BorderRadius.circular(12),
                               );
                             }
-                            return const SizedBox.shrink();
-                          },
-                        ),
+                          } else if (item is BannerItem) {
+                            String imageUrl = (api ?? "") + item.imageFile;
+                            return AppCachedImage(
+                              imageUrl: imageUrl,
+                              height: height,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              borderRadius: BorderRadius.circular(12),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
                       ),
                     ),
                   );
