@@ -1,41 +1,16 @@
 import 'dart:convert';
-import 'package:exotic/Test/HomepagesTesting/product.dart';
 import 'package:exotic/data/repositories/homescreen/homepage/homepage.dart';
-import 'package:exotic/utils/adImages.dart';
-import 'package:exotic/utils/categories.dart';
-import 'package:exotic/utils/newProductList.dart';
 import 'package:flutter/rendering.dart';
 import 'package:http/http.dart' as http;
 
 class HomePageRepo extends IHomePageRepo {
   @override
-  Future<List<String>> getAdIamge() async {
-    // TODO: implement getAdIamge
-    return AdImages;
-  }
-
-  @override
-  List<Map<String, dynamic>> getCategories() {
-    return categories;
-  }
-
-  @override
-  List<Map<String, dynamic>> getSectionDataImages() {
-    // TODO: implement getSectionData
-    return AdImagesMapped;
-  }
-
-  @override
-  List<Map<String, dynamic>> getSectionDataProducsts() {
-    // TODO: implement getSectionDataProducsts
-    return products;
-  }
-
-  @override
-  Future<Map<String, dynamic>> getHomePageData() async {
+  Future<Map<String, dynamic>> getHomePageData({
+    String slug = "Homepage",
+  }) async {
     try {
       var response = await http.get(
-        Uri.parse('https://xotic.in/api/elements/page.php?slug=homepage'),
+        Uri.parse('https://xotic.in/api/elements/page.php?slug=${slug}'),
       );
 
       if (response.statusCode == 200) {
@@ -55,5 +30,28 @@ class HomePageRepo extends IHomePageRepo {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getHomepageTabsData() async {
+    final uri = Uri.parse("https://xotic.in/api/elements/pages.php");
+
+    final response = await http.get(uri);
+
+    if (response.statusCode != 200) {
+      throw Exception("Failed to load homepage pages");
+    }
+
+    final Map<String, dynamic> decoded = jsonDecode(response.body);
+
+    if (decoded['success'] != true) {
+      throw Exception("API returned failure");
+    }
+
+    final List pages = decoded['pages'];
+
+    return pages
+        .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e))
+        .toList();
   }
 }

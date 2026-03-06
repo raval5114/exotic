@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/mobile_offer_strip.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class OfferStripCard extends StatelessWidget {
@@ -23,7 +24,10 @@ class OfferStripCard extends StatelessWidget {
                   height: 150,
                   width: 150,
                   color: Colors.grey.shade100,
-                  child: Image.network(item.image, fit: BoxFit.cover),
+                  child: Image.memory(
+                    base64ToBytes(item.image),
+                    fit: BoxFit.contain,
+                  ),
                 ),
 
                 /// AD Badge

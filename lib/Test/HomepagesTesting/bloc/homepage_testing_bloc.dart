@@ -11,9 +11,20 @@ class HomepageTestingBloc
     on<HomepageTestingEvent>((event, emit) async {
       emit(HomepageTestingLoadingState());
       try {
-        HomepageService service = HomepageService();
+        HomepageServiceTesting service = HomepageServiceTesting();
         Map<String, dynamic> data = await service.getHomePageData();
         emit(HomepageTestingSuccessState(data: data));
+      } catch (e) {
+        emit(HomepageErrorState(errMsg: e.toString()));
+      }
+    });
+
+    on<HomepagePageTitleFetchingEvent>((event, emit) async {
+      emit(HomepageTestingLoadingState());
+      try {
+        HomepageServiceTesting service = HomepageServiceTesting();
+        List<Map<String, dynamic>> data = await service.getHomePageTabData();
+        emit(HomepageTestingFetchingPageTitleSuccessState(data: data));
       } catch (e) {
         emit(HomepageErrorState(errMsg: e.toString()));
       }

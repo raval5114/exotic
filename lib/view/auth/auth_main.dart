@@ -1,4 +1,4 @@
-import 'package:exotic/controllers/auth/auth_main._component.dart';
+import 'package:exotic/controllers/auth/auth_main_component.dart';
 import 'package:flutter/material.dart';
 
 class AuthMainScreen extends StatelessWidget {

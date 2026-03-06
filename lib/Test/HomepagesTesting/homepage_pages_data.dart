@@ -1,0 +1,47 @@
+final homepagePagesData = {
+  "success": true,
+  "timestamp": 1771958664,
+  "count": 1,
+  "pages": [
+    {
+      "page_id": 24,
+      "title": "homepage",
+      "slug": "homepage",
+      "meta_title": "homepage",
+      "meta_description": "",
+      "created_at": "2026-02-12 09:51:35",
+    },
+    {
+      "page_id": 25,
+      "title": "Deals Page",
+      "slug": "deals",
+      "meta_title": "Deals Page",
+      "meta_description": "",
+      "created_at": "2026-02-12 09:51:35",
+    },
+    {
+      "page_id": 26,
+      "title": "Electronics Page",
+      "slug": "electronics",
+      "meta_title": "Electronics Page",
+      "meta_description": "",
+      "created_at": "2026-02-12 09:51:35",
+    },
+    {
+      "page_id": 27,
+      "title": "Fashion Page",
+      "slug": "fashion",
+      "meta_title": "Fashion Page",
+      "meta_description": "",
+      "created_at": "2026-02-12 09:51:35",
+    },
+    {
+      "page_id": 28,
+      "title": "Cosmatics Page",
+      "slug": "cosmatics",
+      "meta_title": "Cosmatics Page",
+      "meta_description": "",
+      "created_at": "2026-02-12 09:51:35",
+    },
+  ],
+};

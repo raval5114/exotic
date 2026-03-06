@@ -11,6 +11,13 @@ final class HomepageTestingInitial extends HomepageTestingState {}
 
 final class HomepageTestingLoadingState extends HomepageTestingState {}
 
+final class HomepageTestingFetchingPageTitleSuccessState
+    extends HomepageTestingState {
+  List<Map<String, dynamic>> data;
+
+  HomepageTestingFetchingPageTitleSuccessState({required this.data});
+}
+
 final class HomepageTestingSuccessState extends HomepageTestingState {
   final Map<String, dynamic> data;
 

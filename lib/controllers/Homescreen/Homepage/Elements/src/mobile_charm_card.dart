@@ -1,3 +1,4 @@
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class CharmCard extends StatelessWidget {
@@ -62,8 +63,8 @@ class CharmCard extends StatelessWidget {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(20),
                       ),
-                      child: Image.network(
-                        item.img,
+                      child: Image.memory(
+                        base64ToBytes(item.img),
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),

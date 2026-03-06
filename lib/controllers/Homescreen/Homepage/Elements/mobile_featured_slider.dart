@@ -38,6 +38,7 @@ class MobileFeaturedSliderWidget extends StatelessWidget {
               itemCount: element.items.length,
               separatorBuilder: (_, __) => const SizedBox(width: 14),
               itemBuilder: (context, index) {
+                //debugPrint(element.items[index].img);
                 final item = element.items[index];
                 return FeaturedCard(item: item);
               },

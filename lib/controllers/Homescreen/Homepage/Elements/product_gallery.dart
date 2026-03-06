@@ -4,6 +4,7 @@ import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/ProductItem.dart';
 import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -24,76 +25,79 @@ class MobileSuggestionProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Colors.black87,
-                fontFamily:
-                    'Roboto', // Falling back to system Roboto or assets if available
-              ),
-            ),
-            if (config.viewAllLink.isNotEmpty)
-              InkWell(
-                onTap: () {
-                  // TODO: Handle view all link
-                },
-                child: const Row(
-                  children: [
-                    Text(
-                      "View All",
-                      style: TextStyle(
-                        fontSize: 13,
-                        color: Color(0xFFE94A75), // Brand Color Pink/Red
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
-                    SizedBox(width: 4),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      size: 14,
-                      color: Color(0xFFE94A75),
-                    ),
-                  ],
+    return Padding(
+      padding: EdgeInsetsGeometry.only(top: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                  fontFamily:
+                      'Roboto', // Falling back to system Roboto or assets if available
                 ),
               ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 270,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: products.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 14),
-            itemBuilder: (context, index) {
-              return MobileSuggestionCard(
-                product: products[index],
-                onTap: () {
-                  context.read<FetchProductBloc>().add(
-                    FetchingSingleProductEvent(
-                      productid: products[index].productId.toString(),
-                    ),
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ProductsShell()),
-                  );
-                },
-              );
-            },
+              if (config.viewAllLink.isNotEmpty)
+                InkWell(
+                  onTap: () {
+                    // TODO: Handle view all link
+                  },
+                  child: const Row(
+                    children: [
+                      Text(
+                        "View All",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFFE94A75), // Brand Color Pink/Red
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 14,
+                        color: Color(0xFFE94A75),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 220,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              itemCount: products.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 14),
+              itemBuilder: (context, index) {
+                return MobileSuggestionCard(
+                  product: products[index],
+                  onTap: () {
+                    context.read<FetchProductBloc>().add(
+                      FetchingSingleProductEvent(
+                        productid: products[index].productId.toString(),
+                      ),
+                    );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProductsShell()),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -110,18 +114,20 @@ class MobileSuggestionCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 160,
+        margin: const EdgeInsets.only(bottom: 0), // reduce space below card
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.06),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min, // prevents extra vertical space
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image Stack
@@ -131,20 +137,13 @@ class MobileSuggestionCard extends StatelessWidget {
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(16),
                   ),
-                  child: Container(
-                    height: 160,
+                  child: SizedBox(
+                    height: 140, // slightly reduced height
                     width: 160,
-                    color: Colors.grey[50], // Light background for image
-                    child: CachedNetworkImage(
-                      imageUrl: product.imageUrl,
+                    child: Image.memory(
+                      base64ToBytes(product.imageUrl),
                       fit: BoxFit.cover,
-                      placeholder:
-                          (context, url) => Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: Container(color: Colors.white),
-                          ),
-                      errorWidget:
+                      errorBuilder:
                           (context, url, error) => const Center(
                             child: Icon(
                               Icons.broken_image_rounded,
@@ -154,7 +153,6 @@ class MobileSuggestionCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                // Discount Badge overlay
                 if (product.price.discountPercentage > 0)
                   Positioned(
                     top: 8,
@@ -184,11 +182,11 @@ class MobileSuggestionCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(8), // balanced padding
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Name
                   Text(
                     product.name,
                     maxLines: 2,
@@ -201,52 +199,8 @@ class MobileSuggestionCard extends StatelessWidget {
                       fontFamily: 'Roboto',
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 4), // reduced spacing
 
-                  // Rating Row if available
-                  if (int.tryParse(product.rating.average) != null &&
-                      double.parse(product.rating.average) > 0)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green[50],
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(color: Colors.green[100]!),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  product.rating.average,
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.green[800],
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                                const SizedBox(width: 2),
-                                Icon(
-                                  Icons.star_rounded,
-                                  size: 10,
-                                  color: Colors.green[800],
-                                ),
-                              ],
-                            ),
-                          ),
-                          // You can add review count here if needed
-                        ],
-                      ),
-                    ),
-
-                  // Price Row
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

@@ -6,3 +6,7 @@ class HomepageTestingEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class HomepagePageTitleFetchingEvent extends HomepageTestingEvent {
+  const HomepagePageTitleFetchingEvent();
+}

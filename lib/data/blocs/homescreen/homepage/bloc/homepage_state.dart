@@ -30,8 +30,20 @@ final class HomepageSectionFetchedState extends HomepageState {
   HomepageSectionFetchedState({required this.data});
 }
 
-final class HomepageApiFetchedState extends HomepageState {
+final class HomepagePagesFetchedState extends HomepageState {
+  final List<Map<String, dynamic>> data;
+
+  HomepagePagesFetchedState({required this.data});
+}
+
+class HomepageTabLoadingState extends HomepageState {
+  final String slug;
+  HomepageTabLoadingState(this.slug);
+}
+
+class HomepageApiFetchedState extends HomepageState {
+  final String slug;
   final Map<String, dynamic> data;
 
-  HomepageApiFetchedState({required this.data});
+  HomepageApiFetchedState({required this.slug, required this.data});
 }

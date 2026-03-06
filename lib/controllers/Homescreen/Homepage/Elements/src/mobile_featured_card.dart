@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_featured_items.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class FeaturedCard extends StatelessWidget {
@@ -21,7 +22,10 @@ class FeaturedCard extends StatelessWidget {
                 SizedBox(
                   height: 150,
                   width: 150,
-                  child: Image.network(item.img, fit: BoxFit.cover),
+                  child: Image.memory(
+                    base64ToBytes(item.img),
+                    fit: BoxFit.fill,
+                  ),
                 ),
 
                 /// Offer strip

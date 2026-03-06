@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_3d_icon_tray.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class EnhancedTrayItem extends StatelessWidget {
@@ -44,10 +45,10 @@ class EnhancedTrayItem extends StatelessWidget {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(14),
-              child: Image.network(
-                item.img,
-                fit: BoxFit.contain,
+              padding: const EdgeInsets.all(0),
+              child: Image.memory(
+                base64ToBytes(item.img),
+                fit: BoxFit.fill,
                 errorBuilder:
                     (_, __, ___) =>
                         const Icon(Icons.image_not_supported, size: 26),

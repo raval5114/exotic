@@ -17,4 +17,9 @@ final class HomePageSectionFetchingEvent extends HomepageEvent {
   HomePageSectionFetchingEvent({required this.productsitmes});
 }
 
-final class HomepageApiFetcingEvent extends HomepageEvent {}
+final class HomepageApiFetcingEvent extends HomepageEvent {
+  final String Slug;
+  HomepageApiFetcingEvent({required this.Slug});
+}
+
+final class HomepagePagesFetchingEvent extends HomepageEvent {}

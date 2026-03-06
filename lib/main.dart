@@ -39,6 +39,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         ChangeNotifierProvider(create: (_) => MetaDataProvider()),
         ChangeNotifierProvider(create: (_) => HomepageProvider()),
+
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
         BlocProvider(create: (_) => SplashScreenBloc()),

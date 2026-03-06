@@ -1,5 +1,4 @@
 import 'package:exotic/controllers/Homescreen/Homepage/homePageController.dart';
-import 'package:exotic/controllers/src/appbar.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -7,6 +6,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: ExoticAppBar(), body: HomeScreenMainController());
+    return Scaffold(body: HomeScreenMainController());
   }
 }

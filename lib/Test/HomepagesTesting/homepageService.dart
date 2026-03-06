@@ -1,9 +1,6 @@
-import 'dart:convert';
-import 'package:exotic/Test/new_product.dart';
-import 'package:http/http.dart' as http;
+import 'package:exotic/Test/HomepagesTesting/homepage_pages_data.dart';
 
-class HomepageService {
-  @override
+class HomepageServiceTesting {
   Future<Map<String, dynamic>> getHomePageData() async {
     return {
       "row_id": 84,
@@ -65,5 +62,9 @@ class HomepageService {
     //     rethrow;
     //   }
     // }
+  }
+
+  Future<List<Map<String, dynamic>>> getHomePageTabData() async {
+    return homepagePagesData['pages'] as List<Map<String, dynamic>>;
   }
 }

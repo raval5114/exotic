@@ -17,8 +17,11 @@ class MobileOfferStripWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      color: _hexToColor(element.config.bgColor),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: _hexToColor(element.config.bgColor),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -40,7 +43,7 @@ class MobileOfferStripWidget extends StatelessWidget {
 
           /// Horizontal Cards
           SizedBox(
-            height: 210,
+            height: 180,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,

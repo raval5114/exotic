@@ -113,7 +113,7 @@ class _RowPageComponentState extends State<RowPageComponent> {
 
           // Add divider only if NOT the last element
           if (i < elements.length - 1) {
-            widgets.add(const Divider(color: Colors.black, thickness: 0.8));
+            widgets.add(const Divider(color: Colors.black, thickness: 0.5));
           }
         }
       }

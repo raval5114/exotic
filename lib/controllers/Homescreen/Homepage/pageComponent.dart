@@ -15,10 +15,13 @@ class Pagecomponent extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(
-          rows.length,
-          (index) => RowPageComponent(rows: rows[index]),
-        ),
+        children: List.generate(rows.length * 2 - 1, (index) {
+          if (index.isEven) {
+            return RowPageComponent(rows: rows[index ~/ 2]);
+          } else {
+            return Divider(thickness: 2.2, height: 24, color: Colors.black12);
+          }
+        }),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class MobileCategoryGridComponent extends StatelessWidget {
@@ -64,8 +65,8 @@ class _ScrollableCategoryItem extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                item.img,
+              child: Image.memory(
+                base64ToBytes(item.img),
                 fit: BoxFit.cover,
                 height: 2,
                 errorBuilder:
@@ -85,7 +86,7 @@ class _ScrollableCategoryItem extends StatelessWidget {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w500,
               height: 1.1,
             ),
