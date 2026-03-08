@@ -39,6 +39,7 @@ class MobileSponsoredBannerWidget extends StatelessWidget {
         GestureDetector(
           onTap: () {
             // Navigate using item.linkUrl
+            print("working");
           },
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
@@ -46,7 +47,7 @@ class MobileSponsoredBannerWidget extends StatelessWidget {
               base64ToBytes(item.fullImg),
               height: _parseHeight(item.bannerHeight),
               width: double.infinity,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
             ),
           ),
         ),

@@ -6,7 +6,7 @@ import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_charm_sli
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_featured_slider.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_grid_offers.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_offer_strip.dart';
-import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_sponsored_banner.dart';
+import 'package:exotic/controllers/Homescreen/Homepage/Elements/mobile_banner_widget.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/product_gallery.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile-promo-banner.dart';

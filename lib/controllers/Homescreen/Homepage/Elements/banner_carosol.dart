@@ -134,7 +134,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                                   bytes,
                                   height: height,
                                   width: double.infinity,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 );
                               } catch (e) {
                                 debugPrint("Error decoding base64 image: $e");

@@ -66,7 +66,7 @@ class CharmCard extends StatelessWidget {
                       child: Image.memory(
                         base64ToBytes(item.img),
                         width: double.infinity,
-                        fit: BoxFit.cover,
+                        fit: BoxFit.fill,
                       ),
                     ),
                   ),

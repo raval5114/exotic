@@ -13,6 +13,7 @@ class BudgetDealCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       onTap: () {
         // TODO: navigate using deal.url
+        debugPrint("Working");
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
