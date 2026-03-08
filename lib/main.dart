@@ -22,10 +22,14 @@ import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  setUpGetItLocator();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+
+  await setUpGetItLocator();
   //testDNS();
   runApp(
     MultiProvider(

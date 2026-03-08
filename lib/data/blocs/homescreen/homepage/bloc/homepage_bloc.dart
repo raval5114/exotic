@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:exotic/data/domains/homesrceen/homepage/homepage.dart';
 import 'package:exotic/data/models/categories.dart';
 import 'package:exotic/utils/injection.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 part 'homepage_event.dart';
 part 'homepage_state.dart';

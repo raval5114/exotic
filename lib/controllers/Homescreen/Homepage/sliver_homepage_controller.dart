@@ -60,9 +60,10 @@ class _ExoticHomeContentState extends State<ExoticHomeContent>
         }
 
         if (state is HomepageErrorState) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Error: ${state.errMsg}")));
+          debugPrint(state.errMsg);
+          // ScaffoldMessenger.of(
+          //   context,
+          // ).showSnackBar(SnackBar(content: Text("Error: ${state.errMsg}")));
         }
       },
       child: _buildContent(),

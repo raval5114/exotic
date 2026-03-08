@@ -37,11 +37,11 @@ class MobileGridOffersWidget extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 5),
 
           /// White Inner Container
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),

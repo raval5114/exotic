@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_grid_offer_items.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class OfferGridCard extends StatelessWidget {
@@ -15,8 +16,8 @@ class OfferGridCard extends StatelessWidget {
         Expanded(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              item.img,
+            child: Image.memory(
+              base64ToBytes(item.img),
               width: double.infinity,
               fit: BoxFit.cover,
             ),

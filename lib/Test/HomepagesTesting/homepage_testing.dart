@@ -1,6 +1,4 @@
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
-import 'package:exotic/data/models/homepage_page_model.dart';
-import 'package:exotic/data/providers/homepage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -44,10 +42,8 @@ class _HomepageTestingServiceComponentState
             debugPrint("Loading state");
           }
           if (state is HomepagePagesFetchedState) {
-            List<HomepagePageModel> pages =
-                state.data.map((e) => HomepagePageModel.fromJson(e)).toList();
-            context.read<HomepageProvider>().setTabs(pages);
-            debugPrint("Data Fetched State:${pages.map((e) => e.slug)}");
+            debugPrint("EventCalled");
+            //   debugPrint("Data Fetched State:${pages.map((e) => e.slug)}");
           }
           if (state is HomepageErrorState) {
             debugPrint(state.errMsg);

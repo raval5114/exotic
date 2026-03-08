@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_budget_deals_items.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class BudgetDealCard extends StatelessWidget {
@@ -19,8 +20,8 @@ class BudgetDealCard extends StatelessWidget {
           children: [
             /// Background Image
             Positioned.fill(
-              child: Image.network(
-                deal.img,
+              child: Image.memory(
+                base64ToBytes(deal.img),
                 fit: BoxFit.cover,
                 errorBuilder:
                     (_, __, ___) =>
@@ -58,7 +59,7 @@ class BudgetDealCard extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 1,
-                      color: Colors.black87,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -69,7 +70,7 @@ class BudgetDealCard extends StatelessWidget {
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 0.5,
-                      color: Colors.black,
+                      color: Colors.white,
                     ),
                   ),
                 ],

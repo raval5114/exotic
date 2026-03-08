@@ -29,7 +29,7 @@ class Mobile3dIconTrayComponent extends StatelessWidget {
         ),
       ),
       child: SizedBox(
-        height: 120,
+        height: 111,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),

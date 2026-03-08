@@ -1,4 +1,3 @@
-import 'package:exotic/Test/HomepagesTesting/homepage_tabar_testing.dart';
 import 'package:exotic/Test/HomepagesTesting/homepage_testing.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
@@ -22,7 +21,7 @@ final goRoutes = GoRouter(
     //testing routes
     GoRoute(
       path: '/test',
-      builder: (context, state) => ExoticHomePageTestingh(),
+      builder: (context, state) => HomepageTestingWithService(),
     ),
     // Auth screen (entry point)
     GoRoute(path: '/auth', builder: (context, state) => AuthMainScreen()),

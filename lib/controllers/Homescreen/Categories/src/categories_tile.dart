@@ -1,5 +1,6 @@
 import 'package:exotic/data/models/categories.dart';
 import 'package:exotic/utils/constants.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class CategoryTile extends StatelessWidget {
@@ -43,8 +44,8 @@ class CategoryTile extends StatelessWidget {
                     child: SizedBox(
                       width: 64,
                       height: 64,
-                      child: Image.network(
-                        "${product.photo}",
+                      child: Image.memory(
+                        base64ToBytes("${product.photo}"),
                         errorBuilder:
                             (context, error, stackTrace) =>
                                 const Icon(Icons.broken_image),

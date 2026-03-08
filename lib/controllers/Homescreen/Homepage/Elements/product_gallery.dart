@@ -140,8 +140,8 @@ class MobileSuggestionCard extends StatelessWidget {
                   child: SizedBox(
                     height: 140, // slightly reduced height
                     width: 160,
-                    child: Image.memory(
-                      base64ToBytes(product.imageUrl),
+                    child: Image.network(
+                      product.imageUrl,
                       fit: BoxFit.cover,
                       errorBuilder:
                           (context, url, error) => const Center(
