@@ -34,7 +34,7 @@ class HomepageBloc extends Bloc<HomepageEvent, HomepageState> {
       }
     });
     on<HomepageApiFetcingEvent>((event, emit) async {
-      // ✅ If already cached, return immediately
+      // If already cached, return immediately
       if (_pagesCache.containsKey(event.Slug)) {
         emit(
           HomepageApiFetchedState(
