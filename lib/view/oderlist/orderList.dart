@@ -19,7 +19,8 @@ class OrderListPage extends StatelessWidget {
         elevation: 0.5,
         title: Text(
           "My Orders",
-          style: GoogleFonts.roboto(
+          style: TextStyle(
+            fontFamily: 'Roboto',
             fontSize: width * 0.045,
             fontWeight: FontWeight.w500,
             color: Colors.black,
