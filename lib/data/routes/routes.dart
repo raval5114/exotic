@@ -15,7 +15,7 @@ import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
 final goRoutes = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/test',
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes
