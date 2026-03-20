@@ -4,11 +4,9 @@ import 'package:exotic/controllers/auth/Signup/src/blobPainter.dart';
 import 'package:exotic/controllers/auth/Signup/src/textfield.dart';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
-import 'package:exotic/utils/errorFormat.dart';
+// import 'package:exotic/utils/errorFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SignupController extends StatefulWidget {
@@ -134,7 +132,8 @@ class _SignupControllerState extends State<SignupController> {
                       Text(
                         'Create\nAccount',
                         textAlign: TextAlign.left,
-                        style: GoogleFonts.raleway(
+                        style: TextStyle(
+                          fontFamily: 'Raleway',
                           fontSize: 48,
                           fontWeight: FontWeight.w700,
                           color: Colors.black,
@@ -321,7 +320,8 @@ class _SignupControllerState extends State<SignupController> {
                                   )
                                   : Text(
                                     'Done',
-                                    style: GoogleFonts.nunitoSans(
+                                    style: TextStyle(
+                                      fontFamily: 'nunitoSans',
                                       fontSize: 22,
                                       fontWeight: FontWeight.w300,
                                       color: Colors.white,
@@ -337,7 +337,8 @@ class _SignupControllerState extends State<SignupController> {
                           onPressed: onCancel,
                           child: Text(
                             'Cancel',
-                            style: GoogleFonts.nunitoSans(
+                            style: TextStyle(
+                              fontFamily: 'nunitoSans',
                               fontWeight: FontWeight.w300,
                               fontSize: 15,
                               color: Colors.black54,

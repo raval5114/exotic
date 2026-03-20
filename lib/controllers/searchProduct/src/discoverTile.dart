@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SearchProductDiscoverProductTile extends StatelessWidget {
   final String item;
@@ -25,7 +24,8 @@ class SearchProductDiscoverProductTile extends StatelessWidget {
       ),
       child: Text(
         item,
-        style: GoogleFonts.roboto(
+        style: TextStyle(
+          fontFamily: 'Roboto',
           fontSize: width * 0.035,
           fontWeight: FontWeight.w400,
           color: Colors.black,

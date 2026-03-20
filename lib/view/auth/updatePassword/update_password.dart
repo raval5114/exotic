@@ -3,7 +3,6 @@ import 'package:exotic/data/domains/auth/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class UpdatePasswordScreen extends StatelessWidget {
   const UpdatePasswordScreen({super.key});
@@ -72,7 +71,8 @@ class _UpdatePasswordControllerState extends State<UpdatePasswordController> {
                       const SizedBox(height: 20),
                       Text(
                         "Setup New Password",
-                        style: GoogleFonts.raleway(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontSize: 21,
                           fontWeight: FontWeight.w700,
                         ),
@@ -84,7 +84,8 @@ class _UpdatePasswordControllerState extends State<UpdatePasswordController> {
                         child: Text(
                           "Please, setup a new password for your account",
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.nunitoSans(
+                          style: TextStyle(
+                            fontFamily: 'nunitoSans',
                             fontSize: 19,
                             fontWeight: FontWeight.w300,
                             color: Colors.black87,
@@ -110,7 +111,8 @@ class _UpdatePasswordControllerState extends State<UpdatePasswordController> {
                         ),
                         child: Text(
                           "Save",
-                          style: GoogleFonts.nunitoSans(
+                          style: TextStyle(
+                            fontFamily: 'nunitoSans',
                             fontWeight: FontWeight.w300,
                             fontSize: 22,
                             color: Colors.white,
@@ -123,7 +125,8 @@ class _UpdatePasswordControllerState extends State<UpdatePasswordController> {
                         },
                         child: Text(
                           "Cancel",
-                          style: GoogleFonts.nunitoSans(
+                          style: TextStyle(
+                            fontFamily: 'nunitoSans',
                             fontSize: 15,
                             fontWeight: FontWeight.w300,
                             color: Colors.black,
@@ -162,7 +165,8 @@ class _UpdatePasswordControllerState extends State<UpdatePasswordController> {
         return null; // Return null if the validation is successful
       },
       decoration: InputDecoration(
-        hintStyle: GoogleFonts.raleway(
+        hintStyle: TextStyle(
+          fontFamily: 'raleway',
           fontWeight: FontWeight.w500,
           fontSize: 17,
           color: const Color(0xFFDCDCDC),

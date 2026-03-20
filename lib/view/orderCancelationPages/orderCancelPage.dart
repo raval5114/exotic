@@ -1,7 +1,6 @@
 import 'package:exotic/view/orderCancelationPages/orderCancelPageConfirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderCancelPage extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -14,7 +13,11 @@ class OrderCancelPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Request Cancellation",
-          style: GoogleFonts.roboto(fontSize: 17, fontWeight: FontWeight.w400),
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 17,
+            fontWeight: FontWeight.w400,
+          ),
         ),
         actions: [
           IconButton(
@@ -62,7 +65,8 @@ class OrderCancelPage extends StatelessWidget {
                       children: [
                         Text(
                           product['productName'] ?? 'Product Name',
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                           ),
@@ -70,7 +74,8 @@ class OrderCancelPage extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           "Qty: ${product['qty'] ?? "0"}",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 12,
                             color: Colors.grey,
                           ),
@@ -78,7 +83,8 @@ class OrderCancelPage extends StatelessWidget {
                         const SizedBox(height: 6),
                         Text(
                           "₹${product['price'] ?? "0"}",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),
@@ -115,7 +121,8 @@ class OrderCancelPage extends StatelessWidget {
                 children: [
                   Text(
                     "Reason For Cancellation",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.black87,
@@ -133,7 +140,8 @@ class OrderCancelPage extends StatelessWidget {
                       Expanded(
                         child: Text(
                           "Price of the product has now decreased",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 14,
                             color: Colors.black87,
                           ),
@@ -145,7 +153,8 @@ class OrderCancelPage extends StatelessWidget {
                         },
                         child: Text(
                           "Change",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             color: Colors.blue,

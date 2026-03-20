@@ -2,7 +2,6 @@ import 'package:exotic/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreenLogoutSection extends StatefulWidget {
@@ -47,7 +46,8 @@ class _ProfileScreenLogoutSectionState
             padding: const EdgeInsets.symmetric(horizontal: 120.0),
             child: Text(
               "Log out",
-              style: GoogleFonts.roboto(
+              style: TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
                 color: Colors.blueAccent,

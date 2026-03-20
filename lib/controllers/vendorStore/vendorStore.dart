@@ -1,6 +1,5 @@
 import 'package:exotic/controllers/vendorStore/vendorStoreProductsComponent.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class VenderStoreComponent extends StatelessWidget {
   final String venderName;
@@ -54,7 +53,8 @@ class VenderStoreComponent extends StatelessWidget {
                             const SizedBox(width: 4),
                             Text(
                               "Trusted",
-                              style: GoogleFonts.roboto(
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
                                 color: Colors.blue,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 10,
@@ -65,7 +65,8 @@ class VenderStoreComponent extends StatelessWidget {
                       ),
                       Text(
                         "${venderName}",
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontSize: 10,
                           fontWeight: FontWeight.w500,
                         ),
@@ -125,7 +126,8 @@ class VenderStoreComponent extends StatelessWidget {
                           ),
                           child: Text(
                             "Follow",
-                            style: GoogleFonts.roboto(
+                            style: TextStyle(
+                              fontFamily: 'Roboto',
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
                               color: Colors.white,
@@ -155,11 +157,16 @@ class VenderStoreComponent extends StatelessWidget {
       children: [
         Text(
           title,
-          style: GoogleFonts.roboto(fontWeight: FontWeight.w500, fontSize: 14),
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          ),
         ),
         Text(
           subtitle,
-          style: GoogleFonts.roboto(
+          style: TextStyle(
+            fontFamily: 'Roboto',
             color: Colors.grey,
             fontWeight: FontWeight.w400,
             fontSize: 12,

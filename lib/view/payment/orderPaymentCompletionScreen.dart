@@ -1,7 +1,6 @@
 import 'package:exotic/utils/newProductList.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderPaymentCompletionScreen extends StatelessWidget {
   const OrderPaymentCompletionScreen({super.key});
@@ -54,7 +53,8 @@ class OrderPaymentCompletionScreen extends StatelessWidget {
               },
               child: Text(
                 "Continue Shopping",
-                style: GoogleFonts.roboto(
+                style: TextStyle(
+                  fontFamily: 'Roboto',
                   fontSize: 15,
                   color: Colors.black,
                   fontWeight: FontWeight.w500,
@@ -200,7 +200,8 @@ class OrderPaymentAddressCard extends StatelessWidget {
             onPressed: onChange,
             child: Text(
               "Change",
-              style: GoogleFonts.roboto(
+              style: TextStyle(
+                fontFamily: 'Roboto',
                 fontSize: 16,
                 color: Colors.blue,
                 fontWeight: FontWeight.w500,

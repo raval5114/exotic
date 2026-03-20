@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SearchProductPopularProductTile extends StatelessWidget {
   final String imagePath;
@@ -34,7 +33,8 @@ class SearchProductPopularProductTile extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             "${name}",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontSize: width * 0.035,
               fontWeight: FontWeight.w400,
             ),
@@ -42,7 +42,8 @@ class SearchProductPopularProductTile extends StatelessWidget {
           ),
           Text(
             "$categorie",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontSize: width * 0.0250,
               fontWeight: FontWeight.w300,
             ),

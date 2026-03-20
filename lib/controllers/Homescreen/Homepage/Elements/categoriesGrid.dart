@@ -2,7 +2,6 @@ import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CategoriesGrid extends StatefulWidget {
@@ -110,7 +109,8 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                     const SizedBox(height: 6),
                     Text(
                       category.name,
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         fontWeight: FontWeight.w400,
                         fontSize: 10,
                       ),

@@ -5,7 +5,6 @@ import 'package:exotic/data/providers/meta_data_provider.dart';
 import 'package:exotic/utils/searchProduct.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SearchProductPopularProduct extends StatefulWidget {
@@ -35,7 +34,8 @@ class _SearchProductPopularProductState
           children: [
             Text(
               "Popular Search",
-              style: GoogleFonts.roboto(
+              style: TextStyle(
+                fontFamily: 'Roboto',
                 fontWeight: FontWeight.w500,
                 fontSize: width * 0.045,
               ),

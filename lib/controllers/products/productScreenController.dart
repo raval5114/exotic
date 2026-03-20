@@ -11,7 +11,6 @@ import 'package:exotic/view/payment/payment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class ProductsScreenController extends StatefulWidget {
@@ -101,7 +100,8 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                     onPressed: isLoading ? null : () => _addToCart(context),
                     child: Text(
                       isLoading ? "Adding..." : "Add to cart",
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -134,7 +134,8 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                     },
                     child: Text(
                       "Buy Now",
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w400,

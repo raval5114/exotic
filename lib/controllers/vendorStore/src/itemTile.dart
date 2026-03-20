@@ -1,7 +1,6 @@
 import 'package:exotic/data/models/product_orignal.dart';
 import 'package:exotic/view/products/productScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ItemTile extends StatelessWidget {
   final ProductModel product;
@@ -86,7 +85,8 @@ class ItemTile extends StatelessWidget {
                 children: [
                   Text(
                     itemName,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       fontSize: 12,
                     ),
@@ -96,7 +96,8 @@ class ItemTile extends StatelessWidget {
                     children: [
                       Text(
                         "↓$discountedPercentage",
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           color: Colors.green,
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
@@ -105,7 +106,8 @@ class ItemTile extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         "₹$discountedPrice",
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontWeight: FontWeight.w500,
                           fontSize: 12,
                         ),
@@ -140,7 +142,8 @@ class ItemTile extends StatelessWidget {
                   if (bottomStatus.isNotEmpty)
                     Text(
                       bottomStatus,
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         fontSize: 12,
                         fontWeight: FontWeight.w300,
                         color: Colors.black,

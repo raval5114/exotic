@@ -7,8 +7,6 @@ import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/view/products/productScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class WishlistComponent extends StatefulWidget {
   const WishlistComponent({super.key});
@@ -88,7 +86,8 @@ class _WishlistComponentState extends State<WishlistComponent> {
                 title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: TextStyle(
+                  fontFamily: 'Roboto',
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                 ),
@@ -102,7 +101,8 @@ class _WishlistComponentState extends State<WishlistComponent> {
                 subtitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.roboto(
+                style: TextStyle(
+                  fontFamily: 'Roboto',
                   fontSize: 12,
                   color: Colors.grey.shade700,
                 ),
@@ -126,7 +126,8 @@ class _WishlistComponentState extends State<WishlistComponent> {
                       ),
                       Text(
                         "$discount%",
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           color: const Color(0xFF0FBF3E),
                           fontSize: 12,
                         ),
@@ -135,14 +136,16 @@ class _WishlistComponentState extends State<WishlistComponent> {
                   ),
                   Text(
                     finalPrice,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   Text(
                     mrp,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 12,
                       decoration: TextDecoration.lineThrough,
                       color: Colors.grey,
@@ -163,7 +166,11 @@ class _WishlistComponentState extends State<WishlistComponent> {
                   onPressed: onAddToCart,
                   child: Text(
                     "Add to Cart",
-                    style: GoogleFonts.roboto(fontSize: 14, color: Colors.blue),
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 14,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ),
@@ -241,7 +248,8 @@ class _WishlistComponentState extends State<WishlistComponent> {
                     margin: const EdgeInsets.only(left: 15),
                     child: Text(
                       "Your Wishlist",
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         fontWeight: FontWeight.w600,
                         fontSize: 20,
                       ),

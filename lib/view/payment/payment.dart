@@ -1,7 +1,6 @@
 import 'package:exotic/controllers/payment/paymentController.dart';
 import 'package:exotic/view/payment/orderPaymentScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class PaymentScreen extends StatelessWidget {
   final String discountedPrice;
@@ -84,7 +83,14 @@ class PaymentScreen extends StatelessWidget {
 
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        title: Text("Order Summary", style: GoogleFonts.roboto(fontSize: 15)),
+        title: Text(
+          "Order Summary",
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
       ),
       body: PaymentController(productData: productData),
     );

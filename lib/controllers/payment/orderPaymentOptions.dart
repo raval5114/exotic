@@ -1,7 +1,6 @@
 import 'package:exotic/controllers/payment/src/orderPaymentOptionsTile.dart';
 import 'package:exotic/view/payment/orderPaymentSuccessfullScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderPaymentOptions extends StatelessWidget {
   const OrderPaymentOptions({super.key});
@@ -57,7 +56,8 @@ class OrderPaymentOptions extends StatelessWidget {
                 children: [
                   Text(
                     "Due to handling costs, a nominal fees of ₹7 will be charged",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.w400,
                       color: Colors.grey,
                       fontSize: 12,
@@ -71,7 +71,10 @@ class OrderPaymentOptions extends StatelessWidget {
                     onPressed: onSubmittingCOD,
                     child: Text(
                       "Place Order",
-                      style: GoogleFonts.roboto(color: Colors.white),
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],

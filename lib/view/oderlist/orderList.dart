@@ -1,10 +1,11 @@
 import 'package:exotic/controllers/orderList/orderListComponent.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderListPage extends StatelessWidget {
   const OrderListPage({super.key});
+
+  get GoogleFonts => null;
 
   @override
   Widget build(BuildContext context) {

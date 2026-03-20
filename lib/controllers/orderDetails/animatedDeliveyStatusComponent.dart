@@ -1,6 +1,5 @@
 import 'package:exotic/controllers/orderDetails/src/deliveyStatusStep.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class AnimatedDeliveryTimeline extends StatelessWidget {
   final List<DeliveryStatusStep> steps;
@@ -89,7 +88,8 @@ class AnimatedDeliveryTimeline extends StatelessWidget {
                       children: [
                         Text(
                           step.title,
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontWeight: FontWeight.bold,
                             color:
                                 step.isCurrent ? Colors.green : Colors.black87,
@@ -98,7 +98,8 @@ class AnimatedDeliveryTimeline extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           step.subtitle,
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 13,
                             color: Colors.grey.shade700,
                           ),
@@ -114,7 +115,8 @@ class AnimatedDeliveryTimeline extends StatelessWidget {
                                       padding: const EdgeInsets.only(top: 4),
                                       child: Text(
                                         "${sub['status']} ${sub['timestamp'] != null ? "\n${_formatDateTime(sub['timestamp'])}" : ""}",
-                                        style: GoogleFonts.roboto(
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
                                           fontSize: 12,
                                           color: Colors.grey.shade600,
                                         ),

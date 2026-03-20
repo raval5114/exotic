@@ -1,7 +1,6 @@
 import 'package:exotic/controllers/orderDetails/src/deliveyStatusStep.dart';
 import 'package:exotic/view/orderCancelationPages/orderCancelPage.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DeliveryTimeline extends StatelessWidget {
   final Map<String, dynamic> data;
@@ -115,7 +114,8 @@ class DeliveryTimeline extends StatelessWidget {
                 icon: const Icon(Icons.edit, color: Colors.black),
                 label: Text(
                   "Edit Order",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     color: Colors.black,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -136,7 +136,8 @@ class DeliveryTimeline extends StatelessWidget {
                 ),
                 label: Text(
                   "Chat with us",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     color: Colors.black,
                     fontSize: 15,
                     fontWeight: FontWeight.w500,
@@ -165,7 +166,8 @@ class DeliveryTimeline extends StatelessWidget {
               ListTile(
                 title: Text(
                   "What do you need help with?",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
                     fontSize: 15,
                   ),
@@ -228,7 +230,8 @@ class DeliveryTimeline extends StatelessWidget {
               Expanded(
                 child: Text(
                   "You saved ₹575 on this product!",
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                     color: Colors.black87,
@@ -249,7 +252,7 @@ class DeliveryTimeline extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             "If you cancel now, you may not be able to avail this deal again. Do you still want to cancel?",
-            style: GoogleFonts.roboto(fontSize: 14),
+            style: TextStyle(fontFamily: 'Roboto', fontSize: 14),
           ),
           const SizedBox(height: 20),
           const Divider(height: 1),
@@ -264,7 +267,8 @@ class DeliveryTimeline extends StatelessWidget {
                   },
                   child: Text(
                     "Don’t Cancel",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
                     ),
@@ -287,7 +291,8 @@ class DeliveryTimeline extends StatelessWidget {
                   },
                   child: Text(
                     "Cancel",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontWeight: FontWeight.w500,
                       color: Colors.blue,
                     ),

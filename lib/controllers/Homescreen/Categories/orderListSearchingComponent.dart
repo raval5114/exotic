@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderListSearchingComponent extends StatefulWidget {
   const OrderListSearchingComponent({super.key});
@@ -37,11 +36,14 @@ class _OrderListSearchingComponentState
                     const SizedBox(width: 8),
                     Expanded(
                       child: TextField(
-                        style: GoogleFonts.roboto(fontSize: 14),
+                        style: TextStyle(fontFamily: 'Roboto', fontSize: 14),
                         decoration: InputDecoration(
                           hintText:
                               'Search your order heare', // Intentional typo based on image
-                          hintStyle: GoogleFonts.roboto(color: Colors.grey),
+                          hintStyle: TextStyle(
+                            fontFamily: 'Roboto',
+                            color: Colors.grey,
+                          ),
                           border: InputBorder.none,
                         ),
                       ),
@@ -61,7 +63,8 @@ class _OrderListSearchingComponentState
                   const SizedBox(width: 4),
                   Text(
                     "Filters",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 14,
                       color: Colors.black,
                     ),

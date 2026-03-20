@@ -1,7 +1,6 @@
 import 'package:exotic/view/orderDetails/orderDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class RatingStars extends StatefulWidget {
   final int maxStars;
@@ -89,7 +88,8 @@ class OrderShowingTile extends StatelessWidget {
         ),
         title: Text(
           "$orderStatus • $data",
-          style: GoogleFonts.roboto(
+          style: TextStyle(
+            fontFamily: 'Roboto',
             fontWeight: FontWeight.w500,
             fontSize: 14,
             color:
@@ -103,7 +103,8 @@ class OrderShowingTile extends StatelessWidget {
             children: [
               Text(
                 productName,
-                style: GoogleFonts.roboto(
+                style: TextStyle(
+                  fontFamily: 'Roboto',
                   fontSize: 12,
                   color: Colors.grey[700],
                 ),

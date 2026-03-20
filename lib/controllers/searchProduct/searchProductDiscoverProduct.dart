@@ -1,7 +1,6 @@
 import 'package:exotic/controllers/searchProduct/src/discoverTile.dart';
 import 'package:exotic/utils/searchProduct.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SearchProductDiscoverProduct extends StatelessWidget {
   const SearchProductDiscoverProduct({super.key});
@@ -20,7 +19,8 @@ class SearchProductDiscoverProduct extends StatelessWidget {
         children: [
           Text(
             "Discover More",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontWeight: FontWeight.w600,
               fontSize: width * 0.045,
               color: Colors.black,

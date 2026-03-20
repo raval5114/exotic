@@ -1,7 +1,6 @@
 import 'package:exotic/view/searchProduct/searchProduct.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -46,7 +45,8 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                 children: [
                   Text(
                     "Search with a photo",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 15,
                       fontWeight: FontWeight.w500,
                       color: Colors.black,
@@ -55,7 +55,8 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                   const SizedBox(height: 8),
                   Text(
                     "Upload a photo and search for Fashion, Toys,\nLifestyle and Home Products",
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
                       fontSize: 12,
                       fontWeight: FontWeight.w300,
                       color: Colors.black87,
@@ -87,7 +88,8 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                             SizedBox(width: 8),
                             Text(
                               "Choose from gallery",
-                              style: GoogleFonts.roboto(
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13,
                               ),
@@ -133,7 +135,8 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                             const SizedBox(width: 8),
                             Text(
                               "Click a photo",
-                              style: GoogleFonts.roboto(
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
                                 fontSize: 13,
                                 fontWeight: FontWeight.w400,
                               ),

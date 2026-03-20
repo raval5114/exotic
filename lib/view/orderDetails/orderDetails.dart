@@ -1,7 +1,6 @@
 import 'package:exotic/controllers/orderDetails/orderDetailsComponent.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OrderdetailsPage extends StatelessWidget {
   final Map<String, dynamic> product;
@@ -13,7 +12,11 @@ class OrderdetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Order Details",
-          style: GoogleFonts.roboto(fontSize: 17, fontWeight: FontWeight.w400),
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 17,
+            fontWeight: FontWeight.w400,
+          ),
         ),
         actions: [
           IconButton(

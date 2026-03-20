@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Widget buildRoundedTextField({
   required String hint,
@@ -21,12 +20,12 @@ Widget buildRoundedTextField({
         validator: validator, // <-- used here
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.poppins(
-            textStyle: const TextStyle(
-              fontSize: 13.83,
-              fontWeight: FontWeight.w500,
-            ),
+          hintStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 13.83,
+            fontWeight: FontWeight.w500,
           ),
+
           filled: true,
           fillColor: Colors.grey.shade50,
           contentPadding: const EdgeInsets.symmetric(

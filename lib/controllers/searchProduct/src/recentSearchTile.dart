@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SearchProductRecentSearchTile extends StatelessWidget {
   final String name;
@@ -30,7 +29,8 @@ class SearchProductRecentSearchTile extends StatelessWidget {
           SizedBox(height: width * 0.02),
           Text(
             "$name",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontSize: width * 0.03,
               fontWeight: FontWeight.w400,
               color: Colors.black,

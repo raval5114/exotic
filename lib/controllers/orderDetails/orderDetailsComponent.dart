@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:exotic/controllers/orderDetails/orderDetailsDeliveryStatusComponent.dart';
 import 'package:exotic/controllers/orderDetails/src/deliveyStatusStep.dart';
 
@@ -19,7 +18,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
         children: [
           Text(
             title,
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontSize: 14,
               fontWeight: FontWeight.w400,
             ),
@@ -27,7 +27,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
           const Spacer(),
           Text(
             "₹$value",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
+              fontFamily: 'Roboto',
               fontSize: 14,
               fontWeight: FontWeight.w500,
               decoration: isStruck ? TextDecoration.lineThrough : null,
@@ -65,7 +66,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Order ID - ${product['orderId']}",
-                        style: GoogleFonts.roboto(
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
                           fontSize: 12,
                           color: Colors.grey.shade600,
                         ),
@@ -90,7 +92,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                             children: [
                               Text(
                                 product['productName'],
-                                style: GoogleFonts.roboto(
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -98,7 +101,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                               const SizedBox(height: 6),
                               Text(
                                 "Off-white",
-                                style: GoogleFonts.roboto(
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
                                   fontSize: 14,
                                   color: Colors.grey,
                                 ),
@@ -106,7 +110,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                               const SizedBox(height: 2),
                               Text(
                                 "Seller: Killer",
-                                style: GoogleFonts.roboto(
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
                                   fontSize: 13,
                                   color: Colors.grey,
                                 ),
@@ -116,7 +121,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                                 children: [
                                   Text(
                                     "₹${product['priceBreakdown']['sellingPrice']}",
-                                    style: GoogleFonts.roboto(
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -124,7 +130,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                                   const SizedBox(width: 8),
                                   Text(
                                     "1 offer",
-                                    style: GoogleFonts.roboto(
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
                                       fontSize: 14,
                                       color: Colors.green,
                                       fontWeight: FontWeight.w500,
@@ -185,7 +192,8 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                       children: [
                         Text(
                           "Shopping Details",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: Colors.black87,

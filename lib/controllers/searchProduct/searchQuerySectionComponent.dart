@@ -5,7 +5,6 @@ import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:field_suggestion/field_suggestion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Searchquerysectioncomponent extends StatefulWidget {
   const Searchquerysectioncomponent({super.key});
@@ -49,7 +48,8 @@ class _SearchquerysectioncomponentState
           hintText: 'Search product',
           border: InputBorder.none,
           isDense: true,
-          hintStyle: GoogleFonts.roboto(
+          hintStyle: TextStyle(
+            fontFamily: 'Roboto',
             fontSize: width * 0.035,
             color: Colors.grey.shade700,
           ),
@@ -115,7 +115,8 @@ class _SearchquerysectioncomponentState
                   product['name'] ?? 'Unknown product',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
