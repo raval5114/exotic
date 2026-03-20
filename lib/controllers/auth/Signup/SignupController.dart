@@ -7,6 +7,7 @@ import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
 // import 'package:exotic/utils/errorFormat.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:image_picker/image_picker.dart';
 
 class SignupController extends StatefulWidget {

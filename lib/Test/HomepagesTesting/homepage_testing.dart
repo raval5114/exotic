@@ -32,7 +32,10 @@ class _HomepageTestingServiceComponentState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Homepage Testing Component", style: TextStyle()),
+        title: Text(
+          "Homepage Testing Component",
+          style: TextStyle(fontFamily: 'Roboto'),
+        ),
         centerTitle: true,
       ),
       body: BlocListener<HomepageBloc, HomepageState>(
@@ -43,13 +46,28 @@ class _HomepageTestingServiceComponentState
           }
           if (state is HomepagePagesFetchedState) {
             debugPrint("EventCalled");
+
             //   debugPrint("Data Fetched State:${pages.map((e) => e.slug)}");
           }
           if (state is HomepageErrorState) {
             debugPrint(state.errMsg);
           }
         },
-        child: Center(),
+        child: Center(
+          child: Column(
+            children: [
+              Text(
+                "The one witht the roboto text",
+                style: TextStyle(fontFamily: 'Roboto'),
+                // style: TextStyle(fontFamily: 'Roboto'),
+              ),
+              Text(
+                "The one without the roboto text",
+                // style: TextStyle(fontFamily: 'Roboto'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
