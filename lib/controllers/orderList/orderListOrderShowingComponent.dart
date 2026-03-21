@@ -17,7 +17,7 @@ class _OrderListOrderShowingComponentState
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      // 🛠️ Ensures bounded height
+      // Ensures bounded height
       child: Container(
         color: Colors.white,
         child: BlocConsumer<OrderListBloc, OrderListState>(
