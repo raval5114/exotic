@@ -34,7 +34,7 @@ class _HomepageTestingServiceComponentState
       appBar: AppBar(
         title: Text(
           "Homepage Testing Component",
-          style: TextStyle(fontFamily: 'Roboto'),
+          style: TextStyle(fontFamily: 'Nunito'),
         ),
         centerTitle: true,
       ),
@@ -58,12 +58,12 @@ class _HomepageTestingServiceComponentState
             children: [
               Text(
                 "The one witht the roboto text",
-                style: TextStyle(fontFamily: 'Roboto'),
+                style: TextStyle(fontFamily: 'Nunito'),
                 // style: TextStyle(fontFamily: 'Roboto'),
               ),
               Text(
                 "The one without the roboto text",
-                // style: TextStyle(fontFamily: 'Roboto'),
+                style: TextStyle(fontFamily: 'Roboto'),
               ),
             ],
           ),
