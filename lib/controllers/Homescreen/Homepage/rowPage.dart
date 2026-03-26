@@ -30,102 +30,143 @@ class RowPageComponent extends StatefulWidget {
   State<RowPageComponent> createState() => _RowPageComponentState();
 }
 
-class _RowPageComponentState extends State<RowPageComponent> {
+class _RowPageComponentState extends State<RowPageComponent>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOutCubic,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.08),
+      end: Offset.zero,
+    ).animate(_fadeAnimation);
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Color hexToColor(String hex) {
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 6) {
+      hex = 'FF$hex'; // add full opacity
+    }
+    return Color(int.parse(hex, radix: 16));
+  }
+
+  List<Widget> parseElementToWidget(List<PageElement> elements) {
+    List<Widget> widgets = [];
+
+    for (int i = 0; i < elements.length; i++) {
+      final element = elements[i];
+
+      Widget? child;
+
+      if (element is MobilePromoBanner) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: BannerCarouselWidget(banners: element.items),
+        );
+      } else if (element is MobileSuggestionGrid) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileSuggestionProducts(
+            title: element.title,
+            config: element.config,
+            products: element.items,
+          ),
+        );
+      } else if (element is Mobile3DIconTrayElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Mobile3dIconTrayComponent(element: element),
+        );
+      } else if (element is MobileBudgetDealsElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileBudgetDealsComponent(element: element),
+        );
+      } else if (element is MobileCategoryGridElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileCategoryGridComponent(element: element),
+        );
+      } else if (element is MobileCharmSliderElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileCharmSliderWidget(element: element),
+        );
+      } else if (element is MobileFeaturedSliderElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileFeaturedSliderWidget(element: element),
+        );
+      } else if (element is MobileGridOffersElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileGridOffersWidget(element: element),
+        );
+      } else if (element is MobileOfferStripElement) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileOfferStripWidget(element: element),
+        );
+      } else if (element is MobileSponsoredBanner) {
+        child = Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: MobileSponsoredBannerWidget(element: element),
+        );
+      } else {
+        debugPrint('Unhandled PageElement Widget: ${element.runtimeType}');
+      }
+
+      if (child != null) {
+        widgets.add(child);
+
+        // Dense vertical spacing between elements in a row to match Flipkart's compactness
+        if (i < elements.length - 1) {
+          widgets.add(const SizedBox(height: 2));
+        }
+      }
+    }
+
+    return widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     Styling styling = widget.rows.styling;
-    Color hexToColor(String hex) {
-      hex = hex.replaceAll('#', '');
-      if (hex.length == 6) {
-        hex = 'FF$hex'; // add full opacity
-      }
-      return Color(int.parse(hex, radix: 16));
-    }
 
-    List<Widget> parseElementToWidget(List<PageElement> elements) {
-      List<Widget> widgets = [];
-
-      for (int i = 0; i < elements.length; i++) {
-        final element = elements[i];
-
-        Widget? child;
-
-        if (element is MobilePromoBanner) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: BannerCarouselWidget(banners: element.items),
-          );
-        } else if (element is MobileSuggestionGrid) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileSuggestionProducts(
-              title: element.title,
-              config: element.config,
-              products: element.items,
-            ),
-          );
-        } else if (element is Mobile3DIconTrayElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Mobile3dIconTrayComponent(element: element),
-          );
-        } else if (element is MobileBudgetDealsElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileBudgetDealsComponent(element: element),
-          );
-        } else if (element is MobileCategoryGridElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileCategoryGridComponent(element: element),
-          );
-        } else if (element is MobileCharmSliderElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileCharmSliderWidget(element: element),
-          );
-        } else if (element is MobileFeaturedSliderElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileFeaturedSliderWidget(element: element),
-          );
-        } else if (element is MobileGridOffersElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileGridOffersWidget(element: element),
-          );
-        } else if (element is MobileOfferStripElement) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileOfferStripWidget(element: element),
-          );
-        } else if (element is MobileSponsoredBanner) {
-          child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: MobileSponsoredBannerWidget(element: element),
-          );
-        } else {
-          debugPrint('Unhandled PageElement Widget: ${element.runtimeType}');
-        }
-
-        if (child != null) {
-          widgets.add(child);
-
-          // Add divider only if NOT the last element
-          if (i < elements.length - 1) {
-            widgets.add(const Divider(color: Colors.black, thickness: 0.5));
-          }
-        }
-      }
-
-      return widgets;
-    }
-
-    return Container(
-      decoration: BoxDecoration(color: hexToColor(styling.backgroud_color)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch, // ✅ IMPORTANT
-        children: parseElementToWidget(widget.rows.elements),
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Container(
+          margin: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          decoration: BoxDecoration(
+            color: hexToColor(styling.backgroud_color),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch, // IMPORTANT
+            children: parseElementToWidget(widget.rows.elements),
+          ),
+        ),
       ),
     );
   }

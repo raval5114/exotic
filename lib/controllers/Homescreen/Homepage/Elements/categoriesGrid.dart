@@ -25,7 +25,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: BlocBuilder<HomepageBloc, HomepageState>(
         buildWhen:
             (previous, current) =>
@@ -41,9 +41,9 @@ class _CategoriesGridState extends State<CategoriesGrid> {
               itemCount: 10,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                childAspectRatio: 0.75,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 4,
+                childAspectRatio: 0.7,
               ),
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
@@ -53,15 +53,15 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 41,
-                        height: 41,
+                        width: 64,
+                        height: 64,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(14),
                         ),
                       ),
-                      const SizedBox(height: 6),
-                      Container(width: 30, height: 8, color: Colors.white),
+                      const SizedBox(height: 8),
+                      Container(width: 40, height: 10, color: Colors.white),
                     ],
                   ),
                 );
@@ -83,9 +83,9 @@ class _CategoriesGridState extends State<CategoriesGrid> {
               itemCount: 10,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisSpacing: 2,
-                crossAxisSpacing: 2,
-                childAspectRatio: 0.75,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 4,
+                childAspectRatio: 0.7,
               ),
               itemBuilder: (context, index) {
                 final category = categories[index];
@@ -94,27 +94,34 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                 return Column(
                   children: [
                     Container(
-                      width: 41,
-                      height: 41,
+                      width: 64,
+                      height: 64,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(14),
                       ),
-
-                      child: Image.asset(
-                        "${category.url}",
-                        fit: BoxFit.contain,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14),
+                        child: Image.asset(
+                          "${category.url}",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    Text(
-                      category.name,
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 10,
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: Text(
+                        category.name,
+                        style: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 );

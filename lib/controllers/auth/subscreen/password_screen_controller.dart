@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
 import 'package:exotic/data/models/user.dart';
@@ -17,10 +18,41 @@ class PasswordScreenComponent extends StatefulWidget {
       _PasswordScreenComponentState();
 }
 
-class _PasswordScreenComponentState extends State<PasswordScreenComponent> {
+class _PasswordScreenComponentState extends State<PasswordScreenComponent>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   bool _isLoading = false;
   bool _obscureText = true;
+
+  late AnimationController _fadeController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 700),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOutCubic,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.08),
+      end: Offset.zero,
+    ).animate(_fadeAnimation);
+
+    _fadeController.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _fadeController.dispose();
+    super.dispose();
+  }
 
   void _onSubmit() {
     final email = context.read<UserLoginProvider>().email;
@@ -45,6 +77,7 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent> {
       SigninEvent(
         email: context.read<UserLoginProvider>().email,
         password: password,
+        mobileNo: context.read<UserLoginProvider>().mobileno,
       ),
     );
   }
@@ -74,13 +107,19 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent> {
             User.fromJson(state.data['user']),
           );
           String email = context.read<UserProvider>().user!.email;
-
-          context.read<AuthBloc>().add(AuthOTPSentInternalEvent(email: email));
+          String mobileno = context.read<UserProvider>().user!.phone;
+          context.read<AuthBloc>().add(
+            AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
+          );
 
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SmsSendingScreen()),
           );
+        }
+
+        if (state is AuthOTPSentState) {
+          setState(() => _isLoading = false);
         }
 
         if (state is AuthErrorState) {
@@ -100,102 +139,249 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent> {
         return Stack(
           children: [
             // Background blob
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            Positioned.fill(
               child: Image.asset(
                 'assets/src/login_blob_2.png',
+                fit: BoxFit.cover,
                 alignment: AlignmentDirectional.topStart,
               ),
             ),
 
             // Main UI
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.white,
-                    child: CircleAvatar(radius: 45, child: Icon(Icons.person)),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Hello, ${context.read<UserLoginProvider>().username}!',
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Type your password',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Password Input
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _controller,
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            hintText: 'Enter password',
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            counterText: '',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: SingleChildScrollView(
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(32),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 16.0, sigmaY: 16.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.55),
+                              borderRadius: BorderRadius.circular(32),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.6),
+                                width: 1.5,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 30,
+                                  offset: const Offset(0, 15),
+                                ),
+                              ],
                             ),
-                            suffixIcon:
-                                _isLoading
-                                    ? Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 28.0,
+                              vertical: 36.0,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(18),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.8),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.pinkAccent.withOpacity(
+                                          0.2,
+                                        ),
+                                        blurRadius: 16,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.person_outline_rounded,
+                                    size: 45,
+                                    color: Colors.pinkAccent,
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  'Hello, ${context.read<UserLoginProvider>().username}!',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.black87,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                const Text(
+                                  'Type your password to proceed',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 36),
+
+                                // Password Input
+                                TextFormField(
+                                  controller: _controller,
+                                  obscureText: _obscureText,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: 'Enter password',
+                                    filled: true,
+                                    fillColor: Colors.white.withOpacity(0.6),
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline,
+                                      color: Colors.pinkAccent,
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.white.withOpacity(0.8),
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide: const BorderSide(
+                                        color: Colors.pinkAccent,
+                                        width: 2.5,
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 18,
+                                    ),
+                                    hintStyle: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey.shade500,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    suffixIcon:
+                                        _isLoading
+                                            ? Padding(
+                                              padding: const EdgeInsets.all(
+                                                14.0,
+                                              ),
+                                              child: SizedBox(
+                                                width: 16,
+                                                height: 16,
+                                                child: CircularProgressIndicator(
+                                                  strokeWidth: 2,
+                                                  valueColor:
+                                                      AlwaysStoppedAnimation<
+                                                        Color
+                                                      >(Colors.pinkAccent),
+                                                ),
+                                              ),
+                                            )
+                                            : IconButton(
+                                              icon: Icon(
+                                                _obscureText
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                color: Colors.grey.shade600,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _obscureText = !_obscureText;
+                                                });
+                                              },
+                                            ),
+                                  ),
+                                  onFieldSubmitted: (_) => _onSubmit(),
+                                ),
+                                const SizedBox(height: 48),
+
+                                // Submit Button
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 56,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.pinkAccent,
+                                      elevation: 8,
+                                      shadowColor: Colors.pinkAccent
+                                          .withOpacity(0.5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    onPressed: _isLoading ? null : _onSubmit,
+                                    child: const Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                // Links
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                      onPressed: _onCancel,
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.black54,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
                                         ),
                                       ),
-                                    )
-                                    : IconButton(
-                                      icon: Icon(
-                                        _obscureText
-                                            ? Icons.visibility
-                                            : Icons.visibility_off,
+                                      child: const Text(
+                                        'Back',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _obscureText = !_obscureText;
-                                        });
-                                      },
                                     ),
-                          ),
-                          onSubmitted: (_) => _onSubmit(),
-                        ),
-                        const SizedBox(height: 20),
-                        InkWell(onTap: _onCancel, child: const Text("Cancel")),
-                        const SizedBox(height: 10),
-                        InkWell(
-                          onTap: _onForgotPassword,
-                          child: const Text(
-                            'Forgot password?',
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
+                                    TextButton(
+                                      onPressed: _onForgotPassword,
+                                      style: TextButton.styleFrom(
+                                        foregroundColor: Colors.pinkAccent,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        'Forgot password?',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ],

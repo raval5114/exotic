@@ -33,15 +33,11 @@ class ExoticSliverAppBar extends StatelessWidget {
                     GestureDetector(
                       onTap: () => context.push('/wishlist'),
                       child: Container(
-                        height: 45,
-                        width: 45,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.favorite_border_outlined,
-                          color: Colors.black87,
+                        padding: const EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.favorite_border,
+                          color: Colors.grey,
+                          size: 32,
                         ),
                       ),
                     ),
@@ -64,15 +60,50 @@ class ExoticSliverAppBar extends StatelessWidget {
                       )
                       : TabBar(
                         controller: controller,
-                        isScrollable: true, // 👈 important if many tabs
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.black54,
-                        indicator: const UnderlineTabIndicator(
-                          borderSide: BorderSide(width: 3, color: Colors.black),
-                          insets: EdgeInsets.symmetric(horizontal: 16),
+                        isScrollable: true,
+                        physics: const BouncingScrollPhysics(),
+                        dividerColor: Colors.transparent,
+                        labelColor: Colors.white,
+                        unselectedLabelColor: Colors.black87,
+                        labelStyle: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.5,
                         ),
+                        unselectedLabelStyle: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        indicatorPadding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 6,
+                        ),
+                        indicator: BoxDecoration(
+                          color: Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blueAccent.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        splashBorderRadius: BorderRadius.circular(24),
                         tabs:
-                            tabs.map((e) => Tab(text: e.title ?? "")).toList(),
+                            tabs
+                                .map(
+                                  (e) => Tab(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                      ),
+                                      child: Text(e.title ?? ""),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
                       ),
             ),
           ),

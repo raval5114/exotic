@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-import 'package:exotic/data/providers/user_login_provider.dart';
 import 'package:exotic/utils/exception.dart';
-import 'package:exotic/utils/injection.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
@@ -123,5 +121,33 @@ class AuthService extends IAuthRepo {
     print("Generated OTP in service: $otp");
 
     return otp;
+  }
+
+  @override
+  Future<int> sendOtpSms(String mobileNo) async {
+    try {
+      final Uri url = Uri.parse("https://xotic.in/api/send_otp.php");
+      final request = http.MultipartRequest('POST', url)
+        ..fields['mobile'] = mobileNo;
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        if (decoded['status'] == 'success') {
+          return int.parse(decoded['otp'].toString());
+        } else {
+          throw Exception(decoded['message'] ?? 'Failed to send OTP');
+        }
+      } else {
+        throw Exception(
+          'Failed to send SMS OTP, status code: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      debugPrint("🔴 SMS OTP error: $e");
+      rethrow;
+    }
   }
 }

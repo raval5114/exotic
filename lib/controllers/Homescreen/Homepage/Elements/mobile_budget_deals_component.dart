@@ -32,8 +32,8 @@ class MobileBudgetDealsComponent extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 14,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 10,
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) {

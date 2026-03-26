@@ -19,7 +19,12 @@ class Pagecomponent extends StatelessWidget {
           if (index.isEven) {
             return RowPageComponent(rows: rows[index ~/ 2]);
           } else {
-            return Divider(thickness: 2.2, height: 24, color: Colors.black12);
+            return Container(
+              height: 8,
+              color: const Color(
+                0xFFF1F2F4,
+              ), // Flipkart style light-grey module separator
+            );
           }
         }),
       ),

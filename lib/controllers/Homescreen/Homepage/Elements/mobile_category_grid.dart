@@ -59,19 +59,27 @@ class _ScrollableCategoryItem extends StatelessWidget {
         Expanded(
           flex: 4,
           child: Container(
+            margin: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(14),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                )
+              ]
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(14),
               child: Image.memory(
                 base64ToBytes(item.img),
                 fit: BoxFit.cover,
                 height: 2,
                 errorBuilder:
                     (_, __, ___) =>
-                        const Icon(Icons.image_not_supported, size: 18),
+                        const Icon(Icons.image_not_supported, size: 18, color: Colors.grey),
               ),
             ),
           ),

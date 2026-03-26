@@ -29,8 +29,13 @@ class SigninFindingUserEvent extends AuthEvent {
 
 class SigninEvent extends AuthEvent {
   final String email;
+  final String mobileNo;
   final String password;
-  SigninEvent({required this.email, required this.password});
+  SigninEvent({
+    required this.email,
+    required this.password,
+    required this.mobileNo,
+  });
 }
 
 class AuthOTPSendingEvent extends AuthEvent {
@@ -46,7 +51,8 @@ class AuthOTPVerifyingEvent extends AuthEvent {
 
 class AuthOTPSentInternalEvent extends AuthEvent {
   final String email;
-  AuthOTPSentInternalEvent({required this.email});
+  final String mobileno;
+  AuthOTPSentInternalEvent({required this.email, required this.mobileno});
 }
 
 class AuthErrorEvent extends AuthEvent {
@@ -55,3 +61,9 @@ class AuthErrorEvent extends AuthEvent {
 }
 
 class AuthOTPVerifiedInternalEvent extends AuthEvent {}
+
+class AuthOTPSendingEmailEvent extends AuthEvent {
+  final String email;
+
+  AuthOTPSendingEmailEvent({required this.email});
+}

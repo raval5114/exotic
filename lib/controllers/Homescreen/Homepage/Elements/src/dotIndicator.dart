@@ -4,7 +4,7 @@ class DotsIndicator extends StatelessWidget {
   final int count;
   final int currentIndex;
 
-  const DotsIndicator({required this.count, required this.currentIndex});
+  const DotsIndicator({super.key, required this.count, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +14,12 @@ class DotsIndicator extends StatelessWidget {
         count,
         (index) => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 3),
-          width: currentIndex == index ? 10 : 6,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: currentIndex == index ? 40 : 16,
           height: 6,
           decoration: BoxDecoration(
-            color: currentIndex == index ? Colors.black : Colors.grey.shade400,
-            borderRadius: BorderRadius.circular(4),
+            color: currentIndex == index ? Colors.black : Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(6),
           ),
         ),
       ),
