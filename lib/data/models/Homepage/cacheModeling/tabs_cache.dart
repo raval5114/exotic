@@ -13,6 +13,6 @@ class TabsCache extends HiveObject {
 
   /// Optional helper: regenerate version from current tabs
   static String generateVersionKey(List<HomepagePageModel> tabs) {
-    return tabs.map((e) => e.createdAt).join('|');
+    return tabs.map((e) => '${e.createdAt}_${e.modifiedAt}').join('|');
   }
 }

@@ -7,11 +7,14 @@ class HomepagePageModel {
 
   final String createdAt;
 
+  final String modifiedAt;
+
   HomepagePageModel({
     required this.pageId,
     required this.title,
     required this.slug,
     required this.createdAt,
+    required this.modifiedAt,
   });
 
   factory HomepagePageModel.fromJson(Map<String, dynamic> e) {
@@ -20,6 +23,7 @@ class HomepagePageModel {
       title: e['title'],
       slug: e['slug'],
       createdAt: e['created_at'],
+      modifiedAt: e['modified_at'] ?? '',
     );
   }
 }

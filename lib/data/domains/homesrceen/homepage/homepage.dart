@@ -27,7 +27,7 @@ class HomePageRepo extends IHomePageRepo {
       );
 
       if (tab.isNotEmpty) {
-        tabVersion = tab['created_at'];
+        tabVersion = "${tab['created_at']}_${tab['modified_at']}";
       }
 
       /// If cache exists and version matches
@@ -101,11 +101,15 @@ class HomePageRepo extends IHomePageRepo {
             .map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e))
             .toList();
 
-    /// Generate version key from created_at
-    final apiVersion = apiTabs.map((e) => e['created_at']).join('|');
+    /// Generate version key from created_at and modified_at
+    final apiVersion = apiTabs
+        .map((e) => "${e['created_at']}_${e['modified_at']}")
+        .join('|');
 
     if (cachedTabs != null) {
-      final cacheVersion = cachedTabs.map((e) => e['created_at']).join('|');
+      final cacheVersion = cachedTabs
+          .map((e) => "${e['created_at']}_${e['modified_at']}")
+          .join('|');
 
       if (apiVersion == cacheVersion) {
         debugPrint("Returning Cached Tabs");
