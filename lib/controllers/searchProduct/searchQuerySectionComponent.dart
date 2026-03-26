@@ -19,13 +19,6 @@ class _SearchquerysectioncomponentState
   final TextEditingController controller = TextEditingController();
   final BoxController boxController = BoxController();
 
-  static const EdgeInsets _padding = EdgeInsets.symmetric(
-    horizontal: 8,
-    vertical: 6,
-  );
-
-  static const double _borderRadius = 30;
-
   @override
   void dispose() {
     controller.dispose();
@@ -36,101 +29,130 @@ class _SearchquerysectioncomponentState
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
 
-    return Container(
-      padding: _padding,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(_borderRadius),
-      ),
-      child: FieldSuggestion<Map<String, dynamic>>.network(
-        textController: controller,
-        boxController: boxController,
-        inputDecoration: InputDecoration(
-          hintText: 'Search product',
-          border: InputBorder.none,
-          isDense: true,
-          hintStyle: TextStyle(
-            fontFamily: 'Roboto',
-            fontSize: width * 0.035,
-            color: Colors.grey.shade700,
-          ),
+    return FieldSuggestion<Map<String, dynamic>>.network(
+      textController: controller,
+      boxController: boxController,
+      inputDecoration: InputDecoration(
+        hintText: 'Search for products, brands...',
+        hintStyle: TextStyle(
+          fontSize: width * 0.035,
+          color: Colors.grey.shade500,
+          fontWeight: FontWeight.w500,
         ),
-        future: (input) async {
-          if (input.isEmpty) return <Map<String, dynamic>>[];
+        border: InputBorder.none,
+        isDense: true,
+        contentPadding: const EdgeInsets.only(
+          top: 8,
+          bottom: 8,
+        ), // Centering text vertically
+        suffixIcon:
+            controller.text.isNotEmpty
+                ? IconButton(
+                  icon: const Icon(
+                    Icons.clear,
+                    color: Colors.black38,
+                    size: 18,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      controller.clear();
+                    });
+                    boxController.close?.call();
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                )
+                : null,
+      ),
+      future: (input) async {
+        if (input.isEmpty) return <Map<String, dynamic>>[];
 
-          context.read<SearchProductBloc>().add(
-            SearchProductSearchingEvent(query: input),
-          );
+        context.read<SearchProductBloc>().add(
+          SearchProductSearchingEvent(query: input),
+        );
 
-          final state = await context
-              .read<SearchProductBloc>()
-              .stream
-              .firstWhere(
-                (state) =>
-                    state is SearchProductQueryResultState ||
-                    state is SearchErrorState,
-              );
+        final state = await context.read<SearchProductBloc>().stream.firstWhere(
+          (state) =>
+              state is SearchProductQueryResultState ||
+              state is SearchErrorState,
+        );
 
-          if (state is SearchProductQueryResultState) {
-            return state.queryResult;
-          }
+        if (state is SearchProductQueryResultState) {
+          return state.queryResult;
+        }
 
-          return <Map<String, dynamic>>[];
-        },
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const SizedBox(
-              height: 50,
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            );
-          }
-
-          final products = snapshot.data!;
-
-          if (products.isEmpty) {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                "No products found",
-                style: TextStyle(color: Colors.grey),
+        return <Map<String, dynamic>>[];
+      },
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            child: const SizedBox(
+              height: 60,
+              child: Center(
+                child: SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Color(0xFFFF528A), // vibrant pink accent
+                  ),
+                ),
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return ListView.separated(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+        final products = snapshot.data!;
+
+        if (products.isEmpty) {
+          return Material(
+            elevation: 4,
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Icon(Icons.search_off, color: Colors.grey.shade400),
+                  const SizedBox(width: 8),
+                  Text(
+                    "No products found",
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        return Material(
+          elevation: 4,
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          clipBehavior: Clip.antiAlias,
+          child: ListView.separated(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
             itemCount: products.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder:
+                (_, __) => Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey.shade100,
+                ),
             itemBuilder: (context, index) {
               final product = products[index];
 
-              return ListTile(
-                dense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
-
-                /// 📝 Product name
-                title: Text(
-                  product['name'] ?? 'Unknown product',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-
-                trailing: const Icon(
-                  Icons.north_west,
-                  size: 16,
-                  color: Colors.grey,
-                ),
-
+              return InkWell(
                 onTap: () {
-                  // controller.text = product['name'];
                   boxController.close?.call();
+                  FocusManager.instance.primaryFocus?.unfocus();
                   context.read<FetchProductBloc>().add(
                     FetchingSingleProductEvent(productid: product['id']),
                   );
@@ -139,11 +161,89 @@ class _SearchquerysectioncomponentState
                     MaterialPageRoute(builder: (context) => ProductsShell()),
                   );
                 },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical:
+                        12, // Reduced padding to ensure column text fits perfectly without explicit bounding breaks
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child:
+                            product['image'] != null
+                                ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    product['image'],
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (_, __, ___) => const Icon(
+                                          Icons.inventory_2_outlined,
+                                          color: Colors.black38,
+                                          size: 20,
+                                        ),
+                                  ),
+                                )
+                                : const Icon(
+                                  Icons.search,
+                                  size: 20,
+                                  color: Colors.black45,
+                                ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              product['name'] ?? 'Unknown product',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            if (product['category'] != null ||
+                                product['price'] != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                product['category'] ?? "Product",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.grey.shade500,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.call_made,
+                        size: 16,
+                        color: Colors.grey.shade400,
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

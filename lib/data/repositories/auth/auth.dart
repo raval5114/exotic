@@ -16,6 +16,6 @@ abstract class IAuthRepo {
     required String password,
   });
   Future<int> sendOtpEmail(String email);
-
+  Future<int> sendOtpSms(String mobileNo);
   Future<void> signOut();
 }

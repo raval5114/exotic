@@ -1,5 +1,8 @@
 import 'package:exotic/view/auth/forgotPassword/SmsSendingScreen.dart';
+import 'package:exotic/view/auth/forgotPassword/email_sending_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:exotic/data/providers/user_login_provider.dart';
 
 class ForgetPasswordComponent extends StatefulWidget {
   const ForgetPasswordComponent({super.key});
@@ -25,7 +28,15 @@ class _ForgetPasswordComponentState extends State<ForgetPasswordComponent> {
         context,
         MaterialPageRoute(builder: (context) => SmsSendingScreen()),
       );
-    } else {}
+    } else {
+      final email = context.read<UserLoginProvider>().email;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmailSendingScreen(email: email),
+        ),
+      );
+    }
   }
 
   void onCancel() {

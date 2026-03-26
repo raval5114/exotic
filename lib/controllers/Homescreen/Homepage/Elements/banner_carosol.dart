@@ -105,86 +105,76 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
     }
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
           height: height,
-          child: Stack(
-            children: [
-              PageView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _controller,
-                itemCount: items.length,
-                onPageChanged: (index) {
-                  setState(() => _currentIndex = index);
-                },
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return GestureDetector(
-                    onTap: () => onTap(item),
-                    child: ClipRRect(
-                      child: Builder(
-                        builder: (context) {
-                          if (item is MobileBannerItems) {
-                            if (!item.imageBase64Url.startsWith('http')) {
-                              try {
-                                final bytes = base64ToBytes(
-                                  item.imageBase64Url,
-                                );
-                                return Image.memory(
-                                  bytes,
-                                  height: height,
-                                  width: double.infinity,
-                                  fit: BoxFit.fill,
-                                );
-                              } catch (e) {
-                                debugPrint("Error decoding base64 image: $e");
-                                return Container(
-                                  height: height,
-                                  width: double.infinity,
-                                  color: Colors.grey[200],
-                                  child: const Icon(Icons.broken_image),
-                                );
-                              }
-                            } else {
-                              return AppCachedImage(
-                                imageUrl: item.imageBase64Url,
-                                height: height,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                borderRadius: BorderRadius.circular(12),
-                              );
-                            }
-                          } else if (item is BannerItem) {
-                            String imageUrl = (api ?? "") + item.imageFile;
-                            return AppCachedImage(
-                              imageUrl: imageUrl,
+          child: PageView.builder(
+            physics: const BouncingScrollPhysics(),
+            controller: _controller,
+            itemCount: items.length,
+            onPageChanged: (index) {
+              setState(() => _currentIndex = index);
+            },
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return GestureDetector(
+                onTap: () => onTap(item),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Builder(
+                    builder: (context) {
+                      if (item is MobileBannerItems) {
+                        if (!item.imageBase64Url.startsWith('http')) {
+                          try {
+                            final bytes = base64ToBytes(item.imageBase64Url);
+                            return Image.memory(
+                              bytes,
                               height: height,
                               width: double.infinity,
-                              fit: BoxFit.cover,
-                              borderRadius: BorderRadius.circular(12),
+                              fit: BoxFit.fill,
+                            );
+                          } catch (e) {
+                            debugPrint("Error decoding base64 image: $e");
+                            return Container(
+                              height: height,
+                              width: double.infinity,
+                              color: Colors.grey[200],
+                              child: const Icon(Icons.broken_image),
                             );
                           }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
-              // Dots Indicator
-              if (items.length > 1)
-                Positioned(
-                  bottom: 10,
-                  left: 0,
-                  right: 0,
-                  child: DotsIndicator(
-                    count: items.length,
-                    currentIndex: _currentIndex,
+                        } else {
+                          return AppCachedImage(
+                            imageUrl: item.imageBase64Url,
+                            height: height,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            borderRadius: BorderRadius.circular(20),
+                          );
+                        }
+                      } else if (item is BannerItem) {
+                        String imageUrl = (api ?? "") + item.imageFile;
+                        return AppCachedImage(
+                          imageUrl: imageUrl,
+                          height: height,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          borderRadius: BorderRadius.circular(20),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
                   ),
                 ),
-            ],
+              );
+            },
           ),
         ),
+        if (items.length > 1) ...[
+          const SizedBox(height: 12),
+          DotsIndicator(count: items.length, currentIndex: _currentIndex),
+          const SizedBox(height: 4),
+        ],
       ],
     );
   }

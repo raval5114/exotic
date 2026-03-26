@@ -6,15 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SmssendingscreenComponent extends StatefulWidget {
-  const SmssendingscreenComponent({super.key});
+class EmailSendingController extends StatefulWidget {
+  final String email;
+  const EmailSendingController({super.key, required this.email});
 
   @override
-  State<SmssendingscreenComponent> createState() =>
-      _SmssendingscreenComponentState();
+  State<EmailSendingController> createState() => _EmailSendingControllerState();
 }
 
-class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
+class _EmailSendingControllerState extends State<EmailSendingController>
     with TickerProviderStateMixin {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
@@ -32,6 +32,9 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
   @override
   void initState() {
     super.initState();
+
+    context.read<AuthBloc>().add(AuthOTPSendingEmailEvent(email: widget.email));
+
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -68,9 +71,11 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
     _shakeController.forward();
   }
 
-  String maskMobile(String mobile) {
-    if (mobile.length < 6) return mobile;
-    return '${mobile.substring(0, 2)}${'*' * (mobile.length - 4)}${mobile.substring(mobile.length - 2)}';
+  String maskEmail(String email) {
+    if (!email.contains('@')) return email;
+    var parts = email.split('@');
+    if (parts[0].length <= 2) return '${parts[0]}@${parts[1]}';
+    return '${parts[0].substring(0, 2)}${'*' * (parts[0].length - 2)}@${parts[1]}';
   }
 
   void _onCancel() {
@@ -90,15 +95,13 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
     );
   }
 
-  void onOtpSend(String email, String mobileno) {
+  void onOtpSend(String mobileno) {
     setState(() {
       _otpController.clear();
       _isError = false;
       _isSuccess = false;
     });
-    context.read<AuthBloc>().add(
-      AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
-    );
+    context.read<AuthBloc>().add(AuthOTPSendingEmailEvent(email: widget.email));
   }
 
   @override
@@ -131,12 +134,17 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
               if (!mounted) return;
               context.read<UserLoginProvider>().clearOtp();
               setEmailAndPasswordPrefs(
-                context.read<UserLoginProvider>().email,
+                widget.email,
                 context.read<UserLoginProvider>().password,
               );
               context.read<UserLoginProvider>().clearCredentials();
               context.go('/home');
             });
+          } else if (state is AuthWrongOTPState) {
+            _triggerErrorAnimation();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Invalid OTP. Please try again.")),
+            );
           } else if (state is AuthErrorState) {
             _triggerErrorAnimation();
             ScaffoldMessenger.of(
@@ -148,7 +156,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
           }
         },
         builder: (context, state) {
-          final email = context.read<UserLoginProvider>().email;
+          final email = widget.email;
           final mobileno = context.read<UserLoginProvider>().mobileno;
           return Stack(
             children: [
@@ -216,7 +224,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
                           const SizedBox(height: 12),
 
                           const Text(
-                            'Enter 4-digits code we sent you\non your phone number',
+                            'Enter 4-digits code we sent you\ninto your email address',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 15,
@@ -228,9 +236,9 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
                           const SizedBox(height: 16),
 
                           Text(
-                            mobileno.isNotEmpty
-                                ? maskMobile(mobileno)
-                                : '**********',
+                            email.isNotEmpty
+                                ? maskEmail(email)
+                                : '*******@****.***',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w800,
@@ -424,7 +432,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              onPressed: () => onOtpSend(email, mobileno),
+                              onPressed: () => onOtpSend(mobileno),
                               child: const Text(
                                 'Send Again',
                                 style: TextStyle(

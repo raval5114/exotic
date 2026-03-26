@@ -19,7 +19,7 @@ class MobileCharmSliderWidget extends StatelessWidget {
     final config = element.config;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
@@ -54,10 +54,10 @@ class MobileCharmSliderWidget extends StatelessWidget {
           SizedBox(
             height: 310,
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               scrollDirection: Axis.horizontal,
               itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 18),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 final item = element.items[index];
 

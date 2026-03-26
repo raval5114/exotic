@@ -73,7 +73,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthOTPSentInternalEvent>((event, emit) async {
       emit(AuthLoadingState());
       try {
-        int otp = await auth.sendOtpEmail(event.email);
+        //int otp = await auth.sendOtpEmail(event.email);
+        int otp = await auth.sendOtpSms(event.mobileno);
         // getit<UserLoginProvider>().loadOtp();
         debugPrint("OtpSended");
         emit(AuthOTPSentState(otp: otp));
@@ -81,6 +82,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _handleAuthException(e, emit);
       }
     });
+
+    on<AuthOTPSendingEmailEvent>((event, emit) async {
+      emit(AuthLoadingState());
+      try {
+        int otp = await auth.sendOtpEmail(event.email);
+        await getit<UserLoginProvider>().setOtp(otp);
+        debugPrint("OtpSended");
+        emit(AuthOTPSentState(otp: otp));
+      } catch (e) {
+        _handleAuthException(e, emit);
+      }
+    });
+
     on<AuthOTPVerifyingEvent>((event, emit) async {
       emit(AuthLoadingState());
 
@@ -89,7 +103,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Optional: validate OTP input length
         if (event.smsCode < 1000 || event.smsCode > 9999) {
-          throw Exception("OTP must be 4 digits");
+          emit(AuthErrorState(message: "OTP must be 4 digits"));
+          return;
         }
 
         final isValid = provider.verifyOtp(event.smsCode);
@@ -97,10 +112,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         if (isValid) {
           debugPrint("OTP Verified");
           emit(AuthOTPVerifiedState());
-          provider.clearOtp(); // Clear OTP after successful verification
+          await provider.clearOtp(); // Clear OTP after successful verification
         } else {
           debugPrint("Invalid OTP");
-          throw Exception("Invalid OTP");
+          emit(AuthWrongOTPState());
         }
       } catch (e) {
         _handleAuthException(e, emit);

@@ -26,7 +26,7 @@ class MobileSuggestionProducts extends StatelessWidget {
     if (products.isEmpty) return const SizedBox();
 
     return Padding(
-      padding: EdgeInsetsGeometry.only(top: 10),
+      padding: const EdgeInsets.only(top: 8, bottom: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,9 +75,10 @@ class MobileSuggestionProducts extends StatelessWidget {
             height: 220,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               itemCount: products.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 14),
+              separatorBuilder: (_, __) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
                 return MobileSuggestionCard(
                   product: products[index],
