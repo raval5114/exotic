@@ -27,6 +27,15 @@ final class SearchProductQueryResultState extends SearchProductState {
   List<Object?> get props => [queryResult];
 }
 
+final class SearchProductSearchedDataState extends SearchProductState {
+  final Map<String, dynamic> searchedProductData;
+
+  const SearchProductSearchedDataState({required this.searchedProductData});
+
+  @override
+  List<Object?> get props => [searchedProductData];
+}
+
 /// Metadata (recent / popular / discover)
 final class SearchProductMetaDataState extends SearchProductState {
   final List<Map<String, dynamic>> recentSearchData;

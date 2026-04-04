@@ -24,3 +24,9 @@ final class SearchProductSearchingEvent extends SearchProductEvent {
 
 /// Reset state without fetching
 final class SearchProductClearEvent extends SearchProductEvent {}
+
+final class SearchedProductDataCallingEvent extends SearchProductEvent {
+  final String url;
+
+  SearchedProductDataCallingEvent({required this.url});
+}

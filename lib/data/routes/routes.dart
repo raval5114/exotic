@@ -1,4 +1,3 @@
-import 'package:exotic/Test/AuthTesting.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/Test/SearchProduct/search_bar_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
@@ -16,7 +15,7 @@ import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
 final goRoutes = GoRouter(
-  initialLocation: '/test',
+  initialLocation: '/',
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes

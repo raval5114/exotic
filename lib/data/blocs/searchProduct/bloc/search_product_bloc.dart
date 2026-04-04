@@ -47,7 +47,20 @@ class SearchProductBloc extends Bloc<SearchProductEvent, SearchProductState> {
         emit(SearchErrorState(errMsg: e.toString()));
       }
     });
-
+    on<SearchedProductDataCallingEvent>((event, emit) async {
+      emit(SearchProductLoadingState());
+      try {
+        final searchedProductData = await getit<SearchproductRepo>()
+            .fetchSearchedProducts(event.url);
+        emit(
+          SearchProductSearchedDataState(
+            searchedProductData: searchedProductData,
+          ),
+        );
+      } catch (e) {
+        emit(SearchErrorState(errMsg: e.toString()));
+      }
+    });
     on<SearchProductClearEvent>((event, emit) {
       emit(SearchProductInitial());
     });
