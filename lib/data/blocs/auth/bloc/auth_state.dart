@@ -58,3 +58,14 @@ final class AuthOTPTimeoutState extends AuthState {
 final class AuthOTPVerifiedState extends AuthState {}
 
 final class AuthWrongOTPState extends AuthState {}
+
+/// ===============================
+/// USER UPDATE FLOW
+/// ===============================
+
+final class AuthUpdateUserLoadingState extends AuthState {}
+
+final class AuthUpdateUserSuccessState extends AuthState {
+  final bool success;
+  AuthUpdateUserSuccessState({required this.success});
+}

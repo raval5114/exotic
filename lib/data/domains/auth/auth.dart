@@ -150,4 +150,51 @@ class AuthService extends IAuthRepo {
       rethrow;
     }
   }
+
+  @override
+  Future<bool> updateUser({
+    required String cId,
+    required String firstName,
+    required String lastName,
+    required String email,
+    required String phone,
+    File? profilePhoto,
+  }) async {
+    try {
+      final Uri url = Uri.parse(
+        "https://xotic.in/api/customers/customer_update.php",
+      );
+
+      final request =
+          http.MultipartRequest('POST', url)
+            ..fields['c_id'] = cId
+            ..fields['c_firstname'] = firstName
+            ..fields['c_lastname'] = lastName
+            ..fields['c_email'] = email
+            ..fields['c_phone'] = phone;
+
+      if (profilePhoto != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'c_photo',
+            profilePhoto.path,
+            contentType: MediaType('image', 'jpeg'),
+          ),
+        );
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        return (decoded['status'] == true || decoded['status'] == 'success');
+      } else {
+        return false;
+      }
+    } catch (e) {
+      debugPrint("🔴 Update User error: $e");
+      return false;
+    }
+  }
 }

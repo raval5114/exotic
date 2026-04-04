@@ -21,3 +21,6 @@ final class SearchProductSearchingEvent extends SearchProductEvent {
   @override
   List<Object?> get props => [query];
 }
+
+/// Reset state without fetching
+final class SearchProductClearEvent extends SearchProductEvent {}

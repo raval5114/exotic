@@ -1,5 +1,10 @@
 import 'package:exotic/controllers/Homescreen/EditProfile/editProfile.dart';
+import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
+import 'package:exotic/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreenOptions extends StatelessWidget {
   const ProfileScreenOptions({super.key});
@@ -26,59 +31,102 @@ class ProfileScreenOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildSectionTitle("Notification"),
-        buildOptionItem(
-          Icons.notifications_none,
-          "Tap for latest updates and offers",
-          () {},
-        ),
+    final user = context.watch<UserProvider>().user;
 
-        const SizedBox(height: 2),
-        buildSectionTitle("Account Settings"),
-        buildOptionItem(Icons.person_outline, "Edit Profile", () {
-          Navigator.push(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthUpdateUserSuccessState && state.success) {
+          ScaffoldMessenger.of(
             context,
-            MaterialPageRoute(builder: (context) => EditProfile()),
-          );
-        }),
-        buildOptionItem(
-          Icons.credit_card_outlined,
-          "Saved Credit / Debit & Gift Cards",
-          () {},
-        ),
-        buildOptionItem(Icons.location_on_outlined, "Saved Addresses", () {}),
-        buildOptionItem(Icons.language_outlined, "Select Language", () {}),
-        buildOptionItem(
-          Icons.notifications_active_outlined,
-          "Notification Settings",
-          () {},
-        ),
-        buildOptionItem(Icons.lock_outline, "Privacy Center", () {}),
+          ).showSnackBar(const SnackBar(content: Text("Profile updated!")));
+        }
+      },
+      child: Column(
+        children: [
+          // Profile Header Section
+          // Container(
+          //   color: Colors.white,
+          //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          //   child: Row(
+          //     children: [
+          //       CircleAvatar(
+          //         radius: 30,
+          //         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
+          //         child: Icon(Icons.person, size: 35, color: Theme.of(context).primaryColor),
+          //       ),
+          //       const Gap(16),
+          //       Expanded(
+          //         child: Column(
+          //           crossAxisAlignment: CrossAxisAlignment.start,
+          //           children: [
+          //             Text(
+          //               user != null ? "${user.firstName} ${user.lastName}" : "Welcome Guest",
+          //               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          //             ),
+          //             const Gap(4),
+          //             Text(
+          //               user?.email ?? "Sign in to see your profile",
+          //               style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // const SizedBox(height: 2),
+          buildSectionTitle("Notification"),
+          buildOptionItem(
+            Icons.notifications_none,
+            "Tap for latest updates and offers",
+            () {},
+          ),
 
-        const SizedBox(height: 2),
-        buildSectionTitle("My Activity"),
-        buildOptionItem(Icons.rate_review_outlined, "Reviews", () {}),
-        buildOptionItem(
-          Icons.question_answer_outlined,
-          "Questions & Answers",
-          () {},
-        ),
+          const SizedBox(height: 2),
+          buildSectionTitle("Account Settings"),
+          buildOptionItem(Icons.person_outline, "Edit Profile", () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => EditProfile()),
+            );
+          }),
+          buildOptionItem(
+            Icons.credit_card_outlined,
+            "Saved Credit / Debit & Gift Cards",
+            () {},
+          ),
+          buildOptionItem(Icons.location_on_outlined, "Saved Addresses", () {}),
+          buildOptionItem(Icons.language_outlined, "Select Language", () {}),
+          buildOptionItem(
+            Icons.notifications_active_outlined,
+            "Notification Settings",
+            () {},
+          ),
+          buildOptionItem(Icons.lock_outline, "Privacy Center", () {}),
 
-        const SizedBox(height: 2),
-        buildSectionTitle("Earn with Xotic"),
-        buildOptionItem(Icons.storefront_outlined, "Sell on Xotic", () {}),
+          const SizedBox(height: 2),
+          buildSectionTitle("My Activity"),
+          buildOptionItem(Icons.rate_review_outlined, "Reviews", () {}),
+          buildOptionItem(
+            Icons.question_answer_outlined,
+            "Questions & Answers",
+            () {},
+          ),
 
-        const SizedBox(height: 2),
-        buildSectionTitle("Feedback & Information"),
-        buildOptionItem(
-          Icons.description_outlined,
-          "Terms, Policies and Licenses",
-          () {},
-        ),
-        buildOptionItem(Icons.help_outline, "Browse FAQs", () {}),
-      ],
+          const SizedBox(height: 2),
+          buildSectionTitle("Earn with Xotic"),
+          buildOptionItem(Icons.storefront_outlined, "Sell on Xotic", () {}),
+
+          const SizedBox(height: 2),
+          buildSectionTitle("Feedback & Information"),
+          buildOptionItem(
+            Icons.description_outlined,
+            "Terms, Policies and Licenses",
+            () {},
+          ),
+          buildOptionItem(Icons.help_outline, "Browse FAQs", () {}),
+        ],
+      ),
     );
   }
 }

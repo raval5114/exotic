@@ -25,60 +25,62 @@ class MobileSuggestionProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox();
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 4),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87,
-                  fontFamily:
-                      'Roboto', // Falling back to system Roboto or assets if available
-                ),
-              ),
-              if (config.viewAllLink.isNotEmpty)
-                InkWell(
-                  onTap: () {
-                    // TODO: Handle view all link
-                  },
-                  child: const Row(
-                    children: [
-                      Text(
-                        "View All",
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFFE94A75), // Brand Color Pink/Red
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Roboto',
-                        ),
-                      ),
-                      SizedBox(width: 4),
-                      Icon(
-                        Icons.arrow_forward_rounded,
-                        size: 14,
-                        color: Color(0xFFE94A75),
-                      ),
-                    ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.black,
+                      fontFamily: 'Roboto',
+                      letterSpacing: -0.2,
+                    ),
                   ),
                 ),
-            ],
+                if (config.viewAllLink.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Handle view all link
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: const BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.arrow_forward_rounded,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           SizedBox(
-            height: 220,
+            height: 310, // Increased height for more details
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: products.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 14),
               itemBuilder: (context, index) {
                 return MobileSuggestionCard(
                   product: products[index],
@@ -114,21 +116,20 @@ class MobileSuggestionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 160,
-        margin: const EdgeInsets.only(bottom: 0), // reduce space below card
+        width: 170,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.grey.withOpacity(0.12)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min, // prevents extra vertical space
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image Stack
@@ -139,39 +140,81 @@ class MobileSuggestionCard extends StatelessWidget {
                     top: Radius.circular(16),
                   ),
                   child: SizedBox(
-                    height: 140, // slightly reduced height
-                    width: 160,
-                    child: Image.network(
-                      product.imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder:
-                          (context, url, error) => const Center(
-                            child: Icon(
-                              Icons.broken_image_rounded,
-                              color: Colors.grey,
+                    height: 170,
+                    width: 170,
+                    child: Hero(
+                      tag: "product_img_${product.productId}",
+                      child: Image.network(
+                        product.imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, url, error) => const Center(
+                              child: Icon(
+                                Icons.broken_image_rounded,
+                                color: Colors.grey,
+                                size: 32,
+                              ),
                             ),
-                          ),
+                      ),
                     ),
                   ),
                 ),
+                // Rating Badge
+                if (double.tryParse(product.rating.average) != null && double.parse(product.rating.average) > 0)
+                  Positioned(
+                    bottom: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.9),
+                        borderRadius: BorderRadius.circular(4),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                          )
+                        ]
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            product.rating.average,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(Icons.star_rounded, size: 12, color: Colors.green),
+                        ],
+                      ),
+                    ),
+                  ),
+                // Discount Badge
                 if (product.price.discountPercentage > 0)
                   Positioned(
                     top: 8,
                     left: 8,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 3,
+                        horizontal: 8,
+                        vertical: 4,
                       ),
                       decoration: BoxDecoration(
                         color: const Color(0xFFE94A75),
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         "${product.price.discountPercentage}% OFF",
                         style: const TextStyle(
                           fontSize: 10,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w800,
                           color: Colors.white,
                           fontFamily: 'Roboto',
                         ),
@@ -183,33 +226,31 @@ class MobileSuggestionCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(8), // balanced padding
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                     product.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black87,
                       height: 1.2,
                       fontFamily: 'Roboto',
                     ),
                   ),
-                  const SizedBox(height: 4), // reduced spacing
+                  const SizedBox(height: 8),
 
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        "₹${product.price.sellingPrice}",
+                        "₹${product.price.sellingPrice.toInt()}",
                         style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
                           color: Colors.black,
                           fontFamily: 'Roboto',
                         ),
@@ -219,14 +260,23 @@ class MobileSuggestionCard extends StatelessWidget {
                         Text(
                           "₹${product.price.mrpPrice}",
                           style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[500],
+                            fontSize: 12,
+                            color: Colors.grey[400],
                             decoration: TextDecoration.lineThrough,
-                            decorationColor: Colors.grey[500],
                             fontFamily: 'Roboto',
                           ),
                         ),
                     ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Buy at ₹${(product.price.sellingPrice * 0.95).toInt()}", // Simulation of extra discount labell
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF2E7D32),
+                      fontFamily: 'Roboto',
+                    ),
                   ),
                 ],
               ),

@@ -4,67 +4,51 @@ import 'package:exotic/data/repositories/searchProductPage/searchProductPage.dar
 import 'package:exotic/utils/searchProduct.dart';
 
 class SearchproductRepo extends ISearchProductRepo {
-  static const String _baseUrl = 'https://xotic.in/api/search_products.php';
-
   @override
   Future<List<Map<String, dynamic>>> fetchRecentData() async {
-    try {
-      await Future.delayed(const Duration(seconds: 3));
-      return recentSearchData;
-    } catch (e) {
-      rethrow;
-    }
+    return recentSearchData;
   }
 
   @override
   Future<List<Map<String, dynamic>>> fetchPopularData() async {
-    try {
-      await Future.delayed(const Duration(seconds: 3));
-      return popularProducts;
-    } catch (e) {
-      rethrow;
-    }
+    return popularProducts;
   }
 
   @override
   Future<List<String>> fetchDiscoverData() async {
-    try {
-      await Future.delayed(const Duration(seconds: 3));
-      return discoverStrings;
-    } catch (e) {
-      rethrow;
-    }
+    return discoverStrings;
   }
 
   @override
-  Future<List<Map<String, dynamic>>> searchProduct(String query) async {
+  Future<Map<String, dynamic>> searchProduct(String query) async {
     try {
-      final uri = Uri.parse('$_baseUrl?q=$query');
+      final response = await http.get(
+        Uri.parse("https://xotic.in/api/search_products.php?q=$query"),
+      );
 
-      final response = await http.get(uri);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
 
-      if (response.statusCode != 200) {
-        throw Exception('Search API failed with status ${response.statusCode}');
+        // Prepend base URL to images if they are just filenames
+        if (data['success'] == true &&
+            data['results'] != null &&
+            data['results']['products'] != null) {
+          final List products = data['results']['products'];
+          for (var p in products) {
+            if (p['image'] != null &&
+                p['image'].toString().isNotEmpty &&
+                !p['image'].toString().startsWith('http')) {
+              p['image'] = "https://xotic.in/UploadImages/Variant/${p['image']}";
+            }
+          }
+        }
+
+        return data;
+      } else {
+        throw Exception("Failed to load search results: ${response.statusCode}");
       }
-
-      final Map<String, dynamic> decoded = jsonDecode(response.body);
-
-      if (decoded['success'] != true) {
-        print("Working");
-        throw Exception('Search API returned success=false');
-      }
-
-      final results = decoded['results'];
-      if (results == null || results['products'] == null) {
-        return [];
-      }
-
-      final List products = results['products'];
-
-      return products
-          .map<Map<String, dynamic>>((item) => Map<String, dynamic>.from(item))
-          .toList();
     } catch (e) {
+      print("Search Error: $e");
       rethrow;
     }
   }

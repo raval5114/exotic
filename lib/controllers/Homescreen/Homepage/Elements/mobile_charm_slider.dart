@@ -19,55 +19,59 @@ class MobileCharmSliderWidget extends StatelessWidget {
     final config = element.config;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
+        color: _hexToColor(config.bgColor),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// 🔥 Section Title
-          Row(
-            children: [
-              if (config.sectionIcon.isNotEmpty)
-                Image.network(config.sectionIcon, height: 26, width: 26),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  "${config.sectionTitle} ${config.charm}",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: _hexToColor(config.sectionTitleColor),
-                    letterSpacing: 0.5,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              children: [
+                if (config.sectionIcon.isNotEmpty)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      config.sectionIcon,
+                      height: 30,
+                      width: 30,
+                    ),
+                  ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    "${config.sectionTitle} ${config.charm}",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: _hexToColor(config.sectionTitleColor),
+                      letterSpacing: -0.2,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
-          const SizedBox(height: 18),
+          const SizedBox(height: 0),
 
           /// 💖 Cards Slider
           SizedBox(
-            height: 310,
+            height: 280,
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
               itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 10),
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final item = element.items[index];
 
-                return CharmCard(
-                  item: item,
-                  borderColor: _hexToColor(config.borderColor),
-                  stackedColor: _hexToColor(config.stackedBgColor),
-                  textColor: _hexToColor(config.cardTextColor),
-                  backgroud_color: _hexToColor(config.bgColor),
-                );
+                return CharmCard(item: item, config: config);
               },
             ),
           ),

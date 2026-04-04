@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:exotic/utils/cachedImage.dart';
 
 class CartTile extends StatelessWidget {
   final String productName;
@@ -19,6 +20,7 @@ class CartTile extends StatelessWidget {
   final int quantity;
   final VoidCallback onAdd;
   final VoidCallback onMinus;
+  final bool isHighlighted;
 
   const CartTile({
     super.key,
@@ -39,7 +41,9 @@ class CartTile extends StatelessWidget {
     required this.quantity,
     required this.onAdd,
     required this.onMinus,
+    this.isHighlighted = false,
   });
+
   Widget _actionButton({
     required IconData icon,
     required String label,
@@ -116,10 +120,9 @@ class CartTile extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(
-                        text:
-                            remaining > 0
-                                ? "Add $remaining more item${remaining > 1 ? 's' : ''} to get "
-                                : "Offer unlocked! You've earned ",
+                        text: remaining > 0
+                            ? "Add $remaining more item${remaining > 1 ? 's' : ''} to get "
+                            : "Offer unlocked! You've earned ",
                       ),
                       TextSpan(
                         text: "Extra ₹${priceForOff.toInt()} off",
@@ -163,8 +166,15 @@ class CartTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedDeliveryDate = DateFormat('MMM d, EEE').format(deliveryBy);
 
-    return Card(
+    final card = Card(
       margin: const EdgeInsets.all(4),
+      elevation: isHighlighted ? 4 : 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: isHighlighted
+            ? const BorderSide(color: Color(0xFFFF528A), width: 1.5)
+            : BorderSide.none,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -181,7 +191,7 @@ class CartTile extends StatelessWidget {
                       height: 80,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(4),
-                        child: Image.network(image),
+                        child: AppCachedImage(imageUrl: image),
                       ),
                     ),
                   ],
@@ -269,23 +279,17 @@ class CartTile extends StatelessWidget {
                 _actionButton(
                   icon: Icons.delete_outline,
                   label: "Remove",
-                  onPressed: () {
-                    onRemove();
-                  },
+                  onPressed: onRemove,
                 ),
                 _actionButton(
                   icon: Icons.bookmark_border,
                   label: "Save for later",
-                  onPressed: () {
-                    saveForLater();
-                  },
+                  onPressed: saveForLater,
                 ),
                 _actionButton(
                   icon: Icons.shopping_cart_checkout_outlined,
                   label: "Buy this now",
-                  onPressed: () {
-                    buyThisNow();
-                  },
+                  onPressed: buyThisNow,
                 ),
               ],
             ),
@@ -293,5 +297,22 @@ class CartTile extends StatelessWidget {
         ],
       ),
     );
+
+    if (isHighlighted) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFF528A).withOpacity(0.15),
+              blurRadius: 10,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: card,
+      );
+    }
+    return card;
   }
 }

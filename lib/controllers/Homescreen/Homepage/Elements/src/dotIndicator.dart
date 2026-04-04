@@ -4,7 +4,11 @@ class DotsIndicator extends StatelessWidget {
   final int count;
   final int currentIndex;
 
-  const DotsIndicator({super.key, required this.count, required this.currentIndex});
+  const DotsIndicator({
+    super.key,
+    required this.count,
+    required this.currentIndex,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +22,15 @@ class DotsIndicator extends StatelessWidget {
           width: currentIndex == index ? 40 : 16,
           height: 6,
           decoration: BoxDecoration(
-            color: currentIndex == index ? Colors.black : Colors.grey.shade300,
+            color: currentIndex == index ? Colors.black87 : Colors.black12,
             borderRadius: BorderRadius.circular(6),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 2,
+                spreadRadius: 0.5,
+              ),
+            ],
           ),
         ),
       ),

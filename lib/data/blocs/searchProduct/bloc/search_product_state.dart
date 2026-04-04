@@ -19,7 +19,7 @@ final class SearchProductLoadingState extends SearchProductState {
 
 /// Search query result
 final class SearchProductQueryResultState extends SearchProductState {
-  final List<Map<String, dynamic>> queryResult;
+  final Map<String, dynamic> queryResult;
 
   const SearchProductQueryResultState({required this.queryResult});
 

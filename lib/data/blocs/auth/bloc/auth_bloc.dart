@@ -121,5 +121,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         _handleAuthException(e, emit);
       }
     });
+
+    on<AuthUpdateUserEvent>((event, emit) async {
+      emit(AuthUpdateUserLoadingState());
+      try {
+        bool success = await auth.updateUser(
+          cId: event.cId,
+          firstName: event.firstName,
+          lastName: event.lastName,
+          email: event.email,
+          phone: event.phone,
+          profilePhoto: event.profilePhoto,
+        );
+        emit(AuthUpdateUserSuccessState(success: success));
+      } catch (e) {
+        _handleAuthException(e, emit);
+      }
+    });
   }
 }

@@ -24,8 +24,12 @@ class _CategoriesGridState extends State<CategoriesGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: BlocBuilder<HomepageBloc, HomepageState>(
         buildWhen:
             (previous, current) =>
@@ -41,26 +45,26 @@ class _CategoriesGridState extends State<CategoriesGrid> {
               itemCount: 10,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 4,
-                childAspectRatio: 0.7,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.75,
               ),
               itemBuilder: (context, index) {
                 return Shimmer.fromColors(
-                  baseColor: Colors.grey.shade300,
-                  highlightColor: Colors.grey.shade100,
+                  baseColor: Colors.grey.shade200,
+                  highlightColor: Colors.white,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 64,
-                        height: 64,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 10),
                       Container(width: 40, height: 10, color: Colors.white),
                     ],
                   ),
@@ -70,7 +74,6 @@ class _CategoriesGridState extends State<CategoriesGrid> {
           }
 
           if (state is HomePageCategoriesFetchedState) {
-            print("Yes its working");
             final categories = state.categories;
 
             if (categories.isEmpty) {
@@ -80,48 +83,54 @@ class _CategoriesGridState extends State<CategoriesGrid> {
             return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 10,
+              itemCount: categories.length > 10 ? 10 : categories.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 5,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 4,
-                childAspectRatio: 0.7,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 12,
+                childAspectRatio: 0.75,
               ),
               itemBuilder: (context, index) {
                 final category = categories[index];
-                debugPrint("${category.url}");
 
                 return Column(
                   children: [
                     Container(
-                      width: 64,
-                      height: 64,
+                      width: 60,
+                      height: 60,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
+                        color: const Color(0xFFF9F9F9),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          )
+                        ]
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(14),
-                        child: Image.asset(
-                          "${category.url}",
+                        borderRadius: BorderRadius.circular(16),
+                        child: category.url.isNotEmpty? Image.asset(
+                          category.url,
                           fit: BoxFit.cover,
-                        ),
+                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.category_rounded, color: Colors.grey),
+                        ) : const Icon(Icons.category_rounded, color: Colors.grey),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                      child: Text(
-                        category.name,
-                        style: const TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
+                    const SizedBox(height: 10),
+                    Text(
+                      category.name,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                        color: Colors.black87,
+                        letterSpacing: -0.1,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 );

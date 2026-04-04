@@ -9,8 +9,10 @@ class MobileOfferStripWidget extends StatelessWidget {
 
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
-    hex = hex.replaceAll("#", "");
-    if (hex.length == 6) hex = "FF$hex";
+    hex = hex.replaceAll('#', '');
+    if (hex.length == 6) {
+      hex = 'FF$hex'; // default opacity
+    }
     return Color(int.parse(hex, radix: 16));
   }
 
@@ -18,35 +20,34 @@ class MobileOfferStripWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
         color: _hexToColor(element.config.bgColor),
+        borderRadius: BorderRadius.circular(16),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Section Title (optional)
           if (element.config.title.isNotEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 0),
               child: Text(
                 element.config.title,
                 style: const TextStyle(
                   fontFamily: 'Roboto',
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black,
+                  letterSpacing: -0.2,
                 ),
               ),
             ),
 
-          const SizedBox(height: 14),
-
           /// Horizontal Cards
           SizedBox(
-            height: 180,
+            height: 170, // Increased height for better fit
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
               scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
               itemCount: element.items.length,
               separatorBuilder: (_, __) => const SizedBox(width: 14),
               itemBuilder: (context, index) {

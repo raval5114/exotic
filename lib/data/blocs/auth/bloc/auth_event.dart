@@ -67,3 +67,21 @@ class AuthOTPSendingEmailEvent extends AuthEvent {
 
   AuthOTPSendingEmailEvent({required this.email});
 }
+
+class AuthUpdateUserEvent extends AuthEvent {
+  final String cId;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phone;
+  final File? profilePhoto;
+
+  AuthUpdateUserEvent({
+    required this.cId,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phone,
+    this.profilePhoto,
+  });
+}

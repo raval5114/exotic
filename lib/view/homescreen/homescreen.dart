@@ -10,6 +10,8 @@ class Homescreen extends StatelessWidget {
   const Homescreen({super.key, required this.child, required this.location});
 
   void _onItemTapped(BuildContext context, int index) {
+    if (_getIndex() == index) return;
+
     switch (index) {
       case 0:
         context.go('/home');
@@ -37,11 +39,78 @@ class Homescreen extends StatelessWidget {
     required String filledPath,
     required String outlinedPath,
     required bool isActive,
+    required BuildContext context,
   }) {
-    return SvgPicture.asset(
-      isActive ? filledPath : outlinedPath,
-      width: 24,
-      height: 24,
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      transitionBuilder: (child, animation) {
+        return ScaleTransition(
+          scale: Tween<double>(begin: 0.85, end: 1.0).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+          ),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      child: SvgPicture.asset(
+        isActive ? filledPath : outlinedPath,
+        key: ValueKey<bool>(isActive),
+        width: 24,
+        height: 24,
+        colorFilter: ColorFilter.mode(
+          isActive
+              ? Theme.of(context).colorScheme.primary
+              : Colors.grey.shade500,
+          BlendMode.srcIn,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required BuildContext context,
+    required String filledPath,
+    required String outlinedPath,
+    required String label,
+    required int index,
+    required int currentIndex,
+  }) {
+    final isActive = currentIndex == index;
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _onItemTapped(context, index),
+        child: Container(
+          color: Colors.transparent, // Ensures the whole area is clickable
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              _navIcon(
+                filledPath: filledPath,
+                outlinedPath: outlinedPath,
+                isActive: isActive,
+                context: context,
+              ),
+              const SizedBox(height: 6),
+              AnimatedDefaultTextStyle(
+                duration: const Duration(milliseconds: 200),
+                style: TextStyle(
+                  fontSize: isActive ? 12 : 11,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  color:
+                      isActive
+                          ? theme.colorScheme.primary
+                          : Colors.grey.shade500,
+                ),
+                child: Text(label),
+              ),
+              const SizedBox(height: 12),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -51,47 +120,87 @@ class Homescreen extends StatelessWidget {
 
     return Scaffold(
       body: child,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (index) => _onItemTapped(context, index),
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: _navIcon(
-              filledPath: 'assets/icons/navbar_home_filled.svg',
-              outlinedPath: 'assets/icons/navbar_home.svg',
-              isActive: currentIndex == 0,
+      bottomNavigationBar: LayoutBuilder(
+        builder: (context, constraints) {
+          final tabWidth = constraints.maxWidth / 4; // 4 nav items
+          const indicatorWidth = 36.0;
+          final indicatorLeftPosition =
+              currentIndex * tabWidth + (tabWidth - indicatorWidth) / 2;
+
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  spreadRadius: 0,
+                  blurRadius: 20,
+                  offset: const Offset(0, -4),
+                ),
+              ],
             ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: _navIcon(
-              filledPath: 'assets/icons/navbar_categories_filled.svg',
-              outlinedPath: 'assets/icons/navbar_categories.svg',
-              isActive: currentIndex == 1,
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildNavItem(
+                        context: context,
+                        filledPath: 'assets/icons/navbar_home_filled.svg',
+                        outlinedPath: 'assets/icons/navbar_home.svg',
+                        label: 'Home',
+                        index: 0,
+                        currentIndex: currentIndex,
+                      ),
+                      _buildNavItem(
+                        context: context,
+                        filledPath: 'assets/icons/navbar_categories_filled.svg',
+                        outlinedPath: 'assets/icons/navbar_categories.svg',
+                        label: 'Categories',
+                        index: 1,
+                        currentIndex: currentIndex,
+                      ),
+                      _buildNavItem(
+                        context: context,
+                        filledPath: 'assets/icons/navbar_cartlist_filled.svg',
+                        outlinedPath: 'assets/icons/navbar_cartlist.svg',
+                        label: 'Cart',
+                        index: 2,
+                        currentIndex: currentIndex,
+                      ),
+                      _buildNavItem(
+                        context: context,
+                        filledPath: 'assets/icons/navbar_profile_filled.svg',
+                        outlinedPath: 'assets/icons/navbar_profile.svg',
+                        label: 'Profile',
+                        index: 3,
+                        currentIndex: currentIndex,
+                      ),
+                    ],
+                  ),
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOutBack, // Playful switching bounce
+                    top: 0,
+                    left: indicatorLeftPosition,
+                    child: Container(
+                      height: 4,
+                      width: indicatorWidth,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(4),
+                          bottomRight: Radius.circular(4),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: _navIcon(
-              filledPath: 'assets/icons/navbar_cartlist_filled.svg',
-              outlinedPath: 'assets/icons/navbar_cartlist.svg',
-              isActive: currentIndex == 2,
-            ),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: _navIcon(
-              filledPath: 'assets/icons/navbar_profile_filled.svg',
-              outlinedPath: 'assets/icons/navbar_profile.svg',
-              isActive: currentIndex == 3,
-            ),
-            label: '',
-          ),
-        ],
+          );
+        },
       ),
     );
   }

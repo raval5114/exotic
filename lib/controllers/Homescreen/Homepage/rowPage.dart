@@ -78,59 +78,32 @@ class _RowPageComponentState extends State<RowPageComponent>
       Widget? child;
 
       if (element is MobilePromoBanner) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: BannerCarouselWidget(banners: element.items),
+        child = BannerCarouselWidget(
+          title: element.title,
+          banners: element.items,
         );
       } else if (element is MobileSuggestionGrid) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileSuggestionProducts(
-            title: element.title,
-            config: element.config,
-            products: element.items,
-          ),
+        child = MobileSuggestionProducts(
+          title: element.title,
+          config: element.config,
+          products: element.items,
         );
       } else if (element is Mobile3DIconTrayElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: Mobile3dIconTrayComponent(element: element),
-        );
+        child = Mobile3dIconTrayComponent(element: element);
       } else if (element is MobileBudgetDealsElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileBudgetDealsComponent(element: element),
-        );
+        child = MobileBudgetDealsComponent(element: element);
       } else if (element is MobileCategoryGridElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileCategoryGridComponent(element: element),
-        );
+        child = MobileCategoryGridComponent(element: element);
       } else if (element is MobileCharmSliderElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileCharmSliderWidget(element: element),
-        );
+        child = MobileCharmSliderWidget(element: element);
       } else if (element is MobileFeaturedSliderElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileFeaturedSliderWidget(element: element),
-        );
+        child = MobileFeaturedSliderWidget(element: element);
       } else if (element is MobileGridOffersElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileGridOffersWidget(element: element),
-        );
+        child = MobileGridOffersWidget(element: element);
       } else if (element is MobileOfferStripElement) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileOfferStripWidget(element: element),
-        );
+        child = MobileOfferStripWidget(element: element);
       } else if (element is MobileSponsoredBanner) {
-        child = Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5),
-          child: MobileSponsoredBannerWidget(element: element),
-        );
+        child = MobileSponsoredBannerWidget(element: element);
       } else {
         debugPrint('Unhandled PageElement Widget: ${element.runtimeType}');
       }
@@ -138,9 +111,9 @@ class _RowPageComponentState extends State<RowPageComponent>
       if (child != null) {
         widgets.add(child);
 
-        // Dense vertical spacing between elements in a row to match Flipkart's compactness
+        // Balanced vertical spacing between elements
         if (i < elements.length - 1) {
-          widgets.add(const SizedBox(height: 2));
+          widgets.add(const SizedBox(height: 12));
         }
       }
     }
@@ -157,11 +130,9 @@ class _RowPageComponentState extends State<RowPageComponent>
       child: SlideTransition(
         position: _slideAnimation,
         child: Container(
-          margin: EdgeInsets.zero,
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          decoration: BoxDecoration(
-            color: hexToColor(styling.backgroud_color),
-          ),
+          margin: const EdgeInsets.only(bottom: 2), // Tiny gap between rows
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          decoration: BoxDecoration(color: hexToColor(styling.backgroud_color)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch, // IMPORTANT
             children: parseElementToWidget(widget.rows.elements),

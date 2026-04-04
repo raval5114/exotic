@@ -34,7 +34,7 @@ class _CartComponentState extends State<CartComponent> {
     required VoidCallback onShopNow,
     String title = "Your cart is empty!",
     String buttonText = "Shop now",
-    String imageAsset = "assets/images/empty_cart.png",
+    String imageAsset = "assets/images/cart/empty_cart.png",
   }) {
     return Center(
       child: Column(
@@ -116,6 +116,7 @@ class _CartComponentState extends State<CartComponent> {
       builder: (context, state) {
         return Scaffold(
           appBar: ExoticAppBar(),
+          backgroundColor: Colors.grey.shade300,
           body:
               context.read<CartProvider>().cartProducts.isEmpty
                   ? emptyCartWidget(

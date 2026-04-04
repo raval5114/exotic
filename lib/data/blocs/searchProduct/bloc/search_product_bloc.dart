@@ -47,5 +47,9 @@ class SearchProductBloc extends Bloc<SearchProductEvent, SearchProductState> {
         emit(SearchErrorState(errMsg: e.toString()));
       }
     });
+
+    on<SearchProductClearEvent>((event, emit) {
+      emit(SearchProductInitial());
+    });
   }
 }

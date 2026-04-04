@@ -9,40 +9,53 @@ class MobileCategoryGridComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const double horizontalPadding = 0;
-    const double spacing = 5;
-    const int itemsPerRow = 5;
+    const double horizontalPadding = 12;
+    const double spacing = 10;
     const int rowCount = 2;
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final totalWidth = constraints.maxWidth;
-        final availableWidth =
-            totalWidth -
-            (horizontalPadding * 2) -
-            (spacing * (itemsPerRow - 1));
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final totalWidth = constraints.maxWidth;
+              const int itemsPerRow = 5;
+              final availableWidth =
+                  totalWidth -
+                  (horizontalPadding * 2) -
+                  (spacing * (itemsPerRow - 1));
 
-        final itemWidth = availableWidth / itemsPerRow;
-        final itemHeight = itemWidth * 1.25; // controls vertical size
+              final itemWidth = availableWidth / itemsPerRow;
+              final itemHeight = itemWidth * 1.35; // slightly taller for better labels
 
-        return SizedBox(
-          height: (itemHeight * rowCount) + spacing,
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
-            scrollDirection: Axis.horizontal,
-            itemCount: element.items.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: rowCount, // 2 rows
-              crossAxisSpacing: spacing,
-              mainAxisSpacing: spacing,
-              childAspectRatio: itemWidth / itemHeight,
-            ),
-            itemBuilder: (context, index) {
-              return _ScrollableCategoryItem(item: element.items[index]);
+              return SizedBox(
+                height: (itemHeight * rowCount) + spacing,
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: element.items.length,
+                  physics: const BouncingScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: rowCount, // 2 rows
+                    crossAxisSpacing: spacing,
+                    mainAxisSpacing: spacing,
+                    childAspectRatio: itemWidth / itemHeight,
+                  ),
+                  itemBuilder: (context, index) {
+                    return _ScrollableCategoryItem(item: element.items[index]);
+                  },
+                ),
+              );
             },
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -56,48 +69,43 @@ class _ScrollableCategoryItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          flex: 4,
-          child: Container(
-            margin: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                )
-              ]
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.memory(
-                base64ToBytes(item.img),
-                fit: BoxFit.cover,
-                height: 2,
-                errorBuilder:
-                    (_, __, ___) =>
-                        const Icon(Icons.image_not_supported, size: 18, color: Colors.grey),
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: const Color(0xFFF5F5F5), // subtle off-white background
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
               ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.memory(
+              base64ToBytes(item.img),
+              fit: BoxFit.cover,
+              errorBuilder:
+                  (_, __, ___) =>
+                      const Icon(Icons.category_rounded, size: 24, color: Colors.grey),
             ),
           ),
         ),
-        const SizedBox(height: 6),
-        Expanded(
-          flex: 1,
-          child: Text(
-            item.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              height: 1.1,
-            ),
+        const SizedBox(height: 8),
+        Text(
+          item.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+            height: 1.1,
           ),
         ),
       ],
