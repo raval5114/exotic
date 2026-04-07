@@ -11,9 +11,15 @@ class CartBottomNavigationBarComponent extends StatelessWidget {
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(top: BorderSide(color: Colors.grey, width: 0.3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              offset: const Offset(0, -2),
+              blurRadius: 8,
+            ),
+          ],
         ),
         child: Consumer<CartProvider>(
           builder: (context, cart, _) {
@@ -65,34 +71,36 @@ class CartBottomNavigationBarComponent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         /// PRICE SECTION
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              '₹${cart.totalMrp}',
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-                decoration: TextDecoration.lineThrough,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Text(
-                  '₹${cart.grandTotal.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '₹${cart.totalMrp}',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade500,
+                  decoration: TextDecoration.lineThrough,
                 ),
-
-                const SizedBox(width: 4),
-                const Icon(Icons.info_outline, size: 16),
-              ],
-            ),
-          ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    '₹${cart.grandTotal.toStringAsFixed(0)}',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Icon(Icons.info_outline, size: 14, color: Colors.grey.shade600),
+                ],
+              ),
+            ],
+          ),
         ),
 
         /// PLACE ORDER BUTTON
@@ -101,15 +109,21 @@ class CartBottomNavigationBarComponent extends StatelessWidget {
             // Place order
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            backgroundColor: const Color(0xFF9647fe),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            minimumSize: const Size(120, 40),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           child: const Text(
             'Place Order',
-            style: TextStyle(fontSize: 16, color: Colors.white),
+            style: TextStyle(
+              fontSize: 14, 
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
       ],

@@ -25,60 +25,69 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Price Details',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
           ),
           const SizedBox(height: 8),
-          const Divider(thickness: 1, color: Colors.grey),
+          const Divider(thickness: 1, height: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 8),
-          _priceRow('Price(1)', '₹${price.toString()}'),
+          _priceRow('Price (${cart.cartProducts.length} items)', '₹${price.toString()}'),
           _priceRow(
             'Discount',
             '-₹${discount.toString()}',
             valueColor: Colors.green,
           ),
           _priceRow('Coupons', '0'),
-          _priceRow('Platform fee', '${platformFee}'),
+          _priceRow('Platform fee', '₹$platformFee'),
           _priceRow(
             'Delivery charges',
             isFreeDelivery == true ? '' : '₹$deliveryCharge',
-            trailingWidget: const Text(
-              'Free Delivery',
-              style: TextStyle(color: Colors.green, fontSize: 13),
-            ),
+            trailingWidget: isFreeDelivery
+                ? const Text(
+                    'Free Delivery',
+                    style: TextStyle(color: Colors.green, fontSize: 13, fontWeight: FontWeight.w500),
+                  )
+                : null,
           ),
           const SizedBox(height: 8),
-          const Divider(thickness: 1, color: Colors.grey),
+          const Divider(thickness: 1, height: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 8),
-          _priceRow('Total Amount', '₹${totalAmount.toString()}', isBold: true),
+          _priceRow('Total Amount', '₹${totalAmount.toString()}', isBold: true, fontSize: 15),
           const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              borderRadius: BorderRadius.circular(8),
+              color: Colors.green.shade50,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.green.shade200),
             ),
             child: Row(
               children: [
-                const Icon(Icons.verified, color: Colors.green, size: 20),
+                Icon(Icons.stars_rounded, color: Colors.green.shade600, size: 16),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
-                    '₹$discount saved on this order!',
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
+                    'You will save ₹$discount on this order',
+                    style: TextStyle(
+                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
                     ),
                   ),
                 ),
@@ -95,24 +104,34 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
     String value, {
     bool isBold = false,
     Color? valueColor,
+    double? fontSize,
     Widget? trailingWidget,
   }) {
     final textStyle = TextStyle(
-      fontSize: 14,
-      color: isBold ? Colors.black : Colors.grey.shade700,
-      fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+      fontSize: fontSize ?? 13,
+      color: isBold ? Colors.black : Colors.grey.shade600,
+      fontWeight: isBold ? FontWeight.w700 : FontWeight.w400,
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: Text(label, style: textStyle)),
+          Text(label, style: textStyle),
           if (trailingWidget != null)
             Row(
               children: [
-                Text(value, style: textStyle.copyWith(color: valueColor)),
-                const SizedBox(width: 6),
+                if (value.isNotEmpty) ...[
+                  Text(
+                    value,
+                    style: textStyle.copyWith(
+                      color: valueColor,
+                      decoration: trailingWidget != null && isBold == false ? TextDecoration.lineThrough : null,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                ],
                 trailingWidget,
               ],
             )
