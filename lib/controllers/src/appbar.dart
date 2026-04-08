@@ -72,7 +72,7 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                       entry.remove();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor: const Color(0xFF9747FF),
                       foregroundColor: Colors.white,
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
@@ -119,8 +119,8 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                       entry.remove(); // Close the overlay regardless
                     },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.blue),
-                      foregroundColor: Colors.blue,
+                      side: const BorderSide(color: Color(0xFF9747FF)),
+                      foregroundColor: const Color(0xFF9747FF),
                       minimumSize: const Size(double.infinity, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
@@ -185,10 +185,10 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
           children: [
             InkWell(
               onTap: () => onTap(context),
-              child: Image.asset(
-                'assets/icons/homescreen_searchbar_camera_icon.jpg',
-                width: 20,
-                height: 20,
+              child: const Icon(
+                Icons.camera_alt_outlined,
+                color: Color(0xFF9747FF),
+                size: 22,
               ),
             ),
             const SizedBox(width: 8),
@@ -201,7 +201,7 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
                         builder: (context) => SearchProductPage(),
                       ),
                     ),
-                child: AbsorbPointer(
+                child: const AbsorbPointer(
                   child: TextField(
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -216,16 +216,16 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Image.asset(
-              'assets/icons/homescreen_searchbar_mic_icon.jpg',
-              width: 20,
-              height: 20,
+            const Icon(
+              Icons.mic_none_rounded,
+              color: Color(0xFF9747FF),
+              size: 22,
             ),
             const SizedBox(width: 8),
-            Image.asset(
-              'assets/icons/homescreen_searchbar_search_icon.jpg',
-              width: 20,
-              height: 20,
+            const Icon(
+              Icons.search_rounded,
+              color: Color(0xFF9747FF),
+              size: 24,
             ),
           ],
         ),

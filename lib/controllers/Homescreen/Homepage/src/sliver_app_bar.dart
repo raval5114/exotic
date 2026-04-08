@@ -17,7 +17,7 @@ class ExoticSliverAppBar extends StatelessWidget {
         return SliverAppBar(
           backgroundColor: Colors.white,
           pinned: true,
-          expandedHeight: 210,
+          expandedHeight: 185,
           toolbarHeight: 0,
           elevation: 0,
           flexibleSpace: Container(
@@ -26,8 +26,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Colors.blueAccent,
-                  //  Color(0xFF87CEEB), // Sky Blue
+                  Color(0xFF9747FF),
                   Colors.white,
                 ],
               ),
@@ -36,7 +35,7 @@ class ExoticSliverAppBar extends StatelessWidget {
               background: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
                   child: Column(
                     children: [
                       // --- ADDRESS BAR ---
@@ -82,7 +81,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
 
                       // --- SEARCH BAR SECTION ---
                       Row(
@@ -140,7 +139,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                         ),
                         indicator: const UnderlineTabIndicator(
                           borderSide: BorderSide(
-                            color: Colors.blueAccent,
+                            color: Color(0xFF9747FF),
                             width: 3,
                           ),
                           insets: EdgeInsets.symmetric(horizontal: 16),
@@ -235,7 +234,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                   hintText: "Search your area, street name...",
                   prefixIcon: const Icon(
                     Icons.search_rounded,
-                    color: Colors.blueAccent,
+                    color: Color(0xFF9747FF),
                   ),
                   filled: true,
                   fillColor: Colors.grey[100],
@@ -296,14 +295,14 @@ class ExoticSliverAppBar extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.1),
+                  color: const Color(0xFF9747FF).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   addr['type'] == 'home'
                       ? Icons.home_rounded
                       : Icons.work_rounded,
-                  color: Colors.blueAccent,
+                  color: const Color(0xFF9747FF),
                   size: 20,
                 ),
               ),

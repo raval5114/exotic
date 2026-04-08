@@ -58,7 +58,7 @@ class DeliveryTimeline extends StatelessWidget {
                     Container(
                       width: 2,
                       height: 40,
-                      color: Colors.grey.shade300,
+                      color: Colors.grey.shade200,
                     ),
                 ],
               ),
@@ -68,13 +68,13 @@ class DeliveryTimeline extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding:
                       step.isCurrent
-                          ? const EdgeInsets.all(8)
+                          ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
                           : EdgeInsets.zero,
                   decoration:
                       step.isCurrent
                           ? BoxDecoration(
                             color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(8),
                           )
                           : null,
                   child: Column(
@@ -83,7 +83,8 @@ class DeliveryTimeline extends StatelessWidget {
                       Text(
                         step.title,
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                           color: step.isCurrent ? Colors.green : Colors.black87,
                         ),
                       ),
@@ -91,7 +92,7 @@ class DeliveryTimeline extends StatelessWidget {
                       Text(
                         step.subtitle,
                         style: TextStyle(
-                          color: Colors.grey.shade700,
+                          color: Colors.grey.shade600,
                           fontSize: 13,
                         ),
                       ),
@@ -102,45 +103,50 @@ class DeliveryTimeline extends StatelessWidget {
             ],
           );
         }).toList(),
+        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
-              child: TextButton.icon(
-                style: TextButton.styleFrom(
-                  shape: const BeveledRectangleBorder(),
-                  side: const BorderSide(width: 0.5, color: Colors.grey),
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  side: BorderSide(width: 1, color: Colors.grey.shade300),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () => _showEditSheet(context),
-                icon: const Icon(Icons.edit, color: Colors.black),
-                label: Text(
+                icon: const Icon(Icons.edit_outlined, color: Colors.black87, size: 20),
+                label: const Text(
                   "Edit Order",
                   style: TextStyle(
                     fontFamily: 'Roboto',
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ),
+            const SizedBox(width: 12),
             Expanded(
-              child: TextButton.icon(
-                style: TextButton.styleFrom(
-                  shape: const BeveledRectangleBorder(),
-                  side: const BorderSide(width: 0.5, color: Colors.grey),
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  side: BorderSide(width: 1, color: Colors.grey.shade300),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {},
-                icon: const Icon(
-                  Icons.chat_bubble_outline,
-                  color: Colors.black,
-                ),
-                label: Text(
+                icon: const Icon(Icons.chat_bubble_outline_rounded, color: Colors.black87, size: 20),
+                label: const Text(
                   "Chat with us",
                   style: TextStyle(
                     fontFamily: 'Roboto',
-                    color: Colors.black,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),

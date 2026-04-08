@@ -76,44 +76,48 @@ class _CategoriesBuilderState extends State<CategoriesBuilder> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(
-                        child: Container(
-                          width: 41,
-                          height: 57,
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              state.data[index].photo!,
-                              width: 45,
-                              height: 41,
-                              fit: BoxFit.cover,
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
                             ),
-                          ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(24),
+                          child: (state.data[index].photo != null && state.data[index].photo!.isNotEmpty) 
+                            ? Image.network(
+                                state.data[index].photo!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (c,e,s) => Icon(Icons.category, color: Colors.grey.shade400, size: 24)
+                              )
+                            : Icon(Icons.category, color: Colors.grey.shade400, size: 24),
                         ),
                       ),
                       const SizedBox(height: 6),
-                      SizedBox(
-                        width: 41,
-                        height: 30,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2.0),
                         child: Text(
                           state.data[index].name,
                           textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Roboto',
+                            fontSize: 9.5,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 );

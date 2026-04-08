@@ -71,14 +71,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Exotic',
       theme: ThemeData(
-        primaryColor: Color(0xFF9747FF),
+        primaryColor: const Color(0xFF9747FF),
         colorScheme: const ColorScheme(
           brightness: Brightness.light,
           primary: Color(0xFF9747FF),
           onPrimary: Colors.white,
-          secondary: const Color(0xFF80B6FF),
+          secondary: Color(0xFFB57AFF),
           onSecondary: Colors.white,
-          onSecondaryContainer: Color(0xFF0060FF),
+          onSecondaryContainer: Color(0xFFD4AFFF),
           error: Colors.red,
           onError: Colors.white,
           surface: Colors.white,

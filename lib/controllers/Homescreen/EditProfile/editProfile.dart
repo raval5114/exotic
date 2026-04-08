@@ -133,9 +133,9 @@ class _EditProfileState extends State<EditProfile> {
                   alignment: Alignment.bottomCenter,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 60),
+                      padding: const EdgeInsets.only(bottom: 40),
                       child: Container(
-                        height: 140,
+                        height: 90,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: secondaryColor,
@@ -242,12 +242,12 @@ class _EditProfileState extends State<EditProfile> {
                   ),
                 ),
 
-                const Gap(30),
+                const Gap(16),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
-                    padding: const EdgeInsets.all(24),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
@@ -266,26 +266,26 @@ class _EditProfileState extends State<EditProfile> {
                           Icons.account_circle_outlined,
                           "PROFILE",
                         ),
-                        const Gap(24),
+                        const Gap(16),
 
                         _buildElegantTextField(
                           label: "First Name",
                           controller: firstNameController,
                         ),
-                        const Gap(20),
+                        const Gap(12),
 
                         _buildElegantTextField(
                           label: "Last Name",
                           controller: lastNameController,
                         ),
 
-                        const Divider(height: 48, thickness: 1),
+                        const Divider(height: 32, thickness: 1),
 
                         _buildSectionHeader(
                           Icons.contact_mail_outlined,
                           "CONTACT",
                         ),
-                        const Gap(24),
+                        const Gap(16),
 
                         _buildStatusField(
                           label: "Mobile Number",
@@ -297,7 +297,7 @@ class _EditProfileState extends State<EditProfile> {
                             setState(() => isEditingMobile = !isEditingMobile);
                           },
                         ),
-                        const Gap(20),
+                        const Gap(12),
 
                         _buildStatusField(
                           label: "Email ID",
@@ -310,7 +310,7 @@ class _EditProfileState extends State<EditProfile> {
                           },
                         ),
 
-                        const Gap(40),
+                        const Gap(24),
 
                         _buildSaveButton(theme, state),
                       ],
@@ -363,15 +363,15 @@ class _EditProfileState extends State<EditProfile> {
         const Gap(10),
         TextField(
           controller: controller,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
           decoration: InputDecoration(
             isDense: true,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: Colors.grey.shade100, width: 2),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade200, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
                 color: Theme.of(context).primaryColor,
                 width: 2,
@@ -380,8 +380,8 @@ class _EditProfileState extends State<EditProfile> {
             filled: true,
             fillColor: Colors.grey.shade50,
             contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 18,
+              horizontal: 16,
+              vertical: 14,
             ),
           ),
         ),
@@ -462,24 +462,26 @@ class _EditProfileState extends State<EditProfile> {
               ),
             )
             : Container(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.grey.shade50,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.shade100, width: 2),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200, width: 1.5),
               ),
               child: Row(
                 children: [
-                  Icon(icon, size: 22, color: Colors.grey.shade400),
-                  const Gap(14),
+                  Icon(icon, size: 20, color: Colors.grey.shade400),
+                  const Gap(10),
                   Expanded(
                     child: Text(
                       controller.text,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Colors.black87,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Container(
@@ -523,14 +525,14 @@ class _EditProfileState extends State<EditProfile> {
 
     return Container(
       width: double.infinity,
-      height: 60,
+      height: 50,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
             color: theme.primaryColor.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
         gradient: LinearGradient(

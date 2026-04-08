@@ -40,17 +40,16 @@ class BuildSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.blueAccent.shade200, width: 1.5),
+        border: Border.all(color: const Color(0xFF9747FF).withOpacity(0.5), width: 1.5),
       ),
       child: Row(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: Image.asset(
-              'assets/icons/homescreen_searchbar_search_icon.jpg',
-              height: 20,
-              width: 20,
-              fit: BoxFit.contain,
+          const Padding(
+            padding: EdgeInsets.only(right: 12.0),
+            child: Icon(
+              Icons.search_rounded,
+              color: Color(0xFF9747FF),
+              size: 24,
             ),
           ),
           Expanded(
@@ -68,26 +67,24 @@ class BuildSearchBar extends StatelessWidget {
           ),
           InkWell(
             onTap: () => debugPrint("mic taped"),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset(
-                'assets/icons/homescreen_searchbar_mic_icon.jpg',
-                height: 22,
-                width: 22,
-                fit: BoxFit.contain,
+            child: const Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.mic_none_rounded,
+                color: Color(0xFF9747FF),
+                size: 22,
               ),
             ),
           ),
           const SizedBox(width: 8),
           InkWell(
             onTap: () => debugPrint("camera taped"),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset(
-                'assets/icons/homescreen_searchbar_camera_icon.jpg',
-                height: 22,
-                width: 22,
-                fit: BoxFit.contain,
+            child: const Padding(
+              padding: EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.camera_alt_outlined,
+                color: Color(0xFF9747FF),
+                size: 22,
               ),
             ),
           ),
