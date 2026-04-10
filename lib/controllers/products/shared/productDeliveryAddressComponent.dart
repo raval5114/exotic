@@ -32,7 +32,11 @@ class ProductDeliveryAddressComponent extends StatelessWidget {
                 RichText(
                   text: TextSpan(
                     text: 'Deliver to: ',
-                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                    style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 14,
+                      color: Colors.black87,
+                    ),
                     children: [
                       TextSpan(
                         text: '$name...,',
@@ -55,7 +59,11 @@ class ProductDeliveryAddressComponent extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   addressLine,
-                  style: const TextStyle(fontSize: 13, color: Colors.grey),
+                  style: const TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 13,
+                    color: Colors.grey,
+                  ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -76,7 +84,11 @@ class ProductDeliveryAddressComponent extends StatelessWidget {
             ),
             child: const Text(
               "Change",
-              style: TextStyle(color: Colors.blue, fontSize: 14),
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                color: Colors.blue,
+                fontSize: 14,
+              ),
             ),
           ),
         ],

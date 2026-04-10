@@ -19,12 +19,17 @@ class Productratingsandreviewscomponents extends StatelessWidget {
           // Header
           const Text(
             "Ratings & Reviews",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             "Good", // This can be computed based on average if needed
             style: const TextStyle(
+              fontFamily: 'Roboto',
               color: Colors.black54,
               fontWeight: FontWeight.bold,
             ),
@@ -32,7 +37,7 @@ class Productratingsandreviewscomponents extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             "${reviews.length * 16} ratings and ${reviews.length} reviews", // Example counts
-            style: const TextStyle(color: Colors.grey),
+            style: const TextStyle(fontFamily: 'Roboto', color: Colors.grey),
           ),
           const SizedBox(height: 8),
           const Divider(thickness: 0.5),
@@ -58,6 +63,7 @@ class Productratingsandreviewscomponents extends StatelessWidget {
               Text(
                 "All ${reviews.length} reviews",
                 style: const TextStyle(
+                  fontFamily: 'Roboto',
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
                 ),

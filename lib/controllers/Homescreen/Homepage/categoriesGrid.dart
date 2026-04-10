@@ -35,7 +35,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                 current is HomePageCategoriesFetchedState ||
                 current is HomepageErrorState,
         builder: (context, state) {
-          /// 🔹 Loading shimmer
+          /// Loading shimmer
           if (state is HomepageLoadingState) {
             return GridView.builder(
               shrinkWrap: true,
@@ -91,6 +91,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
               ),
               itemBuilder: (context, index) {
                 final category = categories[index];
+                debugPrint("${category.url}");
 
                 return Column(
                   children: [
@@ -101,8 +102,9 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                         color: Colors.grey.shade300,
                         borderRadius: BorderRadius.circular(10),
                       ),
+
                       child: Image.asset(
-                        "$IMAGELINK/${category.photo!}",
+                        "${category.url}",
                         fit: BoxFit.contain,
                       ),
                     ),

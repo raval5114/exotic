@@ -1,13 +1,16 @@
 import 'dart:async';
 import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/src/dotIndicator.dart';
+import 'package:exotic/data/models/Homepage/elements/Items/mobile_banner_items.dart';
 import 'package:exotic/utils/cachedImage.dart';
+import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 
 class BannerCarouselWidget extends StatefulWidget {
-  final BannerContent content;
+  final BannerContent? content;
+  final List<MobileBannerItems>? banners;
 
-  const BannerCarouselWidget({super.key, required this.content});
+  const BannerCarouselWidget({super.key, this.content, this.banners});
 
   @override
   State<BannerCarouselWidget> createState() => _BannerCarouselWidgetState();
@@ -16,27 +19,67 @@ class BannerCarouselWidget extends StatefulWidget {
 class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
-  String? api;
+  String? api = "https://xotic.in/UploadImages/ElementImages/";
   Timer? _timer;
+
+  // Computed property to get the list of items to display
+  List<dynamic> get _items {
+    if (widget.content?.banners.isNotEmpty ?? false) {
+      return widget.content!.banners;
+    }
+    if (widget.banners != null && widget.banners!.isNotEmpty) {
+      return widget.banners!;
+    }
+    return [];
+  }
 
   @override
   void initState() {
     super.initState();
+    _startAutoPlay();
+  }
 
-    if (widget.content.autoplay && widget.content.banners.isNotEmpty) {
-      _timer = Timer.periodic(Duration(milliseconds: widget.content.interval), (
-        _,
-      ) {
+  void _startAutoPlay() {
+    // Autoplay logic:
+    // 1. If content is provided, use its settings.
+    // 2. If only banners are provided (mobile testing case), default to autoplay enabled with default interval.
+
+    bool shouldAutoplay = false;
+    int interval = 3000;
+    int transitionTime = 800;
+
+    if (widget.content != null) {
+      shouldAutoplay = widget.content!.autoplay;
+      if (widget.content!.interval > 0) interval = widget.content!.interval;
+      if (widget.content!.transitionTime > 0)
+        transitionTime = widget.content!.transitionTime;
+    } else if (widget.banners != null && widget.banners!.isNotEmpty) {
+      // Default behavior for mobile banners list if no content config provided
+      shouldAutoplay = true;
+    }
+
+    if (shouldAutoplay && _items.length > 1) {
+      _timer?.cancel();
+      _timer = Timer.periodic(Duration(milliseconds: interval), (_) {
         if (!_controller.hasClients) return;
 
-        _currentIndex = (_currentIndex + 1) % widget.content.banners.length;
+        int nextIndex = _currentIndex + 1;
+        if (nextIndex >= _items.length) {
+          nextIndex = 0;
+        }
+
         _controller.animateToPage(
-          _currentIndex,
-          duration: Duration(milliseconds: widget.content.transitionTime),
+          nextIndex,
+          duration: Duration(milliseconds: transitionTime),
           curve: Curves.easeInOut,
         );
       });
     }
+  }
+
+  void onTap(dynamic item) {
+    debugPrint("Banner tapped: $item");
+    // TODO: Handle navigation based on item.linkUrl or similar
   }
 
   @override
@@ -48,52 +91,104 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.content.banners.isEmpty) {
-      return const SizedBox();
+    final items = _items;
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // Determine height from content or default
+    double height = 200; // Default height
+    if (widget.content != null && widget.content!.height != 'auto') {
+      try {
+        height = double.parse(widget.content!.height.replaceAll('px', ''));
+      } catch (_) {}
     }
 
     return Column(
       children: [
         SizedBox(
-          height: 180,
-          child: PageView.builder(
-            controller: _controller,
-            itemCount: widget.content.banners.length,
-            onPageChanged: (index) {
-              setState(() => _currentIndex = index);
-            },
-            itemBuilder: (context, index) {
-              final banner = widget.content.banners[index];
-
-              return GestureDetector(
-                onTap: () {
-                  debugPrint("${banner.imageFile}");
+          height: height,
+          child: Stack(
+            children: [
+              PageView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _controller,
+                itemCount: items.length,
+                onPageChanged: (index) {
+                  setState(() => _currentIndex = index);
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: AppCachedImage(
-                      imageUrl:
-                          "https://xotic.in/UploadImages/ElementImages/" +
-                          banner.imageFile,
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      borderRadius: BorderRadius.circular(10),
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return GestureDetector(
+                    onTap: () => onTap(item),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Builder(
+                          builder: (context) {
+                            if (item is MobileBannerItems) {
+                              if (!item.imageBase64Url.startsWith('http')) {
+                                try {
+                                  final bytes = base64ToBytes(
+                                    item.imageBase64Url,
+                                  );
+                                  return Image.memory(
+                                    bytes,
+                                    height: height,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  );
+                                } catch (e) {
+                                  debugPrint("Error decoding base64 image: $e");
+                                  return Container(
+                                    height: height,
+                                    width: double.infinity,
+                                    color: Colors.grey[200],
+                                    child: const Icon(Icons.broken_image),
+                                  );
+                                }
+                              } else {
+                                return AppCachedImage(
+                                  imageUrl: item.imageBase64Url,
+                                  height: height,
+                                  width: double.infinity,
+                                  fit: BoxFit.cover,
+                                  borderRadius: BorderRadius.circular(12),
+                                );
+                              }
+                            } else if (item is BannerItem) {
+                              String imageUrl = (api ?? "") + item.imageFile;
+                              return AppCachedImage(
+                                imageUrl: imageUrl,
+                                height: height,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                borderRadius: BorderRadius.circular(12),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                      ),
                     ),
+                  );
+                },
+              ),
+              // Dots Indicator
+              if (items.length > 1)
+                Positioned(
+                  bottom: 10,
+                  left: 0,
+                  right: 0,
+                  child: DotsIndicator(
+                    count: items.length,
+                    currentIndex: _currentIndex,
                   ),
                 ),
-              );
-            },
+            ],
           ),
         ),
-
-        //
-        // DotsIndicator(
-        //   count: widget.content.banners.length,
-        //   currentIndex: _currentIndex,
-        // ),
       ],
     );
   }

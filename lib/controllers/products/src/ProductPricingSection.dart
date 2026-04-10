@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class ProductPricingSection extends StatelessWidget {
   final String discount;
@@ -22,7 +21,8 @@ class ProductPricingSection extends StatelessWidget {
           Row(children: [Icon(Icons.arrow_downward, color: Colors.green)]),
           Text(
             '$discount%',
-            style: GoogleFonts.roboto(
+            style: const TextStyle(
+              fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
               color: Colors.green,
               fontSize: 18,
@@ -31,7 +31,8 @@ class ProductPricingSection extends StatelessWidget {
           Gap(10),
           Text(
             "₹$discountedPrice",
-            style: GoogleFonts.roboto(
+            style: const TextStyle(
+              fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
               fontSize: 18,
             ),
@@ -39,7 +40,8 @@ class ProductPricingSection extends StatelessWidget {
           Gap(10),
           Text(
             "₹$initialPrice",
-            style: GoogleFonts.roboto(
+            style: const TextStyle(
+              fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
               decoration: TextDecoration.lineThrough,
               decorationColor: Colors.black38,
