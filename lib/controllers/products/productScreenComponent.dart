@@ -89,17 +89,7 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
               ),
 
               Productratingsandreviewscomponents(
-                reviews:
-                    (products[1]["reviews"] as List)
-                        .map(
-                          (e) => ProductReview(
-                            rating: e["rating"],
-                            reviewText: e["reviewText"],
-                            sizeInfo: e["sizeInfo"],
-                            qualityText: e["qualityText"],
-                          ),
-                        )
-                        .toList(),
+                productId: int.parse(product.pId!),
               ),
 
               const SizedBox(height: 32),

@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/view/venderStore/venderStore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,93 +17,122 @@ class Productsellerdetailscomponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 2),
+      margin: const EdgeInsets.only(bottom: 4),
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      child: Row(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(Icons.storefront, color: Colors.blue),
-          const SizedBox(width: 6),
-
-          /// Seller name and rating should wrap inside Flexible to avoid overflow
-          Expanded(
-            child: Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    sellerName,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black12),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        ratings.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontFamily: 'Roboto',
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 2),
-                      const Icon(Icons.star, color: Colors.green, size: 16),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 6),
-                const Icon(Icons.brightness_1, size: 6, color: Colors.black54),
-                const SizedBox(width: 6),
-                if (isTrusted)
-                  Row(
-                    children: const [
-                      Icon(Icons.verified, color: Colors.purple, size: 18),
-                      SizedBox(width: 4),
-                      Text(
-                        "Trusted",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          color: Colors.blue,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-              ],
+          const Text(
+            "Seller Details",
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black,
             ),
           ),
-
-          /// Right arrow stays at the end
-          InkWell(
-            onTap:
-                () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => VenderStore(
-                          venderName: '$sellerName',
-                          ratings: '5',
-                          followings: "1200",
-                          products: [],
-                          raters: "1200",
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.storefront, color: Colors.blue, size: 28),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            sellerName,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
+                        if (isTrusted) ...[
+                          const SizedBox(width: 6),
+                          const Icon(Icons.verified, color: Colors.purple, size: 16),
+                        ]
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                ratings.toStringAsFixed(1),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              const Icon(Icons.star, color: Colors.white, size: 12),
+                            ],
+                          ),
+                        ),
+                        if (isTrusted) ...[
+                          const SizedBox(width: 8),
+                          const Icon(Icons.circle, size: 4, color: Colors.black26),
+                          const SizedBox(width: 8),
+                          const Text(
+                            "Trusted Seller",
+                            style: TextStyle(
+                              fontFamily: 'Roboto',
+                              color: Colors.green,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ]
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () => context.push('/dynamicRoute', extra: () => VenderStore(
+                      venderName: sellerName,
+                      ratings: '5',
+                      followings: "1200",
+                      products: [],
+                      raters: "1200",),
+                ),
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Text(
+                    "View Shop",
+                    style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 13),
                   ),
                 ),
-            child: const Icon(Icons.chevron_right),
+              ),
+            ],
           ),
         ],
       ),

@@ -120,16 +120,10 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => PaymentScreen(
+                      context.push('/dynamicRoute', extra: () => PaymentScreen(
                                 productData: {},
                                 discountedPrice: '10000',
-                                intialPrice: '13000',
-                              ),
-                        ),
+                                intialPrice: '13000',),
                       );
                     },
                     child: Text(
@@ -171,9 +165,7 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
             actions: [
               InkWell(
                 onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => CartScreen()),
+                    () => context.push('/dynamicRoute', extra: () => CartScreen(),
                     ),
                 child: Padding(
                   padding: EdgeInsets.only(right: 16),

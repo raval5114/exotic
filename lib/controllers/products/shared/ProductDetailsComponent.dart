@@ -36,9 +36,9 @@ class ProductDetailsComponent extends StatelessWidget {
     final productDetails = getProductDetails(product.pDetail ?? '{}');
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 2),
+      margin: const EdgeInsets.only(bottom: 4),
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -47,26 +47,27 @@ class ProductDetailsComponent extends StatelessWidget {
             style: TextStyle(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              fontSize: 18,
+              color: Colors.black,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 16),
 
-          /// ✅ FIXED LIST RENDERING
           ...productDetails.map((detail) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              padding: const EdgeInsets.only(bottom: 12),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 90,
+                    width: 120,
                     child: Text(
                       detail["key"],
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Roboto',
-                        color: Colors.grey,
+                        color: Colors.grey[600],
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
@@ -75,8 +76,9 @@ class ProductDetailsComponent extends StatelessWidget {
                       detail["value"],
                       style: const TextStyle(
                         fontFamily: 'Roboto',
-                        fontSize: 15,
-                        color: Colors.black,
+                        fontSize: 14,
+                        color: Colors.black87,
+                        height: 1.4,
                       ),
                     ),
                   ),
@@ -85,7 +87,7 @@ class ProductDetailsComponent extends StatelessWidget {
             );
           }).toList(),
 
-          const SizedBox(height: 12),
+          const Divider(thickness: 1, height: 24, color: Colors.black12),
 
           InkWell(
             onTap: onViewAllDetails,
@@ -96,11 +98,12 @@ class ProductDetailsComponent extends StatelessWidget {
                   "All Details",
                   style: TextStyle(
                     fontFamily: 'Roboto',
-                    fontSize: 14,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
                 ),
-                Icon(Icons.arrow_forward_ios, size: 14),
+                Icon(Icons.chevron_right, size: 24, color: Colors.black),
               ],
             ),
           ),

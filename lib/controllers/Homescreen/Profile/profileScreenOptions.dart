@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/Homescreen/EditProfile/editProfile.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
 import 'package:exotic/data/providers/user_provider.dart';
@@ -85,9 +86,7 @@ class ProfileScreenOptions extends StatelessWidget {
           const SizedBox(height: 2),
           buildSectionTitle("Account Settings"),
           buildOptionItem(Icons.person_outline, "Edit Profile", () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => EditProfile()),
+            context.push('/dynamicRoute', extra: () => EditProfile(),
             );
           }),
           buildOptionItem(

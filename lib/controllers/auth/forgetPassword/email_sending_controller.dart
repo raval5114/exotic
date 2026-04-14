@@ -79,7 +79,7 @@ class _EmailSendingControllerState extends State<EmailSendingController>
   }
 
   void _onCancel() {
-    Navigator.pop(context);
+    context.pop();
   }
 
   void onOtpSubmit() {

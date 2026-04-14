@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/products/productScreenComponent.dart';
 import 'package:exotic/controllers/products/productScreenLoadingController.dart';
 import 'package:exotic/data/blocs/cart/bloc/cart_bloc.dart';
@@ -128,9 +129,7 @@ class _ProductsShellState extends State<ProductsShell> {
       actions: [
         InkWell(
           onTap:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CartScreen()),
+              () => context.push('/dynamicRoute', extra: () => CartScreen(),
               ),
           child: Padding(
             padding: EdgeInsets.only(right: 16),
@@ -206,16 +205,10 @@ class _ProductsShellState extends State<ProductsShell> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => PaymentScreen(
+                context.push('/dynamicRoute', extra: () => PaymentScreen(
                           productData: {},
                           discountedPrice: '10000',
-                          intialPrice: '13000',
-                        ),
-                  ),
+                          intialPrice: '13000',),
                 );
               },
               child: const Text(

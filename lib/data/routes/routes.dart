@@ -1,3 +1,5 @@
+import 'package:exotic/view/reviews/ReviewScreen.dart';
+import 'package:exotic/Test/Reviews/reviews_main.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
 import 'package:exotic/Test/SearchProduct/search_bar_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
@@ -6,6 +8,7 @@ import 'package:exotic/view/offersAndCoupens/offersAndCoupens.dart';
 import 'package:exotic/view/payment/payment.dart';
 import 'package:exotic/view/searchProduct/searchProduct.dart';
 import 'package:exotic/view/splashscreen/splashScreen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/view/auth/auth_main.dart';
 import 'package:exotic/view/homescreen/homescreen.dart';
@@ -19,7 +22,7 @@ final goRoutes = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes
-    GoRoute(path: '/test', builder: (context, state) => SearchBarTesting()),
+    GoRoute(path: '/reviews', builder: (context, state) => ReviewScreen()),
     // Auth screen (entry point)
     GoRoute(path: '/auth', builder: (context, state) => AuthMainScreen()),
     GoRoute(
@@ -59,6 +62,13 @@ final goRoutes = GoRouter(
             discountedPrice: '',
             intialPrice: '  ',
           ),
+    ),
+    GoRoute(
+      path: '/dynamicRoute',
+      builder: (context, state) {
+        final builder = state.extra as Widget Function();
+        return builder();
+      },
     ),
   ],
 );

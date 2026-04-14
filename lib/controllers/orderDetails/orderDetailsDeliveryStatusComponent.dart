@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/orderDetails/src/deliveyStatusStep.dart';
 import 'package:exotic/view/orderCancelationPages/orderCancelPage.dart';
 import 'package:flutter/material.dart';
@@ -188,9 +189,7 @@ class DeliveryTimeline extends StatelessWidget {
                 title: Text("I want to cancel my order"),
                 trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                 onTap: () {
-                  Navigator.pop(
-                    bottomSheetContext,
-                  ); // Close the current bottom sheet safely
+                  context.pop(); // Close the current bottom sheet safely
                   Future.delayed(const Duration(milliseconds: 200), () {
                     showModalBottomSheet(
                       context: context, // Use original parent context
@@ -261,9 +260,7 @@ class DeliveryTimeline extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pop(
-                      parentContext,
-                    ); // ✅ Proper parent context used here
+                    parentContext.pop(); // ✅ Proper parent context used here
                   },
                   child: Text(
                     "Don’t Cancel",
@@ -279,14 +276,10 @@ class DeliveryTimeline extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                    Navigator.pop(
-                      parentContext,
-                    ); // Close the current bottom sheet
-                    Navigator.push(
-                      parentContext,
-                      MaterialPageRoute(
-                        builder: (context) => OrderCancelPage(product: data),
-                      ),
+                    parentContext.pop(); // Close the current bottom sheet
+                    parentContext.push(
+                      '/dynamicRoute',
+                      extra: () => OrderCancelPage(product: data),
                     );
                   },
                   child: Text(

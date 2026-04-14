@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
@@ -189,7 +190,7 @@ class SearchedItemsWidget extends StatelessWidget {
                           backgroundColor: Colors.black87,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () => context.pop(),
                         child: const Text(
                           'Apply',
                           style: TextStyle(color: Colors.white),
@@ -212,9 +213,7 @@ class SearchedItemsWidget extends StatelessWidget {
       context.read<FetchProductBloc>().add(
         FetchingSingleProductEvent(productid: item.id.toString()),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProductsShell()),
+      context.push('/dynamicRoute', extra: () => ProductsShell(),
       );
     }
 

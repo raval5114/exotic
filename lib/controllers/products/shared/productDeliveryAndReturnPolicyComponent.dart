@@ -60,21 +60,86 @@ class ProductDeliveryAndReturnPolicyComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> policiesMapped = policies(product);
+    if (policiesMapped.isEmpty) return const SizedBox.shrink();
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 2),
+      margin: const EdgeInsets.only(bottom: 4),
       color: Colors.white,
+      padding: const EdgeInsets.all(16),
       child: Column(
-        children:
-            policiesMapped.map((policy) {
-              return _buildPolicyTile(
-                icon: policy['icon'],
-                title: Text(policy['title']),
-                subtitle:
-                    policy['subtitle'] == null
-                        ? (policy['subtitle'])
-                        : Text(""),
-              );
-            }).toList(),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Delivery & Policies",
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...policiesMapped.asMap().entries.map((entry) {
+            final policy = entry.value;
+            final isLast = entry.key == policiesMapped.length - 1;
+            return Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        policy['icon'],
+                        size: 20,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            policy['title'],
+                            style: const TextStyle(
+                              fontFamily: 'Roboto',
+                              fontSize: 15,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (policy['subtitle'] != null &&
+                              policy['subtitle'].toString().isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              policy['subtitle'].toString(),
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontSize: 13,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (!isLast)
+                  const Divider(
+                    thickness: 1,
+                    height: 24,
+                    color: Colors.black12,
+                  ),
+              ],
+            );
+          }).toList(),
+        ],
       ),
     );
   }

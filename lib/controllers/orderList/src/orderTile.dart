@@ -115,11 +115,7 @@ class OrderShowingTile extends StatelessWidget {
         ),
         trailing: GestureDetector(
           onTap:
-              () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderdetailsPage(product: product),
-                ),
+              () => context.push('/dynamicRoute', extra: () => OrderdetailsPage(product: product),
               ),
           child: const Icon(Icons.arrow_forward_ios, size: 14),
         ),

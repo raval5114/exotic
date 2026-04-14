@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/auth/Signup/src/textfield.dart';
 import 'package:exotic/data/providers/user_login_provider.dart';
 import 'package:exotic/view/auth/Signin/subscreens/password_screen.dart';
@@ -50,14 +51,12 @@ class _SigninComponentState extends State<SigninComponent>
 
   void _onSubmit() {
     context.read<UserLoginProvider>().email = _email.text.toString();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PasswordScreen()),
+    context.push('/dynamicRoute', extra: () => PasswordScreen(),
     );
   }
 
   void _onCancel() {
-    Navigator.pop(context);
+    context.pop();
   }
 
   @override

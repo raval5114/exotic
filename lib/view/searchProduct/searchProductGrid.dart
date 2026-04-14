@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/searchProduct/searchProductGridComponent.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ class SearchedProductScreen extends StatelessWidget {
             size: 20,
             color: Colors.white,
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           splashRadius: 24,
         ),
         title: const Text(
@@ -34,7 +35,7 @@ class SearchedProductScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.search, color: Colors.white, size: 22),
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             splashRadius: 24,
             tooltip: 'Search Again',
           ),

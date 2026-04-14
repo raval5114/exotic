@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_state.dart';
@@ -164,9 +165,7 @@ class _ProductListViewBuilderState extends State<ProductListViewBuilder> {
                     context.read<ProductProvider>().setProduct(
                       ProductModel.fromJson(product),
                     );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProductScreen()),
+                    context.push('/dynamicRoute', extra: () => ProductScreen(),
                     );
                   },
                   child: ProductTile(product: ProductModel.fromJson(product)),

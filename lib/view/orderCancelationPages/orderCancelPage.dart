@@ -172,11 +172,7 @@ class OrderCancelPage extends StatelessWidget {
             SubmitRequestButton(
               onPressed: () {
                 if (_controller.text.toString() != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CancellationConfirmedScreen(),
-                    ),
+                  context.push('/dynamicRoute', extra: () => CancellationConfirmedScreen(),
                   );
                 }
               },

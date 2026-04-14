@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/wishlist/wishlist.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class WishlistScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.secondary,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         ),
         actions: const [
           Padding(

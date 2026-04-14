@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 
 import 'package:exotic/controllers/auth/Signup/src/blobPainter.dart';
@@ -70,7 +71,7 @@ class _SignupControllerState extends State<SignupController> {
   }
 
   void onCancel() {
-    Navigator.pop(context);
+    context.pop();
   }
 
   @override
@@ -89,8 +90,8 @@ class _SignupControllerState extends State<SignupController> {
             errors: [],
             type: AlertType.success,
             onOkay: () {
-              Navigator.of(context).pop();
-              Navigator.pop(context);
+              context.pop();
+              context.pop();
             },
           );
         }
@@ -102,7 +103,7 @@ class _SignupControllerState extends State<SignupController> {
             message: state.message,
             errors: state.errors,
             type: AlertType.error,
-            onOkay: () => Navigator.of(context).pop(),
+            onOkay: () => context.pop(),
           );
         }
       },

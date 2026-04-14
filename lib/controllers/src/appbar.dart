@@ -195,11 +195,7 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
             Expanded(
               child: GestureDetector(
                 onTap:
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SearchProductPage(),
-                      ),
+                    () => context.push('/dynamicRoute', extra: () => SearchProductPage(),
                     ),
                 child: AbsorbPointer(
                   child: TextField(

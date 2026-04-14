@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/wishlist/src/wishlist_emty.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_event.dart';
@@ -275,11 +276,7 @@ class _WishlistComponentState extends State<WishlistComponent> {
 
                         return InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const ProductScreen(),
-                              ),
+                            context.push('/dynamicRoute', extra: () => const ProductScreen(),
                             );
                           },
                           child: wishlistCard(

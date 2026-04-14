@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/products/productShellController.dart';
 import 'package:exotic/controllers/src/appbar.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
@@ -15,9 +16,7 @@ class SingleProductCallingTesting extends StatelessWidget {
       context.read<FetchProductBloc>().add(
         FetchingSingleProductEvent(productid: "57"),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProductsShell()),
+      context.push('/dynamicRoute', extra: () => ProductsShell(),
       );
     }
 

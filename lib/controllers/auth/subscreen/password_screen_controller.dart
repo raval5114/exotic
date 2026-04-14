@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
@@ -64,7 +65,7 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent>
         type: AlertType.error,
         errors: ["Please fill Something in password field"],
         message: 'Password cannot be empty',
-        onOkay: () => Navigator.of(context).pop(),
+        onOkay: () => context.pop(),
       );
       return;
     }
@@ -82,12 +83,10 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent>
     );
   }
 
-  void _onCancel() => Navigator.pop(context);
+  void _onCancel() => context.pop();
 
   void _onForgotPassword() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ForgotpasswordScreen()),
+    context.push('/dynamicRoute', extra: () => ForgotpasswordScreen(),
     );
   }
 
@@ -112,9 +111,7 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent>
             AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
           );
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => SmsSendingScreen()),
+          context.push('/dynamicRoute', extra: () => SmsSendingScreen(),
           );
         }
 
@@ -130,7 +127,7 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent>
             errors: state.errors,
             onOkay: () {
               Navigator.of(context);
-              Navigator.pop(context);
+              context.pop();
             },
           );
         }

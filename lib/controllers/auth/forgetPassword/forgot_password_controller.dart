@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/view/auth/forgotPassword/SmsSendingScreen.dart';
 import 'package:exotic/view/auth/forgotPassword/email_sending_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,23 +25,17 @@ class _ForgetPasswordComponentState extends State<ForgetPasswordComponent> {
   void _onNextPressed() {
     print('Selected option: $_selectedOption');
     if (_selectedOption == 'SMS') {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => SmsSendingScreen()),
+      context.push('/dynamicRoute', extra: () => SmsSendingScreen(),
       );
     } else {
       final email = context.read<UserLoginProvider>().email;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EmailSendingScreen(email: email),
-        ),
+      context.push('/dynamicRoute', extra: () => EmailSendingScreen(email: email),
       );
     }
   }
 
   void onCancel() {
-    Navigator.pop(context);
+    context.pop();
   }
 
   @override

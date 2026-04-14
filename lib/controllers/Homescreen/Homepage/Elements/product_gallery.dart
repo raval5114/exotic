@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
@@ -90,9 +91,7 @@ class MobileSuggestionProducts extends StatelessWidget {
                         productid: products[index].productId.toString(),
                       ),
                     );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProductsShell()),
+                    context.push('/dynamicRoute', extra: () => ProductsShell(),
                     );
                   },
                 );

@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/view/auth/Signin/signin.dart';
 import 'package:exotic/view/auth/Signup/signup.dart';
 import 'package:flutter/material.dart';
@@ -50,10 +51,7 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
         ),
         onPressed: () {
           //adding go router to navigate
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => pathToNavigate),
-          );
+          context.push('/dynamicRoute', extra: () => pathToNavigate);
         },
         child: Text(
           "Let's get started",
@@ -72,10 +70,7 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
     return InkWell(
       onTap: () {
         //adding go router to navigate to
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => pathToNavigate),
-        );
+        context.push('/dynamicRoute', extra: () => pathToNavigate);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

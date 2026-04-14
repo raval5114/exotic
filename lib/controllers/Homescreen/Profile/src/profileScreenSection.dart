@@ -7,7 +7,12 @@ import 'package:exotic/data/providers/user_provider.dart';
 class ProfileScreenSection extends StatelessWidget {
   const ProfileScreenSection({super.key});
 
-  Widget buildProfileItem(IconData icon, String title, VoidCallback onTap) {
+  Widget buildProfileItem(
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+    BuildContext context,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -21,7 +26,7 @@ class ProfileScreenSection extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.blue),
+            Icon(icon, color: Theme.of(context).colorScheme.secondary),
             const SizedBox(width: 8),
             Text(
               title,
@@ -119,10 +124,7 @@ class ProfileScreenSection extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EditProfile()),
-                    );
+                    context.push('/dynamicRoute', extra: () => EditProfile());
                   },
                   icon: Container(
                     padding: const EdgeInsets.all(8),
@@ -158,14 +160,19 @@ class ProfileScreenSection extends StatelessWidget {
             children: [
               buildProfileItem(Icons.inventory_2_outlined, "Orders", () {
                 context.push('/orderList');
-              }),
+              }, context),
               buildProfileItem(Icons.favorite_border, "Wishlist", () {
                 context.push('/wishlist');
-              }),
+              }, context),
               buildProfileItem(Icons.card_giftcard, "Coupons", () {
                 context.push('/coupensAndOffers');
-              }),
-              buildProfileItem(Icons.lock_outline, "Help Center", () {}),
+              }, context),
+              buildProfileItem(
+                Icons.lock_outline,
+                "Help Center",
+                () {},
+                context,
+              ),
             ],
           ),
         ],

@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/searchProduct/searchQuerySectionComponent.dart';
 import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:exotic/view/searchProduct/searchProductGrid.dart';
@@ -44,15 +45,13 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: const Color(
-            0xFFB3D9FF,
-          ), // Matches the light blue in the image
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           elevation: 0,
           title: Row(
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
               ),
               Expanded(
                 child: Container(
@@ -145,11 +144,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                       context.read<SearchProductBloc>().add(
                         SearchedProductDataCallingEvent(url: item.dataUrl!),
                       );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SearchedProductScreen(),
-                        ),
+                      context.push(
+                        '/dynamicRoute',
+                        extra: () => SearchedProductScreen(),
                       );
                     },
                     child: Padding(

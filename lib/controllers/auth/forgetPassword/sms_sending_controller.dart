@@ -74,7 +74,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
   }
 
   void _onCancel() {
-    Navigator.pop(context);
+    context.pop();
   }
 
   void onOtpSubmit() {

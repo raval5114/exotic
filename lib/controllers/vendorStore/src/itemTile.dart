@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/data/models/product_orignal.dart';
 import 'package:exotic/view/products/productScreen.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +31,7 @@ class ItemTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap:
-          () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ProductScreen()),
+          () => context.push('/dynamicRoute', extra: () => ProductScreen(),
           ),
       child: Container(
         width: 160,

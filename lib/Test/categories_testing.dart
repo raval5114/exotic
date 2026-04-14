@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/domains/homesrceen/categories/categories.dart';
@@ -41,7 +42,7 @@ class _CategoriesTestingState extends State<CategoriesTesting> {
                 type: AlertType.success,
                 errors: ["This is the error 1", "This is the Error 2"],
                 onOkay: () {
-                  Navigator.pop(context);
+                  context.pop();
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text("yes its working")));

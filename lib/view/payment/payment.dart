@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/payment/paymentController.dart';
 import 'package:exotic/view/payment/orderPaymentScreen.dart';
 import 'package:flutter/material.dart';
@@ -67,9 +68,7 @@ class PaymentScreen extends StatelessWidget {
               ),
               onPressed: () {
                 // TODO: Place order logic
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => OrderPaymentScreen()),
+                context.push('/dynamicRoute', extra: () => OrderPaymentScreen(),
                 );
               },
               child: const Text(

@@ -11,7 +11,7 @@ class OrderPaymentCompletionScreen extends StatelessWidget {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         leading: InkWell(
-          onTap: () => Navigator.pop(context),
+          onTap: () => context.pop(),
           child: Icon(Icons.close),
         ),
         actions: [

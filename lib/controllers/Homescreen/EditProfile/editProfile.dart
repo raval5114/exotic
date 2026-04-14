@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'dart:io';
 
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
@@ -84,7 +85,7 @@ class _EditProfileState extends State<EditProfile> {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Profile updated successfully!")),
             );
-            Navigator.pop(context);
+            context.pop();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text("Failed to update profile.")),
@@ -122,7 +123,7 @@ class _EditProfileState extends State<EditProfile> {
                 color: Colors.white,
                 size: 20,
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             ),
           ),
           body: SingleChildScrollView(

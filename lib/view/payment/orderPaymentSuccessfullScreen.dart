@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/view/payment/orderPaymentCompletionScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -31,9 +32,7 @@ class _OrderPaymentSuccessfullScreenState
     // Start animation on load
     _starController.forward();
     Future.delayed(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => OrderPaymentCompletionScreen()),
+      context.go('/dynamicRoute', extra: () => OrderPaymentCompletionScreen(),
       );
     });
   }

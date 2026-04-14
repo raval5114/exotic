@@ -1,3 +1,4 @@
+import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/payment/src/orderPaymentOptionsTile.dart';
 import 'package:exotic/view/payment/orderPaymentSuccessfullScreen.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,7 @@ class OrderPaymentOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void onSubmittingCOD() {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OrderPaymentSuccessfullScreen(),
-        ),
+      context.go('/dynamicRoute', extra: () => OrderPaymentSuccessfullScreen(),
       );
     }
 
