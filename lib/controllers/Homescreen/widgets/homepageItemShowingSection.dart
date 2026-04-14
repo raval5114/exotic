@@ -35,7 +35,7 @@ class _HomePageItemShowingSectionState
   int _carouselIndex = 0;
 
   static const double itemWidth = 140;
-  static const double itemHeight = 220;
+  static const double itemHeight = 260;
   static const double itemSpacing = 10;
 
   @override
@@ -82,9 +82,34 @@ class _HomePageItemShowingSectionState
           children: [
             AspectRatio(
               aspectRatio: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: const Placeholder(),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: const Placeholder(), // Placeholder for image
+                  ),
+                  if (item['discountPercentage'] != null)
+                    Positioned(
+                      top: 4,
+                      left: 4,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '${item['discountPercentage']}% OFF',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(height: 8),
@@ -94,19 +119,38 @@ class _HomePageItemShowingSectionState
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontFamily: 'Roboto',
-                fontSize: 10,
-                fontWeight: FontWeight.w400,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 4),
+            if (item['rating'] != null)
+              Row(
+                children: [
+                  const Icon(Icons.star, color: Colors.amber, size: 12),
+                  const SizedBox(width: 2),
+                  Text(
+                    '${item['rating']}',
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '(${item['reviews'] ?? 0})',
+                    style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+                  ),
+                ],
+              ),
+            const SizedBox(height: 6),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
               children: [
                 Text(
                   '₹${item['discountedPrice']}',
                   style: const TextStyle(
                     fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -114,13 +158,25 @@ class _HomePageItemShowingSectionState
                   '₹${item['initialPrice']}',
                   style: const TextStyle(
                     fontFamily: 'Roboto',
-                    fontSize: 12.5,
+                    fontSize: 11,
                     color: Colors.grey,
                     decoration: TextDecoration.lineThrough,
                   ),
                 ),
               ],
             ),
+            if (item['isFreeShipping'] == true) ...[
+              const SizedBox(height: 4),
+              Text(
+                'Free Delivery',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.green.shade600,
+                ),
+              ),
+            ],
+            const SizedBox(height: 2),
           ],
         ),
       ),

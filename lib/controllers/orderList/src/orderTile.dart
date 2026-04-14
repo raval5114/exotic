@@ -39,16 +39,19 @@ class _RatingStarsState extends State<RatingStars> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: List.generate(widget.maxStars, (index) {
         final isFilled = index < _currentRating;
-        return IconButton(
-          onPressed: () => _handleTap(index + 1),
-          icon: Icon(
-            isFilled ? Icons.star : Icons.star_border,
-            color: Colors.grey,
-            size: 20,
+        return GestureDetector(
+          onTap: () => _handleTap(index + 1),
+          child: Padding(
+            padding: const EdgeInsets.only(right: 2.0),
+            child: Icon(
+              isFilled ? Icons.star_rounded : Icons.star_outline_rounded,
+              color: isFilled ? Colors.amber.shade500 : Colors.grey.shade300,
+              size: 16,
+            ),
           ),
-          constraints: const BoxConstraints(),
         );
       }),
     );
@@ -74,50 +77,115 @@ class OrderShowingTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.grey.shade300),
-          bottom: BorderSide(color: Colors.grey.shade300),
-        ),
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Icon(Icons.person, size: 55),
-        ),
-        title: Text(
-          "$orderStatus • $data",
-          style: TextStyle(
-            fontFamily: 'Roboto',
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color:
-                orderStatus == "Canceled On" ? Colors.redAccent : Colors.black,
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
-        ),
-        subtitle: Padding(
-          padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
-          child: Column(
+        ],
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderdetailsPage(product: product),
+              ),
+            ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                productName,
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 12,
-                  color: Colors.grey[700],
+              Container(
+                width: 65,
+                height: 65,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey.shade100),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child:
+                      imagePath.isNotEmpty
+                          ? Image.network(
+                            imagePath,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (context, error, stackTrace) => const Icon(
+                                  Icons.image_not_supported,
+                                  color: Colors.grey,
+                                ),
+                          )
+                          : Icon(
+                            Icons.inventory_2_outlined,
+                            color: Colors.grey.shade400,
+                            size: 28,
+                          ),
                 ),
               ),
-              RatingStars(),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$orderStatus • $data",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                        color:
+                            orderStatus.toLowerCase().contains("cancel")
+                                ? Colors.red.shade600
+                                : const Color(0xFF9747FF),
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      productName,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: [
+                        const Text(
+                          "Rate Item: ",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                        RatingStars(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 24, left: 8),
+                child: Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 14,
+                  color: Colors.grey,
+                ),
+              ),
             ],
           ),
-        ),
-        trailing: GestureDetector(
-          onTap:
-              () => context.push('/dynamicRoute', extra: () => OrderdetailsPage(product: product),
-              ),
-          child: const Icon(Icons.arrow_forward_ios, size: 14),
         ),
       ),
     );

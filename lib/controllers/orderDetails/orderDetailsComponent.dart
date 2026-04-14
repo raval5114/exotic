@@ -11,17 +11,18 @@ class OrderdetailsController extends StatefulWidget {
 }
 
 class _OrderdetailsControllerState extends State<OrderdetailsController> {
-  Widget shoppingDetails(String title, String value, bool isStruck) {
+  Widget shoppingDetails(String title, String value, bool isStruck, {bool isTotal = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 6.0),
       child: Row(
         children: [
           Text(
             title,
             style: TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
+              fontSize: isTotal ? 16 : 14,
+              fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
+              color: isTotal ? Colors.black87 : Colors.grey.shade700,
             ),
           ),
           const Spacer(),
@@ -29,10 +30,10 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
             "₹$value",
             style: TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontSize: isTotal ? 16 : 14,
+              fontWeight: isTotal ? FontWeight.w800 : FontWeight.w600,
               decoration: isStruck ? TextDecoration.lineThrough : null,
-              color: isStruck ? Colors.grey : Colors.black,
+              color: isTotal ? const Color(0xFF9747FF) : (isStruck ? Colors.grey.shade400 : Colors.black87),
             ),
           ),
         ],
@@ -46,9 +47,9 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
     final List<Map<String, dynamic>> deliveryUpdates =
         product['deliveryUpdates'];
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      body: SingleChildScrollView(
+    return Container(
+      color: Colors.grey.shade100,
+      child: SingleChildScrollView(
         child: Column(
           children: [
             // Main Card
@@ -58,18 +59,15 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                 children: [
                   // Order ID
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 14,
-                      horizontal: 16,
-                    ),
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         "Order ID - ${product['orderId']}",
                         style: TextStyle(
                           fontFamily: 'Roboto',
-                          fontSize: 12,
-                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -79,7 +77,7 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                   // Product Section
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: 14,
+                      
                       horizontal: 16,
                     ),
                     child: Row(
@@ -91,50 +89,26 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                product['productName'],
-                                style: TextStyle(
+                                product['productName'] ?? 'Unknown Product',
+                                style: const TextStyle(
                                   fontFamily: 'Roboto',
                                   fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.black87,
                                 ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 6),
-                              Text(
-                                "Off-white",
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                "Seller: Killer",
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  fontSize: 13,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 12),
                               Row(
                                 children: [
                                   Text(
-                                    "₹${product['priceBreakdown']['sellingPrice']}",
-                                    style: TextStyle(
+                                    "₹${product['priceBreakdown']?['sellingPrice'] ?? '0'}",
+                                    style: const TextStyle(
                                       fontFamily: 'Roboto',
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "1 offer",
-                                    style: TextStyle(
-                                      fontFamily: 'Roboto',
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF9747FF),
                                     ),
                                   ),
                                 ],
@@ -143,14 +117,26 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                           ),
                         ),
 
+                        const SizedBox(width: 16),
                         // Right: Image
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(
-                            "assets/images/categories/categories_auto.png",
-                            width: 80,
-                            height: 80,
-                            fit: BoxFit.cover,
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: (product['ProductImage'] != null && product['ProductImage'].toString().isNotEmpty)
+                                ? Image.network(
+                                    product['ProductImage'],
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        const Icon(Icons.image_not_supported, color: Colors.grey),
+                                  )
+                                : Icon(Icons.inventory_2_outlined, color: Colors.grey.shade400, size: 32),
                           ),
                         ),
                       ],
@@ -190,12 +176,14 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                     ),
                     child: Row(
                       children: [
-                        Text(
-                          "Shopping Details",
+                        const Icon(Icons.receipt_long_rounded, color: Color(0xFF9747FF), size: 22),
+                        const SizedBox(width: 8),
+                        const Text(
+                          "Price Breakdown",
                           style: TextStyle(
                             fontFamily: 'Roboto',
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
                             color: Colors.black87,
                           ),
                         ),
@@ -203,7 +191,7 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                       ],
                     ),
                   ),
-                  Divider(thickness: 1, color: Colors.grey.shade300),
+                  Divider(thickness: 1, color: Colors.grey.shade200, height: 1),
 
                   // Price Breakdown
                   Padding(
@@ -216,30 +204,34 @@ class _OrderdetailsControllerState extends State<OrderdetailsController> {
                       children: [
                         shoppingDetails(
                           "Listing Value",
-                          "${product['priceBreakdown']['listPrice']}",
+                          "${product['priceBreakdown']?['listPrice'] ?? '0'}",
                           true,
                         ),
                         shoppingDetails(
                           "Selling Price",
-                          "${product['priceBreakdown']['sellingPrice']}",
+                          "${product['priceBreakdown']?['sellingPrice'] ?? '0'}",
                           false,
                         ),
                         shoppingDetails(
                           "Delivery",
-                          "${product['priceBreakdown']['deliveryCharge']}",
+                          "${product['priceBreakdown']?['deliveryCharge'] ?? '0'}",
                           false,
                         ),
                         shoppingDetails(
                           "Handling Fee",
-                          "${product['priceBreakdown']['handlingFee']}",
+                          "${product['priceBreakdown']?['handlingFee'] ?? '0'}",
                           false,
                         ),
+                        const SizedBox(height: 8),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: 8),
                         shoppingDetails(
                           "Total Price",
-                          "${product['priceBreakdown']['totalAmount']}",
+                          "${product['priceBreakdown']?['totalAmount'] ?? '0'}",
                           false,
+                          isTotal: true,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
                       ],
                     ),
                   ),

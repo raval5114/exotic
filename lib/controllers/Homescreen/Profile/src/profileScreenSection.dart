@@ -20,19 +20,27 @@ class ProfileScreenSection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Theme.of(context).colorScheme.secondary),
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: const Color(0xFF9747FF).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: const Color(0xFF9747FF), size: 18),
+            ),
             const SizedBox(width: 8),
             Text(
               title,
               style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+                color: Colors.black87,
               ),
             ),
           ],
@@ -52,7 +60,7 @@ class ProfileScreenSection extends StatelessWidget {
         children: [
           // User Profile Header Section
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
+            padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
             decoration: BoxDecoration(
               color: theme.colorScheme.secondary,
               borderRadius: const BorderRadius.only(

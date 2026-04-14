@@ -31,27 +31,25 @@ class _ProfileScreenLogoutSectionState
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 120,
-      child: Center(
-        child: ElevatedButton(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: SizedBox(
+        width: double.infinity,
+        child: OutlinedButton(
           onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            shape: BeveledRectangleBorder(
-              borderRadius: BorderRadius.circular(2),
+          style: OutlinedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            side: const BorderSide(color: Color(0xFF9747FF)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
-
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 120.0),
-            child: Text(
-              "Log out",
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: Colors.blueAccent,
-              ),
+          child: const Text(
+            "Log out",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF9747FF),
             ),
           ),
         ),

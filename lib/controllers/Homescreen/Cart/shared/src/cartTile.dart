@@ -71,31 +71,58 @@ class CartTile extends StatelessWidget {
 
   Widget _quantityController() {
     return Container(
+      height: 28,
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          IconButton(
-            icon: const Icon(Icons.remove, size: 16),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            onPressed: quantity > 1 ? onMinus : null,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              quantity.toString(),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+          InkWell(
+            onTap: quantity > 1 ? onMinus : null,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(6),
+              bottomLeft: Radius.circular(6),
+            ),
+            child: Container(
+              width: 28,
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.remove, 
+                size: 14, 
+                color: quantity > 1 ? Colors.black87 : Colors.grey.shade400,
+              ),
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.add, size: 16),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-            onPressed: onAdd,
+          Container(
+            width: 27,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              border: Border(
+                left: BorderSide(color: Colors.grey.shade200),
+                right: BorderSide(color: Colors.grey.shade200),
+              ),
+            ),
+            child: Text(
+              quantity.toString(),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+          InkWell(
+            onTap: onAdd,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(6),
+              bottomRight: Radius.circular(6),
+            ),
+            child: Container(
+              width: 28,
+              alignment: Alignment.center,
+              child: const Icon(Icons.add, size: 14, color: Colors.black87),
+            ),
           ),
         ],
       ),
@@ -166,147 +193,199 @@ class CartTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedDeliveryDate = DateFormat('MMM d, EEE').format(deliveryBy);
 
-    final card = Card(
-      margin: const EdgeInsets.all(4),
-      elevation: isHighlighted ? 4 : 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-        side: isHighlighted
-            ? const BorderSide(color: Color(0xFFFF528A), width: 1.5)
-            : BorderSide.none,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (itemsForOff > 0) _extraOffSection(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  children: [
-                    SizedBox(
-                      width: 73,
-                      height: 80,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: AppCachedImage(imageUrl: image),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        productName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
-                        ),
-                      ),
-                      Text(
-                        category,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Text(
-                        "Seller: $sellerName",
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Text(
-                            "↓$discount%",
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "₹${discountedPrice.toInt()}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "₹${intialPrice.toInt()}",
-                            style: const TextStyle(
-                              decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        "Delivery by $formattedDeliveryDate, ${isFreeDelivery ? 'Free' : '₹40'}",
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isFreeDelivery ? Colors.green : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                _quantityController(),
-              ],
-            ),
-          ),
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _actionButton(
-                  icon: Icons.delete_outline,
-                  label: "Remove",
-                  onPressed: onRemove,
-                ),
-                _actionButton(
-                  icon: Icons.bookmark_border,
-                  label: "Save for later",
-                  onPressed: saveForLater,
-                ),
-                _actionButton(
-                  icon: Icons.shopping_cart_checkout_outlined,
-                  label: "Buy this now",
-                  onPressed: buyThisNow,
-                ),
-              ],
-            ),
+    final card = Container(
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(
+          color: isHighlighted ? const Color(0xFFFF528A) : Colors.transparent,
+          width: isHighlighted ? 1.5 : 0,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (itemsForOff > 0) _extraOffSection(),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        width: 85,
+                        height: 95,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: AppCachedImage(imageUrl: image, fit: BoxFit.cover),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      _quantityController(),
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          productName,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            height: 1.2,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          category,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          "Seller: $sellerName",
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey.shade500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              "₹${discountedPrice.toInt()}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "₹${intialPrice.toInt()}",
+                              style: TextStyle(
+                                decoration: TextDecoration.lineThrough,
+                                color: Colors.grey.shade500,
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade50,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                "$discount% OFF",
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Icon(
+                              isFreeDelivery ? Icons.local_shipping : Icons.local_shipping_outlined,
+                              size: 14,
+                              color: isFreeDelivery ? Colors.green : Colors.grey.shade600,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                "Delivery by $formattedDeliveryDate | ${isFreeDelivery ? 'Free' : '₹40'}",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: isFreeDelivery ? Colors.green : Colors.grey.shade700,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+            Container(
+              color: Colors.grey.shade50,
+              padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: _actionButton(
+                      icon: Icons.delete_outline,
+                      label: "Remove",
+                      onPressed: onRemove,
+                    ),
+                  ),
+                  Container(width: 1, height: 24, color: Colors.grey.shade300),
+                  Expanded(
+                    child: _actionButton(
+                      icon: Icons.bookmark_border,
+                      label: "Save",
+                      onPressed: saveForLater,
+                    ),
+                  ),
+                  Container(width: 1, height: 24, color: Colors.grey.shade300),
+                  Expanded(
+                    child: _actionButton(
+                      icon: Icons.flash_on,
+                      label: "Buy Now",
+                      onPressed: buyThisNow,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
 
     if (isHighlighted) {
       return Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: const Color(0xFFFF528A).withOpacity(0.15),
-              blurRadius: 10,
-              spreadRadius: 2,
+              blurRadius: 12,
+              spreadRadius: 3,
             ),
           ],
         ),
