@@ -25,10 +25,7 @@ class ExoticSliverAppBar extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF9747FF),
-                  Colors.white,
-                ],
+                colors: [Color(0xFF9747FF), Colors.white],
               ),
             ),
             child: FlexibleSpaceBar(

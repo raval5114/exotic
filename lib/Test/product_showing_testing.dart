@@ -106,7 +106,7 @@ class SearchProductTesting extends StatelessWidget {
         ),
       ),
 
-      /// 🔽 AUTOFILL RESULTS HERE
+      /// AUTOFILL RESULTS HERE
       body: ProductListViewBuilder(),
     );
   }
@@ -148,7 +148,9 @@ class _ProductListViewBuilderState extends State<ProductListViewBuilder> {
             );
           }
 
+          ///
           /// SUCCESS STATE
+          ///
           if (state is FetchProductSuccess) {
             if (state.products.isEmpty) {
               return const Center(child: Text('No products available'));
@@ -165,8 +167,7 @@ class _ProductListViewBuilderState extends State<ProductListViewBuilder> {
                     context.read<ProductProvider>().setProduct(
                       ProductModel.fromJson(product),
                     );
-                    context.push('/dynamicRoute', extra: () => ProductScreen(),
-                    );
+                    context.push('/dynamicRoute', extra: () => ProductScreen());
                   },
                   child: ProductTile(product: ProductModel.fromJson(product)),
                 );

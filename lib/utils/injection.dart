@@ -7,7 +7,6 @@ import 'package:exotic/data/domains/product.dart';
 import 'package:exotic/data/domains/searchProduct/searchProduct.dart';
 import 'package:exotic/data/domains/wishlist/wishlist.dart';
 import 'package:exotic/data/providers/user_login_provider.dart';
-import 'package:exotic/data/domains/reviews/reviews.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -35,6 +34,5 @@ Future<void> setUpGetItLocator() async {
   getit.registerLazySingleton<SearchproductRepo>(() => SearchproductRepo());
   getit.registerLazySingleton<WishlistService>(() => WishlistService());
   getit.registerLazySingleton<UserLoginProvider>(() => UserLoginProvider());
-  getit.registerLazySingleton<Reviews>(() => Reviews());
   getit.registerLazySingleton<ReviewsProvider>(() => ReviewsProvider());
 }

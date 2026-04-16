@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
+import 'package:exotic/data/providers/reviews_provider.dart';
 
 class Productratingsandreviewscomponents extends StatefulWidget {
   final int productId;
@@ -22,6 +23,7 @@ class Productratingsandreviewscomponents extends StatefulWidget {
 class _ProductratingsandreviewscomponentsState
     extends State<Productratingsandreviewscomponents> {
   late ReviewsBloc _reviewsBloc;
+  final ReviewsProvider _reviewsProvider = ReviewsProvider();
 
   @override
   void initState() {
@@ -66,7 +68,12 @@ class _ProductratingsandreviewscomponentsState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Internal Builder handles states dynamically
-            BlocBuilder<ReviewsBloc, ReviewsState>(
+            BlocConsumer<ReviewsBloc, ReviewsState>(
+              listener: (context, state) {
+                if (state is ReviewsLoadedState) {
+                  _reviewsProvider.setReviewsData(state.reviewsData);
+                }
+              },
               builder: (context, state) {
                 if (state is ReviewsInitial || state is ReviewsLoadingState) {
                   return _buildHeaderAndShimmer();
@@ -99,7 +106,10 @@ class _ProductratingsandreviewscomponentsState
                           if (summary.totalReviews > 0)
                             InkWell(
                               onTap: () {
-                                context.push('/reviews');
+                                context.push(
+                                  '/reviews',
+                                  extra: _reviewsProvider,
+                                );
                               },
                               child: Text(
                                 "View All",
@@ -197,7 +207,7 @@ class _ProductratingsandreviewscomponentsState
                           ),
                           InkWell(
                             onTap: () {
-                              context.push('/reviews');
+                              context.push('/reviews', extra: _reviewsProvider);
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(

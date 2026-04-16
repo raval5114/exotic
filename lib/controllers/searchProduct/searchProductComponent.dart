@@ -1,3 +1,7 @@
+import 'package:exotic/controllers/products/productShellController.dart';
+import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
+import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
+import 'package:exotic/data/providers/product_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/searchProduct/searchQuerySectionComponent.dart';
 import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
@@ -139,15 +143,27 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
+                      if (item.type == 'product') {
+                        context.read<FetchProductBloc>().add(
+                          FetchingSingleProductEvent(
+                            productid: item.id.toString(),
+                          ),
+                        );
+                        context.push(
+                          '/dynamicRoute',
+                          extra: () => ProductsShell(),
+                        );
+                      } else {
+                        context.read<SearchProductBloc>().add(
+                          SearchedProductDataCallingEvent(url: item.dataUrl!),
+                        );
+                        context.push(
+                          '/dynamicRoute',
+                          extra: () => SearchedProductScreen(),
+                        );
+                      }
                       // controller.text = item.title ?? '';
                       // FocusManager.instance.primaryFocus?.unfocus();
-                      context.read<SearchProductBloc>().add(
-                        SearchedProductDataCallingEvent(url: item.dataUrl!),
-                      );
-                      context.push(
-                        '/dynamicRoute',
-                        extra: () => SearchedProductScreen(),
-                      );
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(

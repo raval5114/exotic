@@ -1,4 +1,4 @@
-import 'package:exotic/controllers/products/src/productReview.dart';
+import 'package:exotic/controllers/products/shared/src/productReview.dart';
 import 'package:flutter/material.dart';
 
 class ReviewTile extends StatelessWidget {

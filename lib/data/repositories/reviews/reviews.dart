@@ -1,8 +1,18 @@
 abstract class IReviewsRepo {
   Future<Map<String, dynamic>> getReviews(int productId);
   Future<Map<String, dynamic>> addReview(
+    String customerId,
     int productId,
-    Map<String, dynamic> review,
+    double overallRating,
+    double qualityRating,
+    double valueRating,
+    double deliveryRating,
+    String reviewTitle,
+    String reviewText,
+    String pros,
+    String cons,
+    int orderId,
+    int orderItemId,
   );
   Future<Map<String, dynamic>> updateReview(
     int reviewId,

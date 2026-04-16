@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:exotic/data/repositories/reviews/reviews.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,12 +6,44 @@ class Reviews extends IReviewsRepo {
   static const String _baseUrl = "https://xotic.in/api/reviews/";
   @override
   Future<Map<String, dynamic>> addReview(
+    String customerId,
     int productId,
-    Map<String, dynamic> review,
+    double overallRating,
+    double qualityRating,
+    double valueRating,
+    double deliveryRating,
+    String reviewTitle,
+    String reviewText,
+    String pros,
+    String cons,
+    int orderId,
+    int orderItemId,
   ) async {
-    // Shallow implementation to mock success response
-    await Future.delayed(const Duration(seconds: 1));
-    return {"success": true, "message": "Review submitted successfully!"};
+    final Map<String, dynamic> requestBody = {
+      "customer_id": customerId,
+      "product_id": productId,
+      "overall_rating": overallRating,
+      "quality_rating": qualityRating,
+      "value_rating": valueRating,
+      "delivery_rating": deliveryRating,
+      "review_title": reviewTitle,
+      "review_text": reviewText,
+      "pros": pros,
+      "cons": cons,
+      "order_id": orderId,
+      "order_item_id": orderItemId,
+    };
+
+    final response = await http.post(
+      Uri.parse("https://xotic.in/api/reviews-mobile/create.php"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    return jsonDecode(response.body) as Map<String, dynamic>;
   }
 
   @override
@@ -234,9 +265,12 @@ class Reviews extends IReviewsRepo {
   Future<Map<String, dynamic>> getReviews(int productId) async {
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 600));
-    final responseBody = _mockReviewsResponse();
+
+    final responseBody = await http.get(
+      Uri.parse("${_baseUrl}get.php?product_id=$productId"),
+    );
     // Returning the 'data' field directly exactly as previously structured
-    return responseBody['data'] as Map<String, dynamic>;
+    return jsonDecode(responseBody.body) as Map<String, dynamic>;
   }
 
   @override

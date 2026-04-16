@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:exotic/controllers/products/src/ProductPricingSection.dart';
-import 'package:exotic/controllers/products/src/productImageCarousel.dart';
-import 'package:exotic/controllers/products/src/productRating.dart';
-import 'package:exotic/controllers/products/src/productSizeChart.dart';
+import 'package:exotic/controllers/products/shared/src/ProductPricingSection.dart';
+import 'package:exotic/controllers/products/shared/src/productImageCarousel.dart';
+import 'package:exotic/controllers/products/shared/src/productRating.dart';
+import 'package:exotic/controllers/products/shared/src/productSizeChart.dart';
 import 'package:flutter/material.dart';
 
 class ProductsdescriptionComponent extends StatefulWidget {

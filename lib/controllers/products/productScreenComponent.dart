@@ -9,7 +9,7 @@ import 'package:exotic/controllers/products/shared/productRatingsAndReviewsCompo
 import 'package:exotic/controllers/products/shared/productSellerDetailsComponent.dart';
 import 'package:exotic/controllers/products/shared/productVariantComponet.dart';
 import 'package:exotic/controllers/products/shared/productsDescriptionComponent.dart';
-import 'package:exotic/controllers/products/src/productReview.dart';
+import 'package:exotic/controllers/products/shared/src/productReview.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/utils/newProductList.dart';
 import 'package:flutter/material.dart';

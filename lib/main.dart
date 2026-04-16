@@ -5,6 +5,7 @@ import 'package:exotic/data/blocs/homescreen/categories/cubit/subcategories_cubi
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/blocs/orderList/bloc/order_list_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
+import 'package:exotic/data/blocs/reviews/reviews_bloc.dart';
 import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/blocs/vendorStore/bloc/vender_bloc.dart';

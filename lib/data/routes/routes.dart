@@ -1,7 +1,6 @@
 import 'package:exotic/view/reviews/ReviewScreen.dart';
-import 'package:exotic/Test/Reviews/reviews_main.dart';
+import 'package:exotic/data/providers/reviews_provider.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
-import 'package:exotic/Test/SearchProduct/search_bar_testing.dart';
 import 'package:exotic/view/homescreen/sections/profile.dart';
 import 'package:exotic/view/oderlist/orderList.dart';
 import 'package:exotic/view/offersAndCoupens/offersAndCoupens.dart';
@@ -17,12 +16,20 @@ import 'package:exotic/view/homescreen/sections/categories.dart';
 import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
+const String appInitialLocation = '/productsTesting';
+
 final goRoutes = GoRouter(
-  initialLocation: '/',
+  initialLocation: appInitialLocation,
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes
-    GoRoute(path: '/reviews', builder: (context, state) => ReviewScreen()),
+    GoRoute(
+      path: '/reviews',
+      builder: (context, state) {
+        final provider = state.extra as ReviewsProvider;
+        return ReviewScreen(reviewsProvider: provider);
+      },
+    ),
     // Auth screen (entry point)
     GoRoute(path: '/auth', builder: (context, state) => AuthMainScreen()),
     GoRoute(

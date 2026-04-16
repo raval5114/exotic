@@ -79,12 +79,18 @@ class AllReviewsScreen extends StatelessWidget {
                       onPressed: () {
                         // Pass simulated new review mapping
                         context.read<ReviewsBloc>().add(AddReviewEvent(
+                          "5",
                           productId,
-                          {
-                            "overall_rating": _selectedRating.toString(),
-                            "review_title": _titleController.text,
-                            "review_text": _descController.text,
-                          },
+                          _selectedRating.toDouble(),
+                          4.0,
+                          5.0,
+                          4.5,
+                          _titleController.text,
+                          _descController.text,
+                          "Fast shipping",
+                          "Expensive",
+                          456,
+                          789,
                         ));
                         context.pop();
                       },
