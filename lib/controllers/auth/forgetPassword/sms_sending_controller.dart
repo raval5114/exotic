@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sms_autofill/sms_autofill.dart';
 
 class SmssendingscreenComponent extends StatefulWidget {
   const SmssendingscreenComponent({super.key});
@@ -15,7 +16,7 @@ class SmssendingscreenComponent extends StatefulWidget {
 }
 
 class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, CodeAutoFill {
   final TextEditingController _otpController = TextEditingController();
   final FocusNode _otpFocusNode = FocusNode();
 
@@ -30,8 +31,23 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
   bool _isSuccess = false;
 
   @override
+  void codeUpdated() {
+    if (code != null && code!.isNotEmpty) {
+      if (mounted) {
+        setState(() {
+          _otpController.text = code!;
+        });
+        if (_otpController.text.length == 4) {
+          onOtpSubmit();
+        }
+      }
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
+    listenForCode();
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -96,6 +112,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
       _isError = false;
       _isSuccess = false;
     });
+    listenForCode();
     context.read<AuthBloc>().add(
       AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
     );
@@ -103,6 +120,7 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
 
   @override
   void dispose() {
+    cancel();
     _otpController.dispose();
     _otpFocusNode.dispose();
     _fadeController.dispose();

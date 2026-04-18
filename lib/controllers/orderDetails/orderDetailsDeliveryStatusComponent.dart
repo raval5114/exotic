@@ -1,10 +1,12 @@
+import 'package:exotic/utils/newProductList.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/orderDetails/src/deliveyStatusStep.dart';
+import 'package:exotic/data/models/order_list_model.dart';
 import 'package:exotic/view/orderCancelationPages/orderCancelPage.dart';
 import 'package:flutter/material.dart';
 
 class DeliveryTimeline extends StatelessWidget {
-  final Map<String, dynamic> data;
+  final OrderListModel data;
   final List<DeliveryStatusStep> steps;
   final int? visibleStepCount;
 
@@ -69,7 +71,10 @@ class DeliveryTimeline extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 12),
                   padding:
                       step.isCurrent
-                          ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
+                          ? const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          )
                           : EdgeInsets.zero,
                   decoration:
                       step.isCurrent
@@ -116,8 +121,12 @@ class DeliveryTimeline extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () => _showEditSheet(context),
-                icon: const Icon(Icons.edit_outlined, color: Colors.black87, size: 20),
+                onPressed: () => _showEditSheet(context, data),
+                icon: const Icon(
+                  Icons.edit_outlined,
+                  color: Colors.black87,
+                  size: 20,
+                ),
                 label: const Text(
                   "Edit Order",
                   style: TextStyle(
@@ -140,7 +149,11 @@ class DeliveryTimeline extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {},
-                icon: const Icon(Icons.chat_bubble_outline_rounded, color: Colors.black87, size: 20),
+                icon: const Icon(
+                  Icons.chat_bubble_outline_rounded,
+                  color: Colors.black87,
+                  size: 20,
+                ),
                 label: const Text(
                   "Chat with us",
                   style: TextStyle(
@@ -158,7 +171,7 @@ class DeliveryTimeline extends StatelessWidget {
     );
   }
 
-  void _showEditSheet(BuildContext context) {
+  void _showEditSheet(BuildContext context, OrderListModel product) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -205,7 +218,8 @@ class DeliveryTimeline extends StatelessWidget {
                           top: Radius.circular(12),
                         ),
                       ),
-                      builder: (_) => _confirmCancelationSheet(context),
+                      builder:
+                          (_) => _confirmCancelationSheet(context, product),
                     );
                   });
                 },
@@ -217,7 +231,10 @@ class DeliveryTimeline extends StatelessWidget {
     );
   }
 
-  Widget _confirmCancelationSheet(BuildContext parentContext) {
+  Widget _confirmCancelationSheet(
+    BuildContext parentContext,
+    OrderListModel product,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16).copyWith(bottom: 32),
       child: Column(
@@ -285,7 +302,7 @@ class DeliveryTimeline extends StatelessWidget {
                     parentContext.pop(); // Close the current bottom sheet
                     parentContext.push(
                       '/dynamicRoute',
-                      extra: () => OrderCancelPage(product: data),
+                      extra: () => OrderCancelPage(product: product),
                     );
                   },
                   child: Text(

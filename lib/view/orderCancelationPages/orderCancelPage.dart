@@ -1,9 +1,10 @@
+import 'package:exotic/data/models/order_list_model.dart';
 import 'package:exotic/view/orderCancelationPages/orderCancelPageConfirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class OrderCancelPage extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final OrderListModel product;
 
   const OrderCancelPage({super.key, required this.product});
   @override
@@ -64,7 +65,7 @@ class OrderCancelPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          product['productName'] ?? 'Product Name',
+                          product.productName ?? 'Product Name',
                           style: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 15,
@@ -73,7 +74,7 @@ class OrderCancelPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "Qty: ${product['qty'] ?? "0"}",
+                          "Qty: ${product.quantity ?? "0"}",
                           style: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 12,
@@ -82,7 +83,7 @@ class OrderCancelPage extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          "₹${product['price'] ?? "0"}",
+                          "₹${product.price ?? "0"}",
                           style: TextStyle(
                             fontFamily: 'Roboto',
                             fontSize: 16,
@@ -97,7 +98,7 @@ class OrderCancelPage extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Image.asset(
-                      product['image'] ??
+                      product.productImage ??
                           "assets/images/categories/categories_auto.png",
                       width: 65,
                       height: 65,
@@ -172,7 +173,9 @@ class OrderCancelPage extends StatelessWidget {
             SubmitRequestButton(
               onPressed: () {
                 if (_controller.text.toString() != null) {
-                  context.push('/dynamicRoute', extra: () => CancellationConfirmedScreen(),
+                  context.push(
+                    '/dynamicRoute',
+                    extra: () => CancellationConfirmedScreen(),
                   );
                 }
               },

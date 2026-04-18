@@ -8,7 +8,7 @@ final class OrderListInitial extends OrderListState {}
 final class OrderShowingLoadingState extends OrderListState {}
 
 final class OrderShowningSuccessState extends OrderListState {
-  final List<Map<String, dynamic>> data;
+  final List<OrderListModel> data;
 
   OrderShowningSuccessState({required this.data});
 }

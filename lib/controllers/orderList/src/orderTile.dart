@@ -1,3 +1,4 @@
+import 'package:exotic/data/models/order_list_model.dart';
 import 'package:exotic/view/orderDetails/orderDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -58,21 +59,10 @@ class _RatingStarsState extends State<RatingStars> {
   }
 }
 
-// 🧱 Order Tile Widget
+// Order Tile Widget
 class OrderShowingTile extends StatelessWidget {
-  final String imagePath;
-  final String orderStatus;
-  final String productName;
-  final String data;
-  final Map<String, dynamic> product;
-  const OrderShowingTile({
-    super.key,
-    required this.imagePath,
-    required this.orderStatus,
-    required this.productName,
-    required this.data,
-    required this.product,
-  });
+  final OrderListModel product;
+  const OrderShowingTile({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -115,9 +105,9 @@ class OrderShowingTile extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child:
-                      imagePath.isNotEmpty
+                      product.productImage!.isNotEmpty
                           ? Image.network(
-                            imagePath,
+                            product.productImage!,
                             fit: BoxFit.cover,
                             errorBuilder:
                                 (context, error, stackTrace) => const Icon(
@@ -138,13 +128,15 @@ class OrderShowingTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "$orderStatus • $data",
+                      "${product.orderStatus} • ${product.date}",
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.w700,
                         fontSize: 13,
                         color:
-                            orderStatus.toLowerCase().contains("cancel")
+                            product.orderStatus!.toLowerCase().contains(
+                                  "cancel",
+                                )
                                 ? Colors.red.shade600
                                 : const Color(0xFF9747FF),
                       ),
@@ -153,7 +145,7 @@ class OrderShowingTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      productName,
+                      product.productName!,
                       style: const TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 14,

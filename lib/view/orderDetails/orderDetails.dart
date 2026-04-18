@@ -1,9 +1,10 @@
 import 'package:exotic/controllers/orderDetails/orderDetailsComponent.dart';
+import 'package:exotic/data/models/order_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class OrderdetailsPage extends StatelessWidget {
-  final Map<String, dynamic> product;
+  final OrderListModel product;
   const OrderdetailsPage({super.key, required this.product});
 
   @override

@@ -5,7 +5,6 @@ import 'package:exotic/data/blocs/homescreen/categories/cubit/subcategories_cubi
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/blocs/orderList/bloc/order_list_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
-import 'package:exotic/data/blocs/reviews/reviews_bloc.dart';
 import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/blocs/vendorStore/bloc/vender_bloc.dart';
@@ -20,6 +19,7 @@ import 'package:exotic/data/providers/user_login_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
+import 'package:exotic/data/providers/order_list_provider.dart';
 import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => MetaDataProvider()),
         ChangeNotifierProvider(create: (_) => HomepageProvider()),
         ChangeNotifierProvider(create: (_) => SearchProductProvider()),
+        ChangeNotifierProvider(create: (_) => OrderListProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),

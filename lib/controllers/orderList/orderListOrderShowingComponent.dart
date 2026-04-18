@@ -1,7 +1,9 @@
 import 'package:exotic/controllers/orderList/src/orderTile.dart';
 import 'package:exotic/data/blocs/orderList/bloc/order_list_bloc.dart';
+import 'package:exotic/data/providers/order_list_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OrderListOrderShowingComponent extends StatefulWidget {
@@ -17,11 +19,14 @@ class _OrderListOrderShowingComponentState
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      // Ensures bounded height
       child: Container(
         color: Colors.white,
         child: BlocConsumer<OrderListBloc, OrderListState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is OrderShowningSuccessState) {
+              context.read<OrderListProvider>().setOrders(state.data);
+            }
+          },
           builder: (context, state) {
             if (state is OrderShowingLoadingState) {
               return ListView.builder(
@@ -72,28 +77,25 @@ class _OrderListOrderShowingComponentState
               );
             }
 
-            if (state is OrderShowningSuccessState) {
-              return ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                itemCount: state.data.length,
-                itemBuilder: (context, index) {
-                  final order = state.data[index];
-                  return OrderShowingTile(
-                    product: order,
-                    imagePath: order['ProductImage'] ?? '',
-                    orderStatus: order['orderStatus'] ?? '',
-                    productName: order['productName'] ?? '',
-                    data: order['date'] ?? '',
-                  );
-                },
-              );
-            }
-
             if (state is OrderShowningErrorState) {
               return Center(child: Text(state.errMsg));
             }
 
-            return const SizedBox();
+            // By default use provider so that any local changes on provider reflects without bloc emitting
+            return Consumer<OrderListProvider>(
+              builder: (context, provider, child) {
+                if (provider.orders.isEmpty && state is! OrderShowningSuccessState) {
+                  return const SizedBox();
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  itemCount: provider.orders.length,
+                  itemBuilder: (context, index) {
+                    return OrderShowingTile(product: provider.orders[index]);
+                  },
+                );
+              },
+            );
           },
         ),
       ),

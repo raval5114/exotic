@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:exotic/data/domains/orderList/orderList.dart';
+import 'package:exotic/data/models/order_list_model.dart';
 import 'package:meta/meta.dart';
 
 part 'order_list_event.dart';
@@ -12,7 +13,11 @@ class OrderListBloc extends Bloc<OrderListEvent, OrderListState> {
       try {
         OrderlistRepo _repo = OrderlistRepo();
         List<Map<String, dynamic>> data = await _repo.fetchUserOderList();
-        emit(OrderShowningSuccessState(data: data));
+        emit(
+          OrderShowningSuccessState(
+            data: data.map<OrderListModel>((e) => OrderListModel.fromJson(e)).toList(),
+          ),
+        );
       } catch (e) {
         emit(OrderShowningErrorState(errMsg: e.toString()));
       }

@@ -16,7 +16,7 @@ import 'package:exotic/view/homescreen/sections/categories.dart';
 import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
-const String appInitialLocation = '/productsTesting';
+const String appInitialLocation = '/';
 
 final goRoutes = GoRouter(
   initialLocation: appInitialLocation,
