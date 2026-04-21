@@ -119,24 +119,18 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                 // Determine styling dynamically based on the suggestion type
                 IconData fallbackIcon = Icons.search;
                 Color iconColor = Colors.grey.shade500;
-                Color bgColor = Colors.grey.shade100;
-
                 if (item.type == 'popular') {
                   fallbackIcon = Icons.trending_up;
-                  iconColor = Colors.orange.shade600;
-                  bgColor = Colors.orange.shade50;
+                  iconColor = Colors.grey.shade600;
                 } else if (item.type == 'category') {
-                  fallbackIcon = Icons.category_outlined;
-                  iconColor = Colors.blue.shade600;
-                  bgColor = Colors.blue.shade50;
+                  fallbackIcon = Icons.search;
+                  iconColor = Colors.grey.shade500;
                 } else if (item.type == 'brand') {
-                  fallbackIcon = Icons.storefront_outlined;
-                  iconColor = Colors.purple.shade600;
-                  bgColor = Colors.purple.shade50;
+                  fallbackIcon = Icons.search;
+                  iconColor = Colors.grey.shade500;
                 } else if (item.type == 'product') {
-                  fallbackIcon = Icons.inventory_2_outlined;
-                  iconColor = Colors.green.shade600;
-                  bgColor = Colors.green.shade50;
+                  fallbackIcon = Icons.search;
+                  iconColor = Colors.grey.shade500;
                 }
 
                 return Material(
@@ -154,13 +148,6 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                           extra: () => ProductsShell(),
                         );
                       } else {
-                        // context.read<SearchProductBloc>().add(
-                        //   SearchedProductDataCallingEvent(url: item.dataUrl!),
-                        // );
-                        // context.push(
-                        //   '/product',
-                        //   extra: () => SearchedProductScreen(),
-                        // );
                         context.push(
                           "/ProductsViewer",
                           extra: {
@@ -169,8 +156,6 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                           },
                         );
                       }
-                      // controller.text = item.title ?? '';
-                      // FocusManager.instance.primaryFocus?.unfocus();
                     },
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -180,30 +165,31 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                       child: Row(
                         children: [
                           // LEADING ICON OR THUMBNAIL
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: bgColor,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.shade100),
-                            ),
-                            child:
-                                item.image != null && item.image!.isNotEmpty
-                                    ? ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.network(
-                                        item.image!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder:
-                                            (_, __, ___) => Icon(
-                                              fallbackIcon,
-                                              color: iconColor,
-                                            ),
+                          if (item.image != null && item.image!.isNotEmpty)
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: Colors.grey.shade200),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  item.image!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder:
+                                      (_, __, ___) => Icon(
+                                        fallbackIcon,
+                                        color: iconColor,
+                                        size: 20,
                                       ),
-                                    )
-                                    : Icon(fallbackIcon, color: iconColor),
-                          ),
+                                ),
+                              ),
+                            )
+                          else
+                            Icon(fallbackIcon, color: iconColor, size: 22),
+
                           const SizedBox(width: 16),
 
                           // CENTER TEXT CONTENT
@@ -216,54 +202,39 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
+                                    fontFamily: 'Roboto',
+                                    fontWeight: FontWeight.w400,
                                     fontSize: 15,
                                     color: Colors.black87,
-                                    letterSpacing: -0.2,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  item.subtitle ?? '',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color:
-                                        item.type == 'product'
-                                            ? Colors.green.shade700
-                                            : Colors.grey.shade500,
-                                    fontSize: 13,
-                                    fontWeight:
-                                        item.type == 'product'
-                                            ? FontWeight.w600
-                                            : FontWeight.w400,
+                                if (item.subtitle != null &&
+                                    item.subtitle!.isNotEmpty) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    item.subtitle!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      color: Colors.grey.shade600,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ],
                             ),
                           ),
                           const SizedBox(width: 12),
 
                           // TRAILING ACTION INDICATOR
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color:
-                                  item.type == 'product'
-                                      ? Colors.blue.shade50
-                                      : Colors.transparent,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              item.type == 'product'
-                                  ? Icons.arrow_forward_ios
-                                  : Icons.north_west,
-                              size: item.type == 'product' ? 14 : 18,
-                              color:
-                                  item.type == 'product'
-                                      ? Colors.blue.shade600
-                                      : Colors.grey.shade400,
-                            ),
+                          Icon(
+                            item.type == 'product'
+                                ? Icons.arrow_forward_ios
+                                : Icons.north_west,
+                            size: item.type == 'product' ? 14 : 18,
+                            color: Colors.grey.shade400,
                           ),
                         ],
                       ),

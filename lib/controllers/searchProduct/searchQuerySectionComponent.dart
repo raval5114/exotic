@@ -58,13 +58,25 @@ class _SearchquerysectioncomponentState
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
+      style: const TextStyle(
+        fontFamily: 'Roboto',
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+        color: Colors.black87,
+      ),
       decoration: InputDecoration(
         hintText: 'Search...',
+        hintStyle: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 14,
+          color: Colors.grey.shade500,
+          fontWeight: FontWeight.w400,
+        ),
         border: InputBorder.none,
         suffixIcon:
             controller.text.isNotEmpty
                 ? IconButton(
-                  icon: const Icon(Icons.clear),
+                  icon: const Icon(Icons.clear, size: 20, color: Colors.grey),
                   onPressed: () {
                     controller.clear();
                   },
