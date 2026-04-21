@@ -13,7 +13,7 @@ class WishlistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ DATA is List<dynamic>
+  /// DATA is List<dynamic>
   void setWishlist(List<dynamic> data) {
     _wishlist
       ..clear()

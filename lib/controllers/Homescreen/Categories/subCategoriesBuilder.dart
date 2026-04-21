@@ -40,7 +40,11 @@ class _SubCategoriesBuilderState extends State<SubCategoriesBuilder> {
             final subcat = validSubcategories[index];
             final products = provider.getChildren(subcat.id);
 
-            return CategoryTile(title: subcat.name, products: products);
+            return CategoryTile(
+              id: int.parse(subcat.catIds!),
+              title: subcat.name,
+              products: products,
+            );
           },
         );
       },

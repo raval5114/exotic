@@ -1,3 +1,5 @@
+import 'package:exotic/Test/ProductViewerTesting/productViewerTesting.dart';
+import 'package:exotic/view/productViewer/productViewer.dart';
 import 'package:exotic/view/reviews/ReviewScreen.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
@@ -23,6 +25,17 @@ final goRoutes = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
     //testing routes
+    GoRoute(path: '/test', builder: (context, state) => Productviewertesting()),
+    GoRoute(
+      path: '/ProductsViewer',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return ProductViewer(
+          url: extra['url'] as String,
+          title: extra['title'] as String,
+        );
+      },
+    ),
     GoRoute(
       path: '/reviews',
       builder: (context, state) {

@@ -167,7 +167,10 @@ class FilterCategory {
     return FilterCategory(
       id: json['id']?.toString(),
       name: json['name'],
-      count: json['count'],
+      count:
+          json['count'] is int
+              ? json['count']
+              : int.tryParse(json['count']?.toString() ?? ''),
     );
   }
 }
@@ -183,7 +186,10 @@ class FilterBrand {
     return FilterBrand(
       id: json['id']?.toString(),
       name: json['name'],
-      count: json['count'],
+      count:
+          json['count'] is int
+              ? json['count']
+              : int.tryParse(json['count']?.toString() ?? ''),
     );
   }
 }

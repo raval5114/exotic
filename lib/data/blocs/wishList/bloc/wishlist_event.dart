@@ -37,6 +37,16 @@ class RemoveWishlistEvent extends WishlistEvent {
   List<Object?> get props => [wishlistid];
 }
 
+/// ❌ Remove from wishlist by Product
+class RemoveWishlistByProductEvent extends WishlistEvent {
+  final int cid;
+  final int pid;
+  const RemoveWishlistByProductEvent({required this.cid, required this.pid});
+
+  @override
+  List<Object?> get props => [cid, pid];
+}
+
 /// 🛒 ADD TO CART (from wishlist)
 class AddWishlistItemToCartEvent extends WishlistEvent {
   final int productId;

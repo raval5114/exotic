@@ -1,14 +1,16 @@
-import 'package:go_router/go_router.dart';
-import 'package:exotic/controllers/searchProduct/searchProductGridComponent.dart';
+import 'package:exotic/controllers/ProductViewer/productViewer.dart';
+import 'package:exotic/controllers/searchProduct/searchQuerySectionComponent.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class SearchedProductScreen extends StatelessWidget {
-  const SearchedProductScreen({super.key});
+class ProductViewer extends StatelessWidget {
+  final String url;
+  final String title;
+  const ProductViewer({super.key, required this.url, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA), // Premium off-white background
       appBar: AppBar(
         elevation: 8,
         shadowColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
@@ -23,13 +25,15 @@ class SearchedProductScreen extends StatelessWidget {
           onPressed: () => context.pop(),
           splashRadius: 24,
         ),
-        title: const Text(
-          "Search Results",
-          style: TextStyle(
+        title: Text(
+          title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.w800,
-            fontSize: 20,
-            letterSpacing: 0.5,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            letterSpacing: 0.3,
           ),
         ),
         actions: [
@@ -42,7 +46,8 @@ class SearchedProductScreen extends StatelessWidget {
           const SizedBox(width: 4),
         ],
       ),
-      body: const SafeArea(child: SearchProductGridComponent()),
+
+      body: ProductViewerComponent(url: url),
     );
   }
 }

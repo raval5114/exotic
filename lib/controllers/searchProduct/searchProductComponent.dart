@@ -154,12 +154,19 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                           extra: () => ProductsShell(),
                         );
                       } else {
-                        context.read<SearchProductBloc>().add(
-                          SearchedProductDataCallingEvent(url: item.dataUrl!),
-                        );
+                        // context.read<SearchProductBloc>().add(
+                        //   SearchedProductDataCallingEvent(url: item.dataUrl!),
+                        // );
+                        // context.push(
+                        //   '/product',
+                        //   extra: () => SearchedProductScreen(),
+                        // );
                         context.push(
-                          '/dynamicRoute',
-                          extra: () => SearchedProductScreen(),
+                          "/ProductsViewer",
+                          extra: {
+                            "url": "${item.dataUrl}",
+                            "title": item.title,
+                          },
                         );
                       }
                       // controller.text = item.title ?? '';

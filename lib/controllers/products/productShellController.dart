@@ -10,6 +10,7 @@ import 'package:exotic/data/blocs/wishList/bloc/wishlist_state.dart';
 import 'package:exotic/data/models/product_orignal.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
+import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/view/homescreen/sections/cart.dart';
 import 'package:exotic/view/payment/payment.dart';
 import 'package:flutter/material.dart';
@@ -128,9 +129,7 @@ class _ProductsShellState extends State<ProductsShell> {
       ),
       actions: [
         InkWell(
-          onTap:
-              () => context.push('/dynamicRoute', extra: () => CartScreen(),
-              ),
+          onTap: () => context.push('/dynamicRoute', extra: () => CartScreen()),
           child: Padding(
             padding: EdgeInsets.only(right: 16),
             child: Icon(
@@ -150,25 +149,95 @@ class _ProductsShellState extends State<ProductsShell> {
       color: Colors.white,
       child: Row(
         children: [
-          BlocBuilder<WishlistBloc, WishlistState>(
-            builder: (context, state) {
-              final bool isWishlisted = state is WishlistActionSuccessState;
-              return InkWell(
-                onTap: () {
-                  context.read<WishlistBloc>().add(
-                    AddWishlistEvent(
-                      cid: context.read<UserProvider>().user!.customerId,
-                      pid: int.parse(
-                        context.read<ProductProvider>().product!.pId!,
+          Builder(
+            builder: (context) {
+              final productProvider = context.watch<ProductProvider>();
+              final product = productProvider.product;
+
+              if (product == null || product.pId == null) {
+                return const Icon(
+                  Icons.favorite_border,
+                  color: Colors.grey,
+                  size: 30,
+                );
+              }
+
+              final wishlistProvider = context.watch<WishlistProvider>();
+              final productId = int.tryParse(product.pId!) ?? 0;
+              final isWishlisted = wishlistProvider.isWishlisted(productId);
+
+              return BlocConsumer<WishlistBloc, WishlistState>(
+                listener: (context, state) {
+                  if (state is WishlistSuccessState &&
+                      state.wishlist != null &&
+                      context.mounted) {
+                    context.read<WishlistProvider>().setWishlist(
+                      state.wishlist!,
+                    );
+                  }
+                  if (state is WishlistActionSuccessState) {
+                    context.read<WishlistBloc>().add(
+                      FetchWishlistEvent(
+                        context.read<UserProvider>().user!.customerId,
                       ),
-                    ),
+                    );
+                  }
+                  if (state is WishlistActionRemovedState) {
+                    context.read<WishlistProvider>().removeByProduct(productId);
+                  }
+                },
+                builder: (context, state) {
+                  final bool isWishlisting = state is WishlistLoadingState;
+
+                  return InkWell(
+                    onTap: () {
+                      if (isWishlisting) return;
+
+                      final user = context.read<UserProvider>().user;
+                      if (user == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Please login first")),
+                        );
+                        return;
+                      }
+
+                      if (isWishlisted) {
+                        final target = wishlistProvider.wishlist.firstWhere(
+                          (e) => e.productId == productId,
+                        );
+                        context.read<WishlistBloc>().add(
+                          RemoveWishlistEvent(wishlistid: target.wishlistId),
+                        );
+                      } else {
+                        context.read<WishlistBloc>().add(
+                          AddWishlistEvent(
+                            cid: user.customerId,
+                            pid: productId,
+                          ),
+                        );
+                      }
+                    },
+                    child:
+                        isWishlisting
+                            ? const SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              ),
+                            )
+                            : Icon(
+                              isWishlisted
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: isWishlisted ? Colors.red : Colors.black,
+                              size: 30,
+                            ),
                   );
                 },
-                child: Icon(
-                  isWishlisted ? Icons.favorite : Icons.favorite_border,
-                  color: isWishlisted ? Colors.red : Colors.black,
-                  size: 30,
-                ),
               );
             },
           ),
@@ -205,10 +274,14 @@ class _ProductsShellState extends State<ProductsShell> {
                 ),
               ),
               onPressed: () {
-                context.push('/dynamicRoute', extra: () => PaymentScreen(
-                          productData: {},
-                          discountedPrice: '10000',
-                          intialPrice: '13000',),
+                context.push(
+                  '/dynamicRoute',
+                  extra:
+                      () => PaymentScreen(
+                        productData: {},
+                        discountedPrice: '10000',
+                        intialPrice: '13000',
+                      ),
                 );
               },
               child: const Text(
