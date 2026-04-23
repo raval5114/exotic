@@ -20,42 +20,59 @@ class EnhancedTrayItem extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            height: 78,
-            width: 78,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(22),
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFFFFF), Color(0xFFF7F8FA)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 12,
-                  offset: const Offset(0, 8),
+          SizedBox(
+            height: 95,
+            width: 80,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              clipBehavior: Clip.none,
+              children: [
+                // 3D Tray Base
+                Container(
+                  height: 32,
+                  width: 80,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFCE1E8), // Light pink top
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xFFF6BACB), // Thicker 3D depth bottom
+                        offset: Offset(0, 6),
+                      ),
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(0, 10),
+                        blurRadius: 6,
+                      ),
+                    ],
+                  ),
                 ),
-                const BoxShadow(
-                  color: Colors.white,
-                  offset: Offset(-3, -3),
-                  blurRadius: 6,
+                // Floating Icon/Image
+                Positioned(
+                  bottom: 24, // Sits on top of the base
+                  child: Container(
+                    height: 66,
+                    width: 66,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.memory(
+                        base64ToBytes(item.img),
+                        fit: BoxFit.fill,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(Icons.image_not_supported, size: 26),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(0),
-              child: Image.memory(
-                base64ToBytes(item.img),
-                fit: BoxFit.fill,
-                errorBuilder:
-                    (_, __, ___) =>
-                        const Icon(Icons.image_not_supported, size: 26),
-              ),
-            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           SizedBox(
             width: 90,
             child: Text(

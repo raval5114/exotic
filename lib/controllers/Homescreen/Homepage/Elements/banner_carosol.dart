@@ -103,7 +103,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
     }
 
     // Determine dimensions from design requirements
-    double height = 190;
+    double height = 135;
     double width = double.infinity;
     if (widget.content != null && widget.content!.height != 'auto') {
       try {
@@ -134,13 +134,8 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
           margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            border: Border.all(color: Colors.grey.shade300, width: 1),
+            color: Colors.white,
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -168,7 +163,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                                 bytes,
                                 height: height,
                                 width: double.infinity,
-                                fit: BoxFit.cover,
+                                fit: BoxFit.fill,
                               );
                             } catch (e) {
                               debugPrint("Error decoding base64 image: $e");
@@ -184,7 +179,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                               imageUrl: item.imageBase64Url,
                               height: height,
                               width: width,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fill,
                               borderRadius: BorderRadius.circular(12),
                             );
                           }
@@ -194,7 +189,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
                             imageUrl: imageUrl,
                             height: height,
                             width: width,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                             borderRadius: BorderRadius.circular(12),
                           );
                         }
@@ -207,6 +202,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
             ),
           ),
         ),
+
         if (items.length > 1) ...[
           const SizedBox(height: 12),
           DotsIndicator(count: items.length, currentIndex: _currentIndex),

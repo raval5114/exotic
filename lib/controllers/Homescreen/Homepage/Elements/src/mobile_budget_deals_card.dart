@@ -11,8 +11,7 @@ class BudgetDealCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.04),
@@ -21,60 +20,58 @@ class BudgetDealCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Image
-          Expanded(
-            flex: 3,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.memory(
-                  base64ToBytes(deal.img),
-                  fit: BoxFit.contain,
-                  width: double.infinity,
-                  errorBuilder:
-                      (_, __, ___) => const Center(
-                        child: Icon(Icons.image_not_supported, size: 30),
-                      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Stack(
+          children: [
+            /// Full Size Image
+            Positioned.fill(
+              child: Image.memory(
+                base64ToBytes(deal.img),
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const Center(
+                  child: Icon(Icons.image_not_supported, size: 30),
                 ),
               ),
             ),
-          ),
-
-          /// Text Section
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  deal.label,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
+            /// Overlaid Text Box
+            Positioned(
+              top: 16,
+              left: 12,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2), // Translucent light box
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  deal.price,
-                  style: const TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 14,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.black,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      deal.label,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      deal.price,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -12,27 +12,21 @@ class Mobile3dIconTrayComponent extends StatelessWidget {
     final config = element.config;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24),
+      padding: const EdgeInsets.only(top: 20, bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFFDFDFD),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: Column(
         children: [
           SizedBox(
-            height: 120, // Increased height
+            height: 138,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 24),
+              separatorBuilder: (_, __) => const SizedBox(width: 15),
               itemBuilder: (context, index) {
                 final item = element.items[index];
                 return EnhancedTrayItem(

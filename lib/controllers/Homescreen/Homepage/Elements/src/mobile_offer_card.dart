@@ -31,21 +31,21 @@ class OfferGridCard extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 6),
 
         /// Label
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
-            item.label.toUpperCase(),
+            item.label, // Removed uppercase
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 11,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.5,
+              fontSize: 12,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0,
             ),
           ),
         ),
@@ -61,8 +61,8 @@ class OfferGridCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
+              fontSize: 13,
+              fontWeight: FontWeight.w900,
               color: Colors.black,
             ),
           ),
