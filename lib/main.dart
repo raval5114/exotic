@@ -28,7 +28,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+l  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   await setUpGetItLocator();
