@@ -14,10 +14,11 @@ class MobileCategoryGridComponent extends StatelessWidget {
     const int rowCount = 2;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,14 +26,13 @@ class MobileCategoryGridComponent extends StatelessWidget {
           LayoutBuilder(
             builder: (context, constraints) {
               final totalWidth = constraints.maxWidth;
-              const int itemsPerRow = 5;
-              final availableWidth =
-                  totalWidth -
-                  (horizontalPadding * 2) -
-                  (spacing * (itemsPerRow - 1));
-
+              
+              // Dynamically size items to remove empty space on the right
+              final int columns = (element.items.length / rowCount).ceil();
+              final double itemsPerRow = columns <= 4 ? columns.toDouble() : 4.5;
+              final availableWidth = totalWidth - (horizontalPadding * 2) - (spacing * (itemsPerRow - 1));
               final itemWidth = availableWidth / itemsPerRow;
-              final itemHeight = itemWidth * 1.35; // slightly taller for better labels
+              final itemHeight = 84.0; // Fit content completely tightly
 
               return SizedBox(
                 height: (itemHeight * rowCount) + spacing,
@@ -45,7 +45,7 @@ class MobileCategoryGridComponent extends StatelessWidget {
                     crossAxisCount: rowCount, // 2 rows
                     crossAxisSpacing: spacing,
                     mainAxisSpacing: spacing,
-                    childAspectRatio: itemWidth / itemHeight,
+                    childAspectRatio: itemHeight / itemWidth, // crossAxis/mainAxis for horizontal list
                   ),
                   itemBuilder: (context, index) {
                     return _ScrollableCategoryItem(item: element.items[index]);

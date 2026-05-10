@@ -42,7 +42,7 @@ class OfferStripCard extends StatelessWidget {
                       color: const Color(0xFFF9F9F9),
                       child: Image.memory(
                         base64ToBytes(item.image),
-                        fit: BoxFit.contain,
+                        fit: BoxFit.fill,
                       ),
                     ),
 

@@ -12,8 +12,9 @@ class MobileBudgetDealsComponent extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8F5E9), // Light mint green
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -25,7 +26,7 @@ class MobileBudgetDealsComponent extends StatelessWidget {
                 : "Spotlight's on",
             style: const TextStyle(
               fontFamily: 'Roboto',
-              fontSize: 22,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.2,
               color: Colors.black,

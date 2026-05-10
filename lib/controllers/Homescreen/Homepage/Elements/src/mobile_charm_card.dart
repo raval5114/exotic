@@ -33,15 +33,16 @@ class CharmCard extends StatelessWidget {
           clipBehavior: Clip.none,
           alignment: Alignment.bottomCenter,
           children: [
-            // Bottom shadow/stack effect
-            Positioned(
-              bottom: 2,
+            // Rotated stacked background effect (Image 2 style)
+            Transform.rotate(
+              angle: -0.06, // Slight counter-clockwise rotation
               child: Container(
-                width: 165,
-                height: 40,
+                width: 180,
+                height: 260,
+                margin: const EdgeInsets.only(bottom: 8),
                 decoration: BoxDecoration(
-                  color: stackedColor.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(20),
+                  color: stackedColor.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(24),
                 ),
               ),
             ),
@@ -87,11 +88,11 @@ class CharmCard extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 30), // Space for top hearts
+                      const SizedBox(height: 25), // Space for top hearts
                       // Image Section
                       Expanded(
                         child: Container(
-                          margin: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(4),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: borderColor.withOpacity(0.5),
@@ -100,6 +101,7 @@ class CharmCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Stack(
+                            clipBehavior: Clip.none,
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
@@ -107,7 +109,7 @@ class CharmCard extends StatelessWidget {
                                   base64ToBytes(item.img),
                                   width: double.infinity,
                                   height: double.infinity,
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                               // Floating decorative hearts
