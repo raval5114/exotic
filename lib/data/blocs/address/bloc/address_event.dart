@@ -70,3 +70,10 @@ class UpdateAddressEvent extends AddressEvent {
     this.caIsDefault = 0,
   });
 }
+
+class DeleteAddressEvent extends AddressEvent {
+  final int caId;
+  final int cId;
+
+  DeleteAddressEvent({required this.caId, required this.cId});
+}

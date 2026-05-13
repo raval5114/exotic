@@ -69,12 +69,11 @@ class ProductDeliveryAndReturnPolicyComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Delivery & Policies",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              fontSize: 18,
               color: Colors.black,
             ),
           ),
@@ -106,9 +105,10 @@ class ProductDeliveryAndReturnPolicyComponent extends StatelessWidget {
                         children: [
                           Text(
                             policy['title'],
-                            style: const TextStyle(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleSmall?.copyWith(
                               fontFamily: 'Roboto',
-                              fontSize: 15,
                               color: Colors.black87,
                               fontWeight: FontWeight.w500,
                             ),
@@ -118,9 +118,10 @@ class ProductDeliveryAndReturnPolicyComponent extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               policy['subtitle'].toString(),
-                              style: TextStyle(
+                              style: Theme.of(
+                                context,
+                              ).textTheme.bodySmall?.copyWith(
                                 fontFamily: 'Roboto',
-                                fontSize: 13,
                                 color: Colors.grey.shade600,
                               ),
                             ),

@@ -10,6 +10,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     on<FetchAddressesEvent>(_onFetchAddresses);
     on<AddAddressEvent>(_onAddAddress);
     on<UpdateAddressEvent>(_onUpdateAddress);
+    on<DeleteAddressEvent>(_onDeleteAddress);
   }
 
   Future<void> _onFetchAddresses(
@@ -94,6 +95,28 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     } catch (e) {
       final errorMsg = e.toString().replaceFirst('Exception: ', '');
       emit(state.copyWith(status: AddressStatus.addError, message: errorMsg));
+    }
+  }
+
+  Future<void> _onDeleteAddress(
+    DeleteAddressEvent event,
+    Emitter<AddressState> emit,
+  ) async {
+    emit(state.copyWith(status: AddressStatus.deleting));
+    try {
+      await _addressesRepo.deleteAddress(caId: event.caId, cId: event.cId);
+      emit(
+        state.copyWith(
+          status: AddressStatus.deleted,
+          message: "Address deleted successfully!",
+        ),
+      );
+      add(FetchAddressesEvent(cId: event.cId));
+    } catch (e) {
+      final errorMsg = e.toString().replaceFirst('Exception: ', '');
+      emit(
+        state.copyWith(status: AddressStatus.deleteError, message: errorMsg),
+      );
     }
   }
 }

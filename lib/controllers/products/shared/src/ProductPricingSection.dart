@@ -21,32 +21,29 @@ class ProductPricingSection extends StatelessWidget {
           Row(children: [Icon(Icons.arrow_downward, color: Colors.green)]),
           Text(
             '$discount%',
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
               color: Colors.green,
-              fontSize: 18,
             ),
           ),
           Gap(10),
           Text(
             "₹$discountedPrice",
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
-              fontSize: 18,
             ),
           ),
           Gap(10),
           Text(
             "₹$initialPrice",
-            style: const TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w700,
               decoration: TextDecoration.lineThrough,
               decorationColor: Colors.black38,
               color: Colors.black38,
-              fontSize: 18,
             ),
           ),
         ],

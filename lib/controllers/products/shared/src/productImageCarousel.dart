@@ -149,10 +149,10 @@ class _Tap360Button extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.threesixty, size: 18),
-              SizedBox(width: 8),
-              Text("Tap to see in 360°", style: TextStyle(fontSize: 14)),
+            children: [
+              const Icon(Icons.threesixty, size: 18),
+              const SizedBox(width: 8),
+              Text("Tap to see in 360°", style: Theme.of(context).textTheme.bodyMedium),
             ],
           ),
         ),

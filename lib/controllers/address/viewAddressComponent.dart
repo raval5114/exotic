@@ -49,11 +49,26 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                 backgroundColor: Colors.red,
               ),
             );
+          } else if (state.status == AddressStatus.deleted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? 'Address deleted successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else if (state.status == AddressStatus.deleteError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message ?? 'Failed to delete address.'),
+                backgroundColor: Colors.red,
+              ),
+            );
           }
         },
         builder: (context, state) {
           if (state.status == AddressStatus.loading ||
-              state.status == AddressStatus.initial) {
+              state.status == AddressStatus.initial ||
+              state.status == AddressStatus.deleting) {
             return const Center(child: CircularProgressIndicator());
           } else if (state.status == AddressStatus.error) {
             return Center(child: Text("Error: ${state.message}"));
@@ -175,7 +190,30 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                       ],
                     ),
                   ),
-                  trailing: const Icon(Icons.edit, color: Colors.grey),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.grey),
+                        onPressed: () {
+                          context.push('/updateAddress', extra: address);
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          if (address.caId != null && address.cId != null) {
+                            context.read<AddressBloc>().add(
+                              DeleteAddressEvent(
+                                caId: address.caId!,
+                                cId: address.cId!,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                   onTap: () {
                     context.push('/updateAddress', extra: address);
                   },

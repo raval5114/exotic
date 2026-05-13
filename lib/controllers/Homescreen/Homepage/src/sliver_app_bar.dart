@@ -48,7 +48,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                         child: InkWell(
                           onTap: () => _showAddressBottomSheet(context),
                           borderRadius: BorderRadius.circular(12),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 8,
@@ -63,15 +63,14 @@ class ExoticSliverAppBar extends StatelessWidget {
                                 SizedBox(width: 8),
                                 Text(
                                   "388440  ",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   "Add address",
-                                  style: TextStyle(
-                                    fontSize: 13,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
                                     decoration: TextDecoration.underline,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -130,14 +129,12 @@ class ExoticSliverAppBar extends StatelessWidget {
                         dividerColor: Colors.grey.shade300,
                         labelColor: Colors.deepPurple,
                         unselectedLabelColor: Colors.black87,
-                        labelStyle: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        unselectedLabelStyle: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                        ),
+                        labelStyle: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w300),
+                        unselectedLabelStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w300),
                         indicator: const UnderlineTabIndicator(
                           borderSide: BorderSide(
                             color: Color(0xFF9747FF),
@@ -224,10 +221,9 @@ class ExoticSliverAppBar extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Add new address",
-                    style: TextStyle(
-                      fontSize: 16,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins',
                     ),
@@ -268,11 +264,9 @@ class ExoticSliverAppBar extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Saved Addresses",
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: Colors.grey,
                       fontFamily: 'Poppins',
                     ),
@@ -282,12 +276,11 @@ class ExoticSliverAppBar extends StatelessWidget {
                       Navigator.of(context).pop();
                       context.push('/viewAddress');
                     },
-                    child: const Text(
+                    child: Text(
                       "View All",
-                      style: TextStyle(
-                        fontSize: 12,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF9747FF),
+                        color: const Color(0xFF9747FF),
                       ),
                     ),
                   ),
@@ -371,10 +364,13 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                 addr.caBadge?.isNotEmpty == true
                                                     ? addr.caBadge!
                                                     : "Address",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14,
-                                                ),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                               ),
                                               if (isDefault) ...[
                                                 const SizedBox(width: 8),
@@ -395,15 +391,17 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                   ),
                                                   child: Text(
                                                     "Default",
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color:
-                                                          Theme.of(
-                                                            context,
-                                                          ).primaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelSmall
+                                                        ?.copyWith(
+                                                          color:
+                                                              Theme.of(
+                                                                context,
+                                                              ).primaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
                                                   ),
                                                 ),
                                               ],
@@ -412,8 +410,9 @@ class ExoticSliverAppBar extends StatelessWidget {
                                           const SizedBox(height: 4),
                                           Text(
                                             "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
-                                            style: TextStyle(
-                                              fontSize: 12,
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.bodySmall?.copyWith(
                                               color: Colors.grey[600],
                                             ),
                                             maxLines: 1,

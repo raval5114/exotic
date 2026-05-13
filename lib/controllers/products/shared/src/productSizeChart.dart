@@ -26,9 +26,8 @@ class _SizeSelectorState extends State<SizeSelector> {
           children: [
             Text(
               'Size',
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontFamily: 'Roboto',
-                fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
             ),

@@ -254,10 +254,9 @@ class _ProductsShellState extends State<ProductsShell> {
               onPressed: isLoading ? null : () => _addToCart(context),
               child: Text(
                 isLoading ? "Adding..." : "Add to cart",
-                style: const TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontFamily: 'Roboto',
-                  fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -284,12 +283,11 @@ class _ProductsShellState extends State<ProductsShell> {
                       ),
                 );
               },
-              child: const Text(
+              child: Text(
                 "Buy Now",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: Colors.white,
                   fontFamily: 'Roboto',
-                  fontSize: 15,
                   fontWeight: FontWeight.w400,
                 ),
               ),

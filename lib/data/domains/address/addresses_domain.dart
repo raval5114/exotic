@@ -35,8 +35,7 @@ class AddressesDomain {
     String caBadge = "Home",
     int caIsDefault = 0,
   }) async {
-    // Assuming this endpoint based on convention, since add endpoint wasn't provided
-    final url = Uri.parse('https://xotic.in/api/customers/add_address.php');
+    final url = Uri.parse('https://xotic.in/api/customers/address_create.php');
     try {
       final response = await http.post(
         url,
@@ -56,7 +55,7 @@ class AddressesDomain {
           "ca_is_default": caIsDefault.toString(),
         },
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return jsonDecode(response.body) as Map<String, dynamic>;
       } else {
         return {
@@ -114,6 +113,30 @@ class AddressesDomain {
           "status": false,
           "message":
               "Failed to update address. Status code: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      return {"status": false, "message": e.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> deleteAddress({
+    required int caId,
+    required int cId,
+  }) async {
+    final url = Uri.parse('https://xotic.in/api/customers/address_delete.php');
+    try {
+      final response = await http.post(
+        url,
+        body: {"ca_id": caId.toString(), "c_id": cId.toString()},
+      );
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        return {
+          "status": false,
+          "message":
+              "Failed to delete address. Status code: ${response.statusCode}",
         };
       }
     } catch (e) {

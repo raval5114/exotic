@@ -100,10 +100,9 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                     onPressed: isLoading ? null : () => _addToCart(context),
                     child: Text(
                       isLoading ? "Adding..." : "Add to cart",
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'Roboto',
                         color: Colors.white,
-                        fontSize: 15,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -120,18 +119,21 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                       ),
                     ),
                     onPressed: () {
-                      context.push('/dynamicRoute', extra: () => PaymentScreen(
-                                productData: {},
-                                discountedPrice: '10000',
-                                intialPrice: '13000',),
+                      context.push(
+                        '/dynamicRoute',
+                        extra:
+                            () => PaymentScreen(
+                              productData: {},
+                              discountedPrice: '10000',
+                              intialPrice: '13000',
+                            ),
                       );
                     },
                     child: Text(
                       "Buy Now",
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'Roboto',
                         color: Colors.white,
-                        fontSize: 15,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -165,7 +167,9 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
             actions: [
               InkWell(
                 onTap:
-                    () => context.push('/dynamicRoute', extra: () => CartScreen(),
+                    () => context.push(
+                      '/dynamicRoute',
+                      extra: () => CartScreen(),
                     ),
                 child: Padding(
                   padding: EdgeInsets.only(right: 16),

@@ -1,6 +1,17 @@
 import 'package:exotic/data/models/address_model.dart';
 
-enum AddressStatus { initial, loading, loaded, error, adding, added, addError }
+enum AddressStatus {
+  initial,
+  loading,
+  loaded,
+  error,
+  adding,
+  added,
+  addError,
+  deleting,
+  deleted,
+  deleteError
+}
 
 class AddressState {
   final AddressStatus status;

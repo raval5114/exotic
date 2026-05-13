@@ -36,10 +36,9 @@ class SearchProductDiscoverProduct extends StatelessWidget {
             children: [
               Text(
                 "Discover More",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
-                  fontSize: width * 0.045,
                 ),
               ),
               const SizedBox(height: 16),
@@ -58,8 +57,7 @@ class SearchProductDiscoverProduct extends StatelessWidget {
                     ),
                     child: Text(
                       tag,
-                      style: TextStyle(
-                        fontSize: width * 0.035,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.black87,
                         fontWeight: FontWeight.w500,
                       ),

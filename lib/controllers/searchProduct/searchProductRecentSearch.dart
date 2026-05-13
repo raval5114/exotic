@@ -42,10 +42,9 @@ class _SearchProductRecentSearchState extends State<SearchProductRecentSearch> {
             children: [
               Text(
                 "Recent Searches",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
-                  fontSize: width * 0.045,
                   color: Colors.black,
                 ),
               ),
@@ -84,8 +83,7 @@ class _SearchProductRecentSearchState extends State<SearchProductRecentSearch> {
                             item['name'] ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: width * 0.03,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Colors.grey.shade700,
                               fontWeight: FontWeight.w500,
                             ),

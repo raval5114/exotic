@@ -91,6 +91,28 @@ class MyApp extends StatelessWidget {
           surface: Colors.white,
           onSurface: Colors.black,
         ),
+        textTheme: const TextTheme(
+          // Large (Headings/Titles): 18px-32px
+          displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          displaySmall: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          
+          // Medium (Body/Primary Text): 14px-16px
+          bodyLarge: TextStyle(fontSize: 16),
+          bodyMedium: TextStyle(fontSize: 14),
+          titleMedium: TextStyle(fontSize: 16),
+          titleSmall: TextStyle(fontSize: 14),
+          
+          // Small (Captions/Hints): 12px-14px
+          bodySmall: TextStyle(fontSize: 12),
+          labelLarge: TextStyle(fontSize: 14),
+          labelMedium: TextStyle(fontSize: 12),
+          labelSmall: TextStyle(fontSize: 11),
+        ),
       ),
       routerConfig: goRoutes,
     );

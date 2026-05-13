@@ -101,4 +101,17 @@ class AddressesRepo {
       throw Exception(e.toString());
     }
   }
+
+  Future<bool> deleteAddress({required int caId, required int cId}) async {
+    try {
+      final response = await domain.deleteAddress(caId: caId, cId: cId);
+      if (response['status'] == true) {
+        return true;
+      } else {
+        throw Exception(response['message'] ?? 'Failed to delete address.');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
