@@ -2,6 +2,8 @@ import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/providers/brands_provider.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
+import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_event.dart';
 import 'package:exotic/utils/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +48,9 @@ class _SplashscreenComponentState extends State<SplashscreenComponent> {
           if (ssState == true) {
             context.read<CategoriesProvider>().setCategories(state.data);
             context.read<UserProvider>().setUser(state.user);
+            context.read<AddressBloc>().add(
+              FetchAddressesEvent(cId: state.user.customerId),
+            );
             debugPrint("User:${context.read<UserProvider>().user!.customerId}");
             context.go('/home');
           } else {

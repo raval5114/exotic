@@ -9,6 +9,8 @@ import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/blocs/vendorStore/bloc/vender_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/repositories/address/addressesRepo.dart';
 import 'package:exotic/data/providers/brands_provider.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
@@ -20,6 +22,7 @@ import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
 import 'package:exotic/data/providers/order_list_provider.dart';
+import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
 import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +31,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-l  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
 
   await setUpGetItLocator();
@@ -47,6 +50,7 @@ l  WidgetsFlutterBinding.ensureInitialized();
         ChangeNotifierProvider(create: (_) => HomepageProvider()),
         ChangeNotifierProvider(create: (_) => SearchProductProvider()),
         ChangeNotifierProvider(create: (_) => OrderListProvider()),
+        ChangeNotifierProvider(create: (_) => AddressProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
@@ -59,6 +63,7 @@ l  WidgetsFlutterBinding.ensureInitialized();
         BlocProvider(create: (_) => SubcategoriesCubit()),
         BlocProvider(create: (_) => SearchProductBloc()),
         BlocProvider(create: (_) => OrderListBloc()),
+        BlocProvider(create: (_) => AddressBloc(AddressesRepo())),
       ],
       child: const MyApp(),
     ),
@@ -72,7 +77,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Exotic',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF9747FF),
         colorScheme: const ColorScheme(

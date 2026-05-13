@@ -9,6 +9,10 @@ import 'package:exotic/view/offersAndCoupens/offersAndCoupens.dart';
 import 'package:exotic/view/payment/payment.dart';
 import 'package:exotic/view/searchProduct/searchProduct.dart';
 import 'package:exotic/view/splashscreen/splashScreen.dart';
+import 'package:exotic/view/Address/addAdress.dart';
+import 'package:exotic/view/Address/viewAddress.dart';
+import 'package:exotic/view/Address/updateAddress.dart';
+import 'package:exotic/data/models/address_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/view/auth/auth_main.dart';
@@ -24,6 +28,15 @@ final goRoutes = GoRouter(
   initialLocation: appInitialLocation,
   routes: [
     GoRoute(path: '/', builder: (context, state) => Splashscreen()),
+    GoRoute(path: '/addAddress', builder: (context, state) => AddAddress()),
+    GoRoute(path: '/viewAddress', builder: (context, state) => ViewAddress()),
+    GoRoute(
+      path: '/updateAddress',
+      builder: (context, state) {
+        final address = state.extra as Address;
+        return UpdateAddress(address: address);
+      },
+    ),
     //testing routes
     GoRoute(path: '/test', builder: (context, state) => Productviewertesting()),
     GoRoute(
