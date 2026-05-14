@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:csc_picker_plus/csc_picker_plus.dart';
+import 'package:exotic/data/helpers/zip_code_getter.dart';
 
 class AddAddressComponent extends StatefulWidget {
   const AddAddressComponent({super.key});
@@ -19,6 +21,7 @@ class AddAddressComponent extends StatefulWidget {
 
 class _AddAddressComponentState extends State<AddAddressComponent> {
   final _formKey = GlobalKey<FormState>();
+  Timer? _debounce;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _address1Controller = TextEditingController();
@@ -45,6 +48,7 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _nameController.dispose();
     _address1Controller.dispose();
     _address2Controller.dispose();
@@ -56,6 +60,17 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
     _altMobileController.dispose();
     _badgeController.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchLocation(String pincode) async {
+    if (pincode.isEmpty) return;
+    final locationData = await fetchIndiaLocation(pincode: pincode);
+    if (locationData != null && mounted) {
+      setState(() {
+        _stateController.text = locationData["state"] ?? "";
+        _cityController.text = locationData["city"] ?? "";
+      });
+    }
   }
 
   void _saveAddress() {
@@ -88,29 +103,39 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
     required String label,
     required String hint,
     TextInputType keyboardType = TextInputType.text,
+    VoidCallback? onFoucusOver,
+    void Function(String)? onChanged,
     int maxLines = 1,
     String? Function(String?)? validator,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          filled: true,
-          fillColor: Colors.grey.shade50,
+      child: Focus(
+        onFocusChange: (hasFocus) {
+          if (!hasFocus && onFoucusOver != null) {
+            onFoucusOver();
+          }
+        },
+        child: TextFormField(
+          controller: controller,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          onChanged: onChanged,
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: hint,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            filled: true,
+            fillColor: Colors.grey.shade50,
+          ),
+          validator:
+              validator ??
+              (value) {
+                if (value == null || value.trim().isEmpty)
+                  return 'Please enter $label';
+                return null;
+              },
         ),
-        validator:
-            validator ??
-            (value) {
-              if (value == null || value.trim().isEmpty)
-                return 'Please enter $label';
-              return null;
-            },
       ),
     );
   }
@@ -213,6 +238,16 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
                     controller: _pincodeController,
                     label: 'Pincode',
                     hint: 'e.g. 400001',
+                    onFoucusOver: () {
+                      if (_debounce?.isActive ?? false) _debounce!.cancel();
+                      _fetchLocation(_pincodeController.text.trim());
+                    },
+                    onChanged: (value) {
+                      if (_debounce?.isActive ?? false) _debounce!.cancel();
+                      _debounce = Timer(const Duration(seconds: 2), () {
+                        _fetchLocation(value.trim());
+                      });
+                    },
                     keyboardType: TextInputType.number,
                   ),
                   CSCPickerPlus(

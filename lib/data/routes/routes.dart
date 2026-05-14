@@ -22,7 +22,7 @@ import 'package:exotic/view/homescreen/sections/categories.dart';
 import 'package:exotic/view/homescreen/sections/homescreen.dart';
 import 'package:exotic/view/wishlist/wishlist.dart';
 
-const String appInitialLocation = '/';
+const String appInitialLocation = '/test';
 
 final goRoutes = GoRouter(
   initialLocation: appInitialLocation,
@@ -38,7 +38,7 @@ final goRoutes = GoRouter(
       },
     ),
     //testing routes
-    GoRoute(path: '/test', builder: (context, state) => Productviewertesting()),
+    GoRoute(path: '/test', builder: (context, state) => AddAddress()),
     GoRoute(
       path: '/ProductsViewer',
       builder: (context, state) {
