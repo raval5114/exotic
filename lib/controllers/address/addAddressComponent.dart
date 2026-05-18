@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
+
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_event.dart';
 import 'package:exotic/data/blocs/address/bloc/address_state.dart';
@@ -9,7 +9,6 @@ import 'package:exotic/data/models/address_model.dart';
 import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:csc_picker_plus/csc_picker_plus.dart';
 import 'package:exotic/data/helpers/zip_code_getter.dart';
 
 class AddAddressComponent extends StatefulWidget {
@@ -22,6 +21,7 @@ class AddAddressComponent extends StatefulWidget {
 class _AddAddressComponentState extends State<AddAddressComponent> {
   final _formKey = GlobalKey<FormState>();
   Timer? _debounce;
+  final TextEditingController _countryController = TextEditingController();
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _address1Controller = TextEditingController();
@@ -35,6 +35,7 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
   final TextEditingController _badgeController = TextEditingController();
 
   bool _isDefault = false;
+  String _selectedBadge = 'Home';
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
     _address1Controller.dispose();
     _address2Controller.dispose();
     _localityController.dispose();
+    _countryController.dispose();
     _cityController.dispose();
     _stateController.dispose();
     _pincodeController.dispose();
@@ -64,11 +66,14 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
 
   Future<void> _fetchLocation(String pincode) async {
     if (pincode.isEmpty) return;
+
     final locationData = await fetchIndiaLocation(pincode: pincode);
+
     if (locationData != null && mounted) {
       setState(() {
         _stateController.text = locationData["state"] ?? "";
         _cityController.text = locationData["city"] ?? "";
+        _countryController.text = "India";
       });
     }
   }
@@ -89,9 +94,11 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
           caAlternateMobileNo: _altMobileController.text.trim(),
           caType: 'shipping',
           caBadge:
-              _badgeController.text.trim().isEmpty
-                  ? 'Home'
-                  : _badgeController.text.trim(),
+              _selectedBadge == 'Other'
+                  ? (_badgeController.text.trim().isEmpty
+                      ? 'Other'
+                      : _badgeController.text.trim())
+                  : _selectedBadge,
           caIsDefault: _isDefault ? 1 : 0,
         ),
       );
@@ -131,11 +138,33 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
           validator:
               validator ??
               (value) {
-                if (value == null || value.trim().isEmpty)
+                if (value == null || value.trim().isEmpty) {
                   return 'Please enter $label';
+                }
                 return null;
               },
         ),
+      ),
+    );
+  }
+
+  Widget _buildBadgeChip(String label) {
+    return ChoiceChip(
+      label: Text(label),
+      selected: _selectedBadge == label,
+      onSelected: (bool selected) {
+        if (selected) {
+          setState(() {
+            _selectedBadge = label;
+            if (label != 'Other') {
+              _badgeController.clear();
+            }
+          });
+        }
+      },
+      selectedColor: Theme.of(context).primaryColor,
+      labelStyle: TextStyle(
+        color: _selectedBadge == label ? Colors.white : Colors.black87,
       ),
     );
   }
@@ -167,9 +196,11 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
               caAlternateMobileNo: _altMobileController.text.trim(),
               caType: 'shipping',
               caBadge:
-                  _badgeController.text.trim().isEmpty
-                      ? 'Home'
-                      : _badgeController.text.trim(),
+                  _selectedBadge == 'Other'
+                      ? (_badgeController.text.trim().isEmpty
+                          ? 'Other'
+                          : _badgeController.text.trim())
+                      : _selectedBadge,
               caIsDefault: _isDefault ? 1 : 0,
               createdAt: DateTime.now().toString(),
             );
@@ -203,6 +234,15 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Text(
+                    "Delivery Details",
+                    style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleLarge?.fontSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   _buildTextField(
                     controller: _nameController,
                     label: 'Full Name',
@@ -214,10 +254,12 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
                     hint: '',
                     keyboardType: TextInputType.phone,
                     validator: (value) {
-                      if (value == null || value.trim().isEmpty)
+                      if (value == null || value.trim().isEmpty) {
                         return 'Please enter Mobile Number';
-                      if (value.length < 10)
+                      }
+                      if (value.length < 10) {
                         return 'Enter a valid mobile number';
+                      }
                       return null;
                     },
                   ),
@@ -229,15 +271,26 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
                     validator: (value) {
                       if (value != null &&
                           value.isNotEmpty &&
-                          value.length < 10)
+                          value.length < 10) {
                         return 'Enter a valid mobile number';
+                      }
                       return null;
                     },
                   ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Address",
+                    style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleLarge?.fontSize,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   _buildTextField(
                     controller: _pincodeController,
-                    label: 'Pincode',
-                    hint: 'e.g. 400001',
+                    label: 'Pincode*',
+                    hint: '',
                     onFoucusOver: () {
                       if (_debounce?.isActive ?? false) _debounce!.cancel();
                       _fetchLocation(_pincodeController.text.trim());
@@ -250,107 +303,77 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
                     },
                     keyboardType: TextInputType.number,
                   ),
-                  CSCPickerPlus(
-                    showStates: true,
-                    showCities: true,
-                    flagState: CountryFlag.DISABLE,
-                    dropdownDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey.shade50,
-                      border: Border.all(color: Colors.black38, width: 1),
-                    ),
-                    disabledDropdownDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.grey.shade50,
-                      border: Border.all(color: Colors.black12, width: 1),
-                    ),
-                    selectedItemStyle: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 16,
-                    ),
-                    dropdownHeadingStyle: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    dropdownItemStyle: const TextStyle(
-                      color: Colors.black87,
-                      fontSize: 16,
-                    ),
-                    dropdownDialogRadius: 12.0,
-                    searchBarRadius: 12.0,
-                    defaultCountry: CscCountry.India,
-                    onCountryChanged: (value) {},
-                    onStateChanged: (value) {
-                      if (value != null) {
-                        _stateController.text = value;
-                      }
-                    },
-                    onCityChanged: (value) {
-                      if (value != null) {
-                        _cityController.text = value;
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    controller: _localityController,
-                    label: 'Locality / Area',
-                    hint: 'e.g. Central Hub',
-                  ),
                   _buildTextField(
                     controller: _address1Controller,
-                    label: 'Address Line 1',
-                    hint: 'House No, Building, Street, Area',
+                    label: 'Address(House No. Building Street Area)*',
+                    hint: '',
                     maxLines: 2,
                   ),
                   _buildTextField(
-                    controller: _address2Controller,
-                    label: 'Address Line 2 (Optional)',
-                    hint: 'Apartment, Suite, Unit, etc.',
-                    maxLines: 2,
-                    validator: (v) => null,
+                    controller: _localityController,
+                    label: 'Locality/ Town*',
+                    hint: '',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: DropdownButtonFormField<String>(
-                      value:
-                          _badgeController.text.isNotEmpty
-                              ? _badgeController.text
-                              : 'Home',
-                      decoration: InputDecoration(
-                        labelText: 'Address Label / Badge',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _cityController,
+                          label: 'City / District*',
+                          hint: '',
                         ),
-                        filled: true,
-                        fillColor: Colors.grey.shade50,
                       ),
-                      items: const [
-                        DropdownMenuItem(value: 'Home', child: Text('Home')),
-                        DropdownMenuItem(
-                          value: 'Office',
-                          child: Text('Office'),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _buildTextField(
+                          controller: _stateController,
+                          label: 'State*',
+                          hint: '',
                         ),
-                        DropdownMenuItem(value: 'Other', child: Text('Other')),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() {
-                            _badgeController.text = value;
-                          });
-                        }
-                      },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Save address as",
+                    style: TextStyle(
+                      fontSize:
+                          Theme.of(context).textTheme.titleLarge?.fontSize,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      children: [
+                        _buildBadgeChip('Home'),
+                        const SizedBox(width: 8),
+                        _buildBadgeChip('Work'),
+                        const SizedBox(width: 8),
+                        _buildBadgeChip('Other'),
+                      ],
+                    ),
+                  ),
+                  if (_selectedBadge == 'Other')
+                    _buildTextField(
+                      controller: _badgeController,
+                      label: 'Custom Badge Name',
+                      hint: 'e.g. Vacation Home',
+                    ),
                   SwitchListTile(
-                    title: const Text(
+                    title: Text(
                       'Set as Default Address',
-                      style: TextStyle(fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize:
+                            Theme.of(context).textTheme.titleLarge?.fontSize,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     value: _isDefault,
                     onChanged: (val) => setState(() => _isDefault = val),
-                    activeColor: Theme.of(context).primaryColor,
+                    activeThumbColor: Theme.of(context).primaryColor,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                   ),
                   const SizedBox(height: 24),

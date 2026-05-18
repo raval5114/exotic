@@ -15,7 +15,7 @@ Future<Map<String, String>?> fetchIndiaLocation({
 
       if (data[0]['Status'] == "Success") {
         final postOffice = data[0]['PostOffice'][0];
-
+        print(postOffice);
         return {
           "country": "India",
           "state": postOffice['State'] ?? "",
