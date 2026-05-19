@@ -1,4 +1,5 @@
 import 'package:exotic/controllers/address/addAddressComponent.dart';
+import 'package:exotic/controllers/address/addAddressMainComponent.dart';
 import 'package:flutter/material.dart';
 
 class AddAddress extends StatelessWidget {
@@ -6,6 +7,13 @@ class AddAddress extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AddAddressComponent();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add New Address'),
+        backgroundColor: Theme.of(context).primaryColor,
+        foregroundColor: Colors.white,
+      ),
+      body: AddAddressMainComponent(),
+    );
   }
 }

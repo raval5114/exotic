@@ -171,15 +171,18 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add New Address'),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.white,
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      body: BlocConsumer<AddressBloc, AddressState>(
+      padding: EdgeInsets.only(
+        top: 16,
+        left: 16,
+        right: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: BlocConsumer<AddressBloc, AddressState>(
         listener: (context, state) {
           if (state.status == AddressStatus.added) {
             final newAddress = Address(
