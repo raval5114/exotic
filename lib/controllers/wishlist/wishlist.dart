@@ -165,12 +165,19 @@ class _WishlistComponentState extends State<WishlistComponent> {
                 height: 32,
                 child: OutlinedButton(
                   onPressed: onAddToCart,
-                  child: Text(
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF9747FF)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: const Text(
                     "Add to Cart",
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontSize: 14,
-                      color: Colors.blue,
+                      color: Color(0xFF9747FF),
                     ),
                   ),
                 ),

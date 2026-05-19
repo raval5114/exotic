@@ -29,10 +29,21 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
         String password = _prefs.getString('password') ?? "";
         debugPrint("email:${email}");
         debugPrint("password:${password}");
-        Map<String, dynamic>? data = await auth.loginWithEmail(
-          email: email,
-          password: password,
-        );
+        
+        Map<String, dynamic>? data;
+        if (email.isNotEmpty && password.isNotEmpty) {
+          try {
+            data = await auth.loginWithEmail(
+              email: email,
+              password: password,
+            );
+          } catch (e) {
+            debugPrint("Login failed during splash: $e");
+            data = {'status': 'failed'}; // Mock failure so we continue as guest
+          }
+        } else {
+          data = {'status': 'failed'};
+        }
 
         //fetching categories
         final rawData = await getit<CategoriesRepo>().getCategories();
@@ -42,8 +53,9 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
           throw Exception("Invalid data format from API: Expected List");
         }
 
+        final categories = rawData.map((e) => Category.fromJson(e)).toList();
+
         if (data!['status'] == "success") {
-          final categories = rawData.map((e) => Category.fromJson(e)).toList();
           print("Yess categories are fetched");
           emit(
             SplashScreenSuccessedState(
@@ -56,7 +68,7 @@ class SplashScreenBloc extends Bloc<SplashScreenEvent, SplashScreenState> {
           emit(
             SplashScreenSuccessedState(
               islogged: false,
-              data: [],
+              data: categories,
               user: User(
                 customerId: 0,
                 firstName: '',

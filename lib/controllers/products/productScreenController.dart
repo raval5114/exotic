@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:exotic/utils/auth_dialog.dart';
 
 class ProductsScreenController extends StatefulWidget {
   const ProductsScreenController({super.key});
@@ -24,6 +25,11 @@ class ProductsScreenController extends StatefulWidget {
 class _ProductsScreenControllerState extends State<ProductsScreenController> {
   /// ---------------- ADD TO CART EVENT ----------------
   void _addToCart(BuildContext context) {
+    final user = context.read<UserProvider>().user;
+    if (user == null || user.customerId == 0) {
+      showLoginDialog(context);
+      return;
+    }
     final productProvider = context.read<ProductProvider>();
     final ProductModel product = productProvider.product!;
     String? pvId;
@@ -32,7 +38,7 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
     }
     context.read<CartBloc>().add(
       CartAddingEvent(
-        cid: context.read<UserProvider>().user!.customerId.toString(),
+        cid: user.customerId.toString(),
         pid: product.pId!,
         pvid: pvId,
         quantity: "1",
@@ -70,9 +76,14 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                         state is WishlistActionSuccessState;
                     return InkWell(
                       onTap: () {
+                        final user = context.read<UserProvider>().user;
+                        if (user == null || user.customerId == 0) {
+                          showLoginDialog(context);
+                          return;
+                        }
                         context.read<WishlistBloc>().add(
                           AddWishlistEvent(
-                            cid: context.read<UserProvider>().user!.customerId,
+                            cid: user.customerId,
                             pid: int.parse(
                               context.read<ProductProvider>().product!.pId!,
                             ),
@@ -110,15 +121,24 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0060FF),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFF9747FF),
+                      side: const BorderSide(
+                        color: Color(0xFF9747FF),
+                        width: 1.5,
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
                     onPressed: () {
+                      final user = context.read<UserProvider>().user;
+                      if (user == null || user.customerId == 0) {
+                        showLoginDialog(context);
+                        return;
+                      }
                       context.push(
                         '/dynamicRoute',
                         extra:
@@ -133,7 +153,8 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                       "Buy Now",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'Roboto',
-                        color: Colors.white,
+                        color: Color(0xFF9747FF),
+                        fontSize: 15,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -166,11 +187,17 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
             ),
             actions: [
               InkWell(
-                onTap:
-                    () => context.push(
-                      '/dynamicRoute',
-                      extra: () => CartScreen(),
-                    ),
+                onTap: () {
+                  final user = context.read<UserProvider>().user;
+                  if (user == null || user.customerId == 0) {
+                    showLoginDialog(context);
+                    return;
+                  }
+                  context.push(
+                    '/dynamicRoute',
+                    extra: () => CartScreen(),
+                  );
+                },
                 child: Padding(
                   padding: EdgeInsets.only(right: 16),
                   child: Icon(

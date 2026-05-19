@@ -45,20 +45,18 @@ class _SplashscreenComponentState extends State<SplashscreenComponent> {
         }
         if (state is SplashScreenSuccessedState) {
           bool ssState = state.islogged;
+          context.read<CategoriesProvider>().setCategories(state.data);
+          context.read<UserProvider>().setUser(state.user);
           if (ssState == true) {
-            context.read<CategoriesProvider>().setCategories(state.data);
-            context.read<UserProvider>().setUser(state.user);
             context.read<AddressBloc>().add(
               FetchAddressesEvent(cId: state.user.customerId),
             );
             debugPrint("User:${context.read<UserProvider>().user!.customerId}");
-            context.go('/home');
-          } else {
-            context.go('/auth');
           }
+          context.go('/home');
         }
         if (state is SplashScrennErrorState) {
-          context.go('/auth');
+          context.go('/auth'); // if it really errors out, perhaps we go to auth, or maybe /home too.
         }
       },
       builder: (context, state) {

@@ -11,13 +11,13 @@ class WishlistScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => context.pop(),
         ),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 20.0),
-            child: Icon(Icons.shopping_cart, color: Colors.black),
+            child: Icon(Icons.shopping_cart, color: Colors.white),
           ),
         ],
       ),

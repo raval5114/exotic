@@ -19,13 +19,15 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      customerId: json['c_id'] as int,
-      firstName: json['c_firstname'] as String,
-      lastName: json['c_lastname'] as String,
-      username: json['c_username'] as String,
-      email: json['c_email'] as String,
-      phone: json['c_phone'] as String,
-      profilePhotoUrl: "https://xotic.in/api/${json['c_photo']}",
+      customerId: json['c_id'] != null 
+          ? (json['c_id'] is String ? int.tryParse(json['c_id']) ?? 0 : json['c_id'] as int) 
+          : 0,
+      firstName: json['c_firstname'] as String? ?? '',
+      lastName: json['c_lastname'] as String? ?? '',
+      username: json['c_username'] as String? ?? '',
+      email: json['c_email'] as String? ?? '',
+      phone: json['c_phone'] as String? ?? '',
+      profilePhotoUrl: "https://xotic.in/api/${json['c_photo'] ?? ''}",
     );
   }
 

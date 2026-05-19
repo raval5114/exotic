@@ -37,14 +37,10 @@ class Productsellerdetailscomponent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
+                  color: const Color(0xFF9747FF).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.storefront,
-                  color: Colors.blue,
-                  size: 28,
-                ),
+                child: const Icon(Icons.storefront, color: Color(0xFF9747FF), size: 28),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -116,14 +112,16 @@ class Productsellerdetailscomponent extends StatelessWidget {
                             color: Colors.black26,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            "Trusted Seller",
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleSmall?.copyWith(
-                              fontFamily: 'Roboto',
-                              color: Colors.green,
-                              fontWeight: FontWeight.w500,
+                          const Flexible(
+                            child: Text(
+                              "Trusted Seller",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                color: Colors.green,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ],
@@ -152,15 +150,12 @@ class Productsellerdetailscomponent extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue),
+                    border: Border.all(color: Color(0xFF9747FF)),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     "View Shop",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(color: Color(0xFF9747FF), fontWeight: FontWeight.bold, fontSize: 13),
                   ),
                 ),
               ),

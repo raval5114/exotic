@@ -87,136 +87,219 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
               final address = addresses[index];
               final isDefault = address.caIsDefault == 1;
 
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side:
-                      isDefault
-                          ? BorderSide(
-                            color: Theme.of(context).primaryColor,
-                            width: 2,
-                          )
-                          : BorderSide.none,
-                ),
-                child: ListTile(
-                  contentPadding: const EdgeInsets.all(16),
-                  title: Row(
-                    children: [
-                      Text(
-                        address.caName ?? '',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      if (address.caBadge != null &&
-                          address.caBadge!.isNotEmpty) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            address.caBadge!,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                      if (isDefault) ...[
-                        const SizedBox(width: 8),
-                        Icon(
-                          Icons.check_circle,
-                          color: Theme.of(context).primaryColor,
-                          size: 16,
-                        ),
-                      ],
-                    ],
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: isDefault
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.shade200,
+                    width: isDefault ? 2 : 1,
                   ),
-                  subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${address.caAddress1}${address.caAddress2 != null && address.caAddress2!.isNotEmpty ? ', ${address.caAddress2}' : ''}',
-                        ),
-                        Text(
-                          '${address.caLocality}, ${address.caCity}, ${address.caState} - ${address.caPincode}',
-                        ),
-                        const SizedBox(height: 4),
-                        Text('Mobile: ${address.caMobileNo}'),
-                        const SizedBox(height: 8),
-                        if (!isDefault)
-                          InkWell(
-                            onTap: () {
-                              if (address.caId != null && address.cId != null) {
-                                context.read<AddressBloc>().add(
-                                  UpdateAddressEvent(
-                                    caId: address.caId!,
-                                    cId: address.cId!,
-                                    caName: address.caName ?? '',
-                                    caAddress1: address.caAddress1 ?? '',
-                                    caAddress2: address.caAddress2 ?? '',
-                                    caLocality: address.caLocality ?? '',
-                                    caCity: address.caCity ?? '',
-                                    caState: address.caState ?? '',
-                                    caPincode: address.caPincode ?? '',
-                                    caMobileNo: address.caMobileNo ?? '',
-                                    caAlternateMobileNo:
-                                        address.caAlternateMobileNo ?? '',
-                                    caType: address.caType ?? 'shipping',
-                                    caBadge: address.caBadge ?? 'Home',
-                                    caIsDefault: 1,
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text(
-                              'Set as Default',
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                      ],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
                     ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.grey),
-                        onPressed: () {
-                          context.push('/updateAddress', extra: address);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          if (address.caId != null && address.cId != null) {
-                            context.read<AddressBloc>().add(
-                              DeleteAddressEvent(
-                                caId: address.caId!,
-                                cId: address.cId!,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
+                  ],
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
                   onTap: () {
                     context.push('/updateAddress', extra: address);
                   },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Top Row: Name, Badge, Default Icon & Action Buttons
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 8,
+                                runSpacing: 4,
+                                children: [
+                                  Text(
+                                    address.caName ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                  if (address.caBadge != null &&
+                                      address.caBadge!.isNotEmpty)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        address.caBadge!,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  if (isDefault)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: const Text(
+                                        'Default',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            // Action Buttons
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    context.push('/updateAddress', extra: address);
+                                  },
+                                  child: const Icon(
+                                    Icons.edit_outlined,
+                                    color: Colors.black54,
+                                    size: 20,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (address.caId != null &&
+                                        address.cId != null) {
+                                      context.read<AddressBloc>().add(
+                                        DeleteAddressEvent(
+                                          caId: address.caId!,
+                                          cId: address.cId!,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.redAccent,
+                                    size: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        // Address Details
+                        Text(
+                          '${address.caAddress1}${address.caAddress2 != null && address.caAddress2!.isNotEmpty ? ', ${address.caAddress2}' : ''}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${address.caLocality}, ${address.caCity}, ${address.caState} - ${address.caPincode}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black54,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Mobile: ${address.caMobileNo}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        // Set as Default Button
+                        if (!isDefault) ...[
+                          const SizedBox(height: 14),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(8),
+                              onTap: () {
+                                if (address.caId != null && address.cId != null) {
+                                  context.read<AddressBloc>().add(
+                                    UpdateAddressEvent(
+                                      caId: address.caId!,
+                                      cId: address.cId!,
+                                      caName: address.caName ?? '',
+                                      caAddress1: address.caAddress1 ?? '',
+                                      caAddress2: address.caAddress2 ?? '',
+                                      caLocality: address.caLocality ?? '',
+                                      caCity: address.caCity ?? '',
+                                      caState: address.caState ?? '',
+                                      caPincode: address.caPincode ?? '',
+                                      caMobileNo: address.caMobileNo ?? '',
+                                      caAlternateMobileNo:
+                                          address.caAlternateMobileNo ?? '',
+                                      caType: address.caType ?? 'shipping',
+                                      caBadge: address.caBadge ?? 'Home',
+                                      caIsDefault: 1,
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'Set as Default',
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
               );
             },
