@@ -265,9 +265,13 @@ class _ProductsShellState extends State<ProductsShell> {
           ),
           const SizedBox(width: 10),
           Expanded(
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0060FF),
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF9747FF),
+                side: const BorderSide(
+                  color: Color(0xFF9747FF),
+                  width: 1.5,
+                ),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -287,7 +291,7 @@ class _ProductsShellState extends State<ProductsShell> {
               child: const Text(
                 "Buy Now",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Color(0xFF9747FF),
                   fontFamily: 'Roboto',
                   fontSize: 15,
                   fontWeight: FontWeight.w400,

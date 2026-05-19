@@ -64,22 +64,33 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue.shade200, width: 1),
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search, color: Colors.blue, size: 22),
+                      Icon(
+                        Icons.search,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 22,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Searchquerysectioncomponent(
                           controller: controller,
                         ),
                       ),
-                      const Icon(Icons.mic_none, color: Colors.blue, size: 22),
+                      Icon(
+                        Icons.mic_none,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 22,
+                      ),
                       const SizedBox(width: 12),
-                      const Icon(
+                      Icon(
                         Icons.camera_alt_outlined,
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.primary,
                         size: 22,
                       ),
                     ],
