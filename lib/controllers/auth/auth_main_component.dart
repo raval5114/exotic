@@ -107,6 +107,27 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
     );
   }
 
+  Widget guestButton() {
+    return InkWell(
+      onTap: () {
+        context.go('/home');
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 16),
+        child: Text(
+          "Continue as Guest",
+          style: TextStyle(
+            fontFamily: 'nunitoSans',
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade600,
+            decoration: TextDecoration.underline,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -130,6 +151,9 @@ class _MainAuthComponenStateState extends State<MainAuthComponenState> {
 
                 // Text + Icon Button Row
                 loginButton(SigninScreen()),
+                
+                // Continue as guest
+                guestButton(),
                 const SizedBox(height: 24),
               ],
             ),

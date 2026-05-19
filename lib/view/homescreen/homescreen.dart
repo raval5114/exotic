@@ -2,6 +2,10 @@ import 'package:exotic/view/wishlist/wishlist.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:exotic/utils/auth_dialog.dart';
+
+import 'package:exotic/data/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 
 class Homescreen extends StatelessWidget {
   final Widget child;
@@ -12,6 +16,9 @@ class Homescreen extends StatelessWidget {
   void _onItemTapped(BuildContext context, int index) {
     if (_getIndex() == index) return;
 
+    final user = context.read<UserProvider>().user;
+    final isLoggedIn = user != null && user.customerId != 0;
+
     switch (index) {
       case 0:
         context.go('/home');
@@ -20,10 +27,18 @@ class Homescreen extends StatelessWidget {
         context.go('/categories');
         break;
       case 2:
-        context.go('/cart');
+        if (isLoggedIn) {
+          context.go('/cart');
+        } else {
+          showLoginDialog(context);
+        }
         break;
       case 3:
-        context.go('/profile');
+        if (isLoggedIn) {
+          context.go('/profile');
+        } else {
+          showLoginDialog(context);
+        }
         break;
     }
   }

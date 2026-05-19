@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:ui';
 import 'package:exotic/controllers/auth/src/alertDailog.dart';
@@ -107,6 +108,13 @@ class _PasswordScreenComponentState extends State<PasswordScreenComponent>
           );
           String email = context.read<UserProvider>().user!.email;
           String mobileno = context.read<UserProvider>().user!.phone;
+          
+          // Save to SharedPreferences so the user stays logged in across app restarts
+          SharedPreferences.getInstance().then((prefs) {
+            prefs.setString('email', context.read<UserLoginProvider>().email);
+            prefs.setString('password', context.read<UserLoginProvider>().password);
+          });
+
           context.read<AuthBloc>().add(
             AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
           );

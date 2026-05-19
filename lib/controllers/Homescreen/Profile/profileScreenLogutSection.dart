@@ -23,7 +23,7 @@ class _ProfileScreenLogoutSectionState
     await prefs.remove("password");
     if (mounted) {
       context.read<UserProvider>().clearUser();
-      context.go('/auth');
+      context.go('/home');
     }
   }
 
