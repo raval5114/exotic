@@ -212,10 +212,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                                   item.title ?? '',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
-                                    fontSize: 15,
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -226,10 +225,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                                     item.subtitle!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
+                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                       fontFamily: 'Roboto',
                                       color: Colors.grey.shade600,
-                                      fontSize: 13,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),

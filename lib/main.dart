@@ -9,6 +9,8 @@ import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
 import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/blocs/vendorStore/bloc/vender_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/repositories/address/addressesRepo.dart';
 import 'package:exotic/data/providers/brands_provider.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
@@ -20,6 +22,7 @@ import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
 import 'package:exotic/data/providers/order_list_provider.dart';
+import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
 import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +50,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => HomepageProvider()),
         ChangeNotifierProvider(create: (_) => SearchProductProvider()),
         ChangeNotifierProvider(create: (_) => OrderListProvider()),
+        ChangeNotifierProvider(create: (_) => AddressProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
@@ -59,6 +63,7 @@ void main() async {
         BlocProvider(create: (_) => SubcategoriesCubit()),
         BlocProvider(create: (_) => SearchProductBloc()),
         BlocProvider(create: (_) => OrderListBloc()),
+        BlocProvider(create: (_) => AddressBloc(AddressesRepo())),
       ],
       child: const MyApp(),
     ),
@@ -72,7 +77,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Exotic',
-      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: const Color(0xFF9747FF),
         colorScheme: const ColorScheme(
@@ -86,6 +90,28 @@ class MyApp extends StatelessWidget {
           onError: Colors.white,
           surface: Colors.white,
           onSurface: Colors.black,
+        ),
+        textTheme: const TextTheme(
+          // Large (Headings/Titles): 18px-32px
+          displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          displaySmall: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          headlineLarge: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          
+          // Medium (Body/Primary Text): 14px-16px
+          bodyLarge: TextStyle(fontSize: 16),
+          bodyMedium: TextStyle(fontSize: 14),
+          titleMedium: TextStyle(fontSize: 16),
+          titleSmall: TextStyle(fontSize: 14),
+          
+          // Small (Captions/Hints): 12px-14px
+          bodySmall: TextStyle(fontSize: 12),
+          labelLarge: TextStyle(fontSize: 14),
+          labelMedium: TextStyle(fontSize: 12),
+          labelSmall: TextStyle(fontSize: 11),
         ),
       ),
       routerConfig: goRoutes,

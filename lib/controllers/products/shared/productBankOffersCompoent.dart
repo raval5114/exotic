@@ -23,6 +23,7 @@ class ProductBankOffersComponent extends StatelessWidget {
   }
 
   Widget _buildBankOfferTile({
+    required BuildContext context,
     required IconData icon,
     required String label,
     required String amount,
@@ -48,9 +49,8 @@ class ProductBankOffersComponent extends StatelessWidget {
             const SizedBox(height: 6),
             Text(
               label,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontFamily: 'Roboto',
-                fontSize: 12,
                 color: Colors.grey,
               ),
               overflow: TextOverflow.ellipsis,
@@ -58,9 +58,8 @@ class ProductBankOffersComponent extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               amount,
-              style: const TextStyle(
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 fontFamily: 'Roboto',
-                fontSize: 14,
                 fontWeight: FontWeight.bold,
               ),
               overflow: TextOverflow.ellipsis,
@@ -84,15 +83,14 @@ class ProductBankOffersComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.credit_card, size: 18),
               SizedBox(width: 6),
               Text(
                 "Bank offers",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontFamily: 'Roboto',
-                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -113,6 +111,7 @@ class ProductBankOffersComponent extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final offer = productMapped[index];
                     return _buildBankOfferTile(
+                      context: context,
                       icon: offer["icon"],
                       label: offer["label"],
                       amount: offer["amount"],

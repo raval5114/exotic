@@ -40,7 +40,10 @@ class BuildSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF9747FF).withOpacity(0.5), width: 1.5),
+        border: Border.all(
+          color: const Color(0xFF9747FF).withOpacity(0.5),
+          width: 1.5,
+        ),
       ),
       child: Row(
         children: [
@@ -56,12 +59,14 @@ class BuildSearchBar extends StatelessWidget {
             child: TextField(
               readOnly: true,
               onTap: () => context.push('/searchProductPage'),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: "Search",
                 border: InputBorder.none,
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
-                hintStyle: TextStyle(color: Colors.black45, fontSize: 16),
+                hintStyle: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: Colors.black45),
               ),
             ),
           ),

@@ -12,10 +12,9 @@ class ProductAllOffersAndCouponsComponent extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 2),
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-        title: const Text(
+        title: Text(
           "All offers &\nCoupons",
-          style: TextStyle(
-            fontSize: 16,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             height: 1.3,
             color: Colors.black,

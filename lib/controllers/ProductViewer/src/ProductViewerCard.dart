@@ -194,9 +194,10 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                           ),
                           child: Text(
                             tag,
-                            style: const TextStyle(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.labelSmall?.copyWith(
                               color: Colors.white,
-                              fontSize: 9,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.5,
                             ),
@@ -299,8 +300,7 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                   children: [
                     Text(
                       item.name ?? item.brand ?? 'Unknown',
-                      style: const TextStyle(
-                        fontSize: 14,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w800,
                         color: Colors.black87,
                       ),
@@ -311,10 +311,9 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                       const SizedBox(height: 2),
                       Text(
                         item.brand!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(color: Colors.grey),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -332,9 +331,10 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                           ),
                           Text(
                             '${item.price!.discountPercentage}%',
-                            style: const TextStyle(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodySmall?.copyWith(
                               color: Colors.green,
-                              fontSize: 12,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
@@ -342,8 +342,9 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                         ],
                         Text(
                           '₹${item.price?.selling ?? 0}',
-                          style: const TextStyle(
-                            fontSize: 14,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w800,
                             color: Colors.black87,
                           ),
@@ -354,8 +355,9 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                           Flexible(
                             child: Text(
                               '₹${item.price!.mrp}',
-                              style: const TextStyle(
-                                fontSize: 11,
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelSmall?.copyWith(
                                 color: Colors.grey,
                                 decoration: TextDecoration.lineThrough,
                               ),
@@ -380,10 +382,8 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                         const SizedBox(width: 4),
                         Text(
                           '(200)',
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.grey.shade500,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(color: Colors.grey.shade500),
                         ),
                       ],
                     ),
@@ -392,8 +392,7 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                       item.stock?.status == 'in_stock'
                           ? 'Free delivery'
                           : 'Out of stock',
-                      style: TextStyle(
-                        fontSize: 11,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
                         color:
                             item.stock?.status == 'in_stock'
                                 ? Colors.grey.shade700
@@ -469,11 +468,12 @@ class ProductViewerCardState extends State<ProductViewerCard> {
                                     color: Colors.white,
                                   ),
                                 )
-                                : const Text(
+                                : Text(
                                   "Add to Cart",
-                                  style: TextStyle(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
                                     color: Colors.white,
-                                    fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

@@ -33,18 +33,16 @@ class SearchProductPopularProductTile extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             "${name}",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontFamily: 'Roboto',
-              fontSize: width * 0.035,
               fontWeight: FontWeight.w400,
             ),
             textAlign: TextAlign.center,
           ),
           Text(
             "$categorie",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
               fontFamily: 'Roboto',
-              fontSize: width * 0.0250,
               fontWeight: FontWeight.w300,
             ),
             textAlign: TextAlign.center,

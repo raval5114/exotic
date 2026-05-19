@@ -23,11 +23,11 @@ class ProductVariantComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               "Available Variants",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             ),
           ),
           const SizedBox(height: 10),
@@ -84,8 +84,7 @@ class ProductVariantComponent extends StatelessWidget {
                             maxLines: 2,
                             textAlign: TextAlign.center,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontSize: 12,
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontWeight:
                                   isSelected
                                       ? FontWeight.w600

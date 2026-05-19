@@ -58,9 +58,8 @@ class SearchProductRecentSearchTile extends StatelessWidget {
           SizedBox(height: width * 0.02),
           Text(
             name,
-            style: TextStyle(
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
               fontFamily: 'Roboto',
-              fontSize: width * 0.03,
               fontWeight: isHighlighted ? FontWeight.bold : FontWeight.w400,
               color: isHighlighted ? const Color(0xFFFF528A) : Colors.black,
             ),

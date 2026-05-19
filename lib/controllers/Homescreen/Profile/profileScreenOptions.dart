@@ -34,7 +34,11 @@ class ProfileScreenOptions extends StatelessWidget {
         child: Icon(icon, color: const Color(0xFF9747FF), size: 20),
       ),
       title: Text(title, style: const TextStyle(fontSize: 14)),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        size: 14,
+        color: Colors.grey,
+      ),
       onTap: onTap,
     );
   }
@@ -95,15 +99,16 @@ class ProfileScreenOptions extends StatelessWidget {
           const SizedBox(height: 2),
           buildSectionTitle("Account Settings"),
           buildOptionItem(Icons.person_outline, "Edit Profile", () {
-            context.push('/dynamicRoute', extra: () => EditProfile(),
-            );
+            context.push('/dynamicRoute', extra: () => EditProfile());
           }),
           buildOptionItem(
             Icons.credit_card_outlined,
             "Saved Credit / Debit & Gift Cards",
             () {},
           ),
-          buildOptionItem(Icons.location_on_outlined, "Saved Addresses", () {}),
+          buildOptionItem(Icons.location_on_outlined, "Saved Addresses", () {
+            context.push('/viewAddress');
+          }),
           buildOptionItem(Icons.language_outlined, "Select Language", () {}),
           buildOptionItem(
             Icons.notifications_active_outlined,

@@ -23,12 +23,11 @@ class Productsellerdetailscomponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Seller Details",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              fontSize: 18,
               color: Colors.black,
             ),
           ),
@@ -54,25 +53,33 @@ class Productsellerdetailscomponent extends StatelessWidget {
                           child: Text(
                             sellerName,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleMedium?.copyWith(
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w600,
-                              fontSize: 16,
                               color: Colors.black87,
                             ),
                           ),
                         ),
                         if (isTrusted) ...[
                           const SizedBox(width: 6),
-                          const Icon(Icons.verified, color: Colors.purple, size: 16),
-                        ]
+                          const Icon(
+                            Icons.verified,
+                            color: Colors.purple,
+                            size: 16,
+                          ),
+                        ],
                       ],
                     ),
                     const SizedBox(height: 6),
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(4),
@@ -81,20 +88,29 @@ class Productsellerdetailscomponent extends StatelessWidget {
                             children: [
                               Text(
                                 ratings.toStringAsFixed(1),
-                                style: const TextStyle(
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodySmall?.copyWith(
                                   color: Colors.white,
-                                  fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(width: 2),
-                              const Icon(Icons.star, color: Colors.white, size: 12),
+                              const Icon(
+                                Icons.star,
+                                color: Colors.white,
+                                size: 12,
+                              ),
                             ],
                           ),
                         ),
                         if (isTrusted) ...[
                           const SizedBox(width: 8),
-                          const Icon(Icons.circle, size: 4, color: Colors.black26),
+                          const Icon(
+                            Icons.circle,
+                            size: 4,
+                            color: Colors.black26,
+                          ),
                           const SizedBox(width: 8),
                           const Flexible(
                             child: Text(
@@ -108,28 +124,36 @@ class Productsellerdetailscomponent extends StatelessWidget {
                               ),
                             ),
                           ),
-                        ]
+                        ],
                       ],
                     ),
                   ],
                 ),
               ),
               InkWell(
-                onTap: () => context.push('/dynamicRoute', extra: () => VenderStore(
-                      venderName: sellerName,
-                      ratings: '5',
-                      followings: "1200",
-                      products: [],
-                      raters: "1200",),
-                ),
+                onTap:
+                    () => context.push(
+                      '/dynamicRoute',
+                      extra:
+                          () => VenderStore(
+                            venderName: sellerName,
+                            ratings: '5',
+                            followings: "1200",
+                            products: [],
+                            raters: "1200",
+                          ),
+                    ),
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     border: Border.all(color: Color(0xFF9747FF)),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text(
+                  child: Text(
                     "View Shop",
                     style: TextStyle(color: Color(0xFF9747FF), fontWeight: FontWeight.bold, fontSize: 13),
                   ),

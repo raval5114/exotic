@@ -108,7 +108,9 @@ class _ProductViewerComponentState extends State<ProductViewerComponent> {
                     Text(
                       state.errMsg,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey, fontSize: 14),
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                     ),
                     const SizedBox(height: 32),
                     ElevatedButton.icon(

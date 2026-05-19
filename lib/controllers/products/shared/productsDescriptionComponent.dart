@@ -71,9 +71,8 @@ class _ProductsdescriptionComponentState
               children: [
                 Text(
                   widget.productName,
-                  style: const TextStyle(
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontFamily: 'Roboto',
-                    fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -91,11 +90,10 @@ class _ProductsdescriptionComponentState
               padding: const EdgeInsets.symmetric(vertical: 5),
               child: SizedBox(
                 width: double.infinity,
-                child: const Text(
+                child: Text(
                   "Free Delivery",
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontFamily: 'Roboto',
-                    fontSize: 15,
                     fontWeight: FontWeight.w300,
                   ),
                 ),

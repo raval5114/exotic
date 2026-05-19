@@ -2,6 +2,10 @@ import 'package:exotic/controllers/Homescreen/Homepage/src/build_search_bar.dart
 import 'package:exotic/data/providers/homepage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_state.dart';
+import 'package:go_router/go_router.dart';
 
 class ExoticSliverAppBar extends StatelessWidget {
   const ExoticSliverAppBar({super.key, required this.controller});
@@ -44,7 +48,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                         child: InkWell(
                           onTap: () => _showAddressBottomSheet(context),
                           borderRadius: BorderRadius.circular(12),
-                          child: const Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 8,
@@ -59,15 +63,14 @@ class ExoticSliverAppBar extends StatelessWidget {
                                 SizedBox(width: 8),
                                 Text(
                                   "388440  ",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
                                   "Add address",
-                                  style: TextStyle(
-                                    fontSize: 13,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodySmall?.copyWith(
                                     decoration: TextDecoration.underline,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -126,14 +129,12 @@ class ExoticSliverAppBar extends StatelessWidget {
                         dividerColor: Colors.grey.shade300,
                         labelColor: Colors.deepPurple,
                         unselectedLabelColor: Colors.black87,
-                        labelStyle: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                        ),
-                        unselectedLabelStyle: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                        ),
+                        labelStyle: Theme.of(context).textTheme.bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w300),
+                        unselectedLabelStyle: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(fontWeight: FontWeight.w300),
                         indicator: const UnderlineTabIndicator(
                           borderSide: BorderSide(
                             color: Color(0xFF9747FF),
@@ -217,13 +218,27 @@ class ExoticSliverAppBar extends StatelessWidget {
                   ),
                 ),
               ),
-              const Text(
-                "Add new address",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Add new address",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      context.push('/addAddress');
+                    },
+                    icon: const Icon(
+                      Icons.add_circle,
+                      color: Color(0xFF9747FF),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               TextField(
@@ -246,89 +261,183 @@ class ExoticSliverAppBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              const Text(
-                "Saved Addresses",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
-                  fontFamily: 'Poppins',
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Saved Addresses",
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Colors.grey,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      context.push('/viewAddress');
+                    },
+                    child: Text(
+                      "View All",
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: const Color(0xFF9747FF),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
-              ..._buildStaticAddresses(),
+              BlocBuilder<AddressBloc, AddressState>(
+                builder: (context, state) {
+                  if (state.status == AddressStatus.loading ||
+                      state.status == AddressStatus.initial) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.status == AddressStatus.error) {
+                    return Center(child: Text("Error: ${state.message}"));
+                  }
+
+                  final addresses = state.addresses;
+                  if (addresses.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text("No saved addresses found."),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children:
+                        addresses.take(3).map((addr) {
+                          final isDefault = addr.caIsDefault == 1;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color:
+                                        isDefault
+                                            ? Theme.of(context).primaryColor
+                                            : Colors.grey[200]!,
+                                    width: isDefault ? 2 : 1,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: const Color(
+                                          0xFF9747FF,
+                                        ).withOpacity(0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        (addr.caBadge?.toLowerCase() == 'home')
+                                            ? Icons.home_rounded
+                                            : ((addr.caBadge?.toLowerCase() ==
+                                                        'work' ||
+                                                    addr.caBadge
+                                                            ?.toLowerCase() ==
+                                                        'office')
+                                                ? Icons.work_rounded
+                                                : Icons.location_on_rounded),
+                                        color: const Color(0xFF9747FF),
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                addr.caBadge?.isNotEmpty == true
+                                                    ? addr.caBadge!
+                                                    : "Address",
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                              ),
+                                              if (isDefault) ...[
+                                                const SizedBox(width: 8),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .primaryColor
+                                                        .withOpacity(0.1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          4,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    "Default",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelSmall
+                                                        ?.copyWith(
+                                                          color:
+                                                              Theme.of(
+                                                                context,
+                                                              ).primaryColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
+                                            style: Theme.of(
+                                              context,
+                                            ).textTheme.bodySmall?.copyWith(
+                                              color: Colors.grey[600],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const Icon(
+                                      Icons.chevron_right_rounded,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                  );
+                },
+              ),
             ],
           ),
         );
       },
     );
-  }
-
-  List<Widget> _buildStaticAddresses() {
-    final List<Map<String, String>> addresses = [
-      {
-        "title": "Home",
-        "description": "24, Dream Residency, Near City Park, Mumbai",
-        "type": "home",
-      },
-      {
-        "title": "Office",
-        "description": "Tech Plaza, Floor 4, Sector 5, Bengaluru",
-        "type": "work",
-      },
-    ];
-
-    return addresses.map((addr) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey[200]!),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF9747FF).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  addr['type'] == 'home'
-                      ? Icons.home_rounded
-                      : Icons.work_rounded,
-                  color: const Color(0xFF9747FF),
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      addr['title']!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Text(
-                      addr['description']!,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const Icon(Icons.chevron_right_rounded, color: Colors.grey),
-            ],
-          ),
-        ),
-      );
-    }).toList();
   }
 }

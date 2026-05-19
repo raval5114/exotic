@@ -27,11 +27,10 @@ class RatingDisplay extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           rating.toStringAsFixed(1),
-          style: TextStyle(
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
             fontFamily: 'Roboto',
             color: Colors.green,
             fontWeight: FontWeight.w400,
-            fontSize: iconSize - 6,
           ),
         ),
       ],

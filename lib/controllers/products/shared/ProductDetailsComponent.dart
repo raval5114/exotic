@@ -42,12 +42,11 @@ class ProductDetailsComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Product Details",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.bold,
-              fontSize: 18,
               color: Colors.black,
             ),
           ),
@@ -63,10 +62,9 @@ class ProductDetailsComponent extends StatelessWidget {
                     width: 120,
                     child: Text(
                       detail["key"],
-                      style: TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'Roboto',
                         color: Colors.grey[600],
-                        fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -74,9 +72,8 @@ class ProductDetailsComponent extends StatelessWidget {
                   Expanded(
                     child: Text(
                       detail["value"],
-                      style: const TextStyle(
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontFamily: 'Roboto',
-                        fontSize: 14,
                         color: Colors.black87,
                         height: 1.4,
                       ),
@@ -93,12 +90,11 @@ class ProductDetailsComponent extends StatelessWidget {
             onTap: onViewAllDetails,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   "All Details",
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
                     fontFamily: 'Roboto',
-                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),

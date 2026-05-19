@@ -58,17 +58,15 @@ class _SearchquerysectioncomponentState
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-      style: const TextStyle(
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
         fontFamily: 'Roboto',
-        fontSize: 14,
         fontWeight: FontWeight.w400,
         color: Colors.black87,
       ),
       decoration: InputDecoration(
         hintText: 'Search...',
-        hintStyle: TextStyle(
+        hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontFamily: 'Roboto',
-          fontSize: 14,
           color: Colors.grey.shade500,
           fontWeight: FontWeight.w400,
         ),

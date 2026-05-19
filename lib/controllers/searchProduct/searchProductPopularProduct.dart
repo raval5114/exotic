@@ -43,10 +43,9 @@ class _SearchProductPopularProductState
             children: [
               Text(
                 "Popular Products",
-                style: TextStyle(
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
-                  fontSize: width * 0.045,
                 ),
               ),
               const SizedBox(height: 16),
@@ -85,9 +84,8 @@ class _SearchProductPopularProductState
                           product['name'] ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            fontSize: 12,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -95,9 +93,8 @@ class _SearchProductPopularProductState
                           product['categorie'] ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: Theme.of(context).textTheme.labelSmall?.copyWith(
                             color: Colors.grey.shade500,
-                            fontSize: 10,
                           ),
                         ),
                       ],

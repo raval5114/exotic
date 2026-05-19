@@ -24,9 +24,8 @@ class SearchProductDiscoverProductTile extends StatelessWidget {
       ),
       child: Text(
         item,
-        style: TextStyle(
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
           fontFamily: 'Roboto',
-          fontSize: width * 0.035,
           fontWeight: FontWeight.w400,
           color: Colors.black,
         ),

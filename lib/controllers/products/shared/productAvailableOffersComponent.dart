@@ -22,7 +22,7 @@ class ProductAvailableOffersComponent extends StatelessWidget {
     return offers;
   }
 
-  Widget _buildOfferTile(Map<String, String> offer) {
+  Widget _buildOfferTile(BuildContext context, Map<String, String> offer) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -45,9 +45,8 @@ class ProductAvailableOffersComponent extends StatelessWidget {
               children: [
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       fontFamily: 'Roboto',
-                      fontSize: 14,
                       color: Colors.black,
                     ),
                     children: [
@@ -71,10 +70,9 @@ class ProductAvailableOffersComponent extends StatelessWidget {
                   },
                   child: Text(
                     offer["tncLink"] ?? "T&C",
-                    style: const TextStyle(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       fontFamily: 'Roboto',
                       color: Colors.blue,
-                      fontSize: 13,
                       decoration: TextDecoration.underline,
                     ),
                   ),
@@ -102,16 +100,15 @@ class ProductAvailableOffersComponent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "Available offers",
-            style: TextStyle(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w600,
-              fontSize: 16,
             ),
           ),
           const SizedBox(height: 10),
-          ...offers.map(_buildOfferTile).toList(),
+          ...offers.map((offer) => _buildOfferTile(context, offer)).toList(),
         ],
       ),
     );

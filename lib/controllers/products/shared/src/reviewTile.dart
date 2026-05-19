@@ -37,7 +37,7 @@ class ReviewTile extends StatelessWidget {
             const SizedBox(width: 6),
             const Icon(Icons.brightness_1, size: 6, color: Colors.black54),
             const SizedBox(width: 6),
-            Text(review.reviewText, style: const TextStyle(fontSize: 14)),
+            Text(review.reviewText, style: Theme.of(context).textTheme.bodyMedium),
           ],
         ),
         if (review.sizeInfo != null)
@@ -45,14 +45,14 @@ class ReviewTile extends StatelessWidget {
             padding: const EdgeInsets.only(top: 2),
             child: Text(
               "Review for: ${review.sizeInfo}",
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
           ),
         Padding(
           padding: const EdgeInsets.only(top: 2),
           child: Text(
             review.qualityText,
-            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
           ),
         ),
       ],

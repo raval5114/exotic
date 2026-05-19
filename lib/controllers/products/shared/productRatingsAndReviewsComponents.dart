@@ -95,11 +95,12 @@ class _ProductratingsandreviewscomponentsState
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Ratings & Reviews",
-                            style: TextStyle(
+                            style: Theme.of(
+                              context,
+                            ).textTheme.titleLarge?.copyWith(
                               fontFamily: 'Roboto',
-                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -170,9 +171,10 @@ class _ProductratingsandreviewscomponentsState
                                   const SizedBox(height: 4),
                                   Text(
                                     "${summary.totalReviews} Ratings & ${summary.totalReviews} Reviews",
-                                    style: const TextStyle(
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
                                       color: Colors.grey,
-                                      fontSize: 13,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -220,10 +222,11 @@ class _ProductratingsandreviewscomponentsState
                                 children: [
                                   Text(
                                     "All ${summary.totalReviews} reviews",
-                                    style: const TextStyle(
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.titleSmall?.copyWith(
                                       fontFamily: 'Roboto',
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 15,
                                       color: Colors.black,
                                     ),
                                   ),
@@ -255,11 +258,10 @@ class _ProductratingsandreviewscomponentsState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           "Ratings & Reviews",
-          style: TextStyle(
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontFamily: 'Roboto',
-            fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
         ),
