@@ -6,6 +6,7 @@ import 'package:exotic/view/widgets/searched_items_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
+import 'package:exotic/data/domains/ads/widgets/ad_block.dart';
 
 class SearchedItemsWidget extends StatelessWidget {
   final List<SearchedItems> items;
@@ -28,6 +29,8 @@ class SearchedItemsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // Premium Sponsored Ad Block Placement for search keywords
+        const AdBlock(page: 'search', position: 'top', limit: 2),
         if (filters != null) _buildFilters(context),
         if (items.isEmpty)
           const Expanded(child: Center(child: Text('No products found.')))
