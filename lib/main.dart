@@ -23,6 +23,7 @@ import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
 import 'package:exotic/data/providers/order_list_provider.dart';
 import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
+import 'package:exotic/data/providers/ad_provider.dart';
 import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SearchProductProvider()),
         ChangeNotifierProvider(create: (_) => OrderListProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
+        ChangeNotifierProvider(create: (_) => AdProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
