@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';
+import 'package:exotic/controllers/products/shared/src/productReviewIsHelpfull.dart';
 
 class Productratingsandreviewscomponents extends StatefulWidget {
   final int productId;
@@ -24,6 +25,7 @@ class _ProductratingsandreviewscomponentsState
     extends State<Productratingsandreviewscomponents> {
   late ReviewsBloc _reviewsBloc;
   final ReviewsProvider _reviewsProvider = ReviewsProvider();
+  final Map<int, int> _userVotes = {}; // 1 for helpful, -1 for not helpful
 
   @override
   void initState() {
@@ -140,19 +142,29 @@ class _ProductratingsandreviewscomponentsState
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                summary.averageRating,
-                                style: const TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(
+                                    summary.averageRating,
+                                    style: const TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    _getRatingDescriptor(
+                                      double.tryParse(summary.averageRating) ??
+                                          0,
+                                    ),
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
                                   Row(
                                     children: List.generate(5, (index) {
                                       return Icon(
@@ -160,9 +172,12 @@ class _ProductratingsandreviewscomponentsState
                                         size: 20,
                                         color:
                                             index <
-                                                    double.parse(
-                                                      summary.averageRating,
-                                                    ).round()
+                                                    (double.tryParse(
+                                                              summary
+                                                                  .averageRating,
+                                                            ) ??
+                                                            0)
+                                                        .round()
                                                 ? Colors.amber
                                                 : Colors.grey[300],
                                       );
@@ -170,7 +185,7 @@ class _ProductratingsandreviewscomponentsState
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    "${summary.totalReviews} Ratings & ${summary.totalReviews} Reviews",
+                                    "${summary.totalReviews} Ratings",
                                     style: Theme.of(
                                       context,
                                     ).textTheme.bodySmall?.copyWith(
@@ -179,6 +194,44 @@ class _ProductratingsandreviewscomponentsState
                                     ),
                                   ),
                                 ],
+                              ),
+                              const SizedBox(width: 24),
+                              // Rating Distribution
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    _buildRatingBar(
+                                      context,
+                                      "5",
+                                      summary.rating5Count,
+                                      summary.totalReviews,
+                                    ),
+                                    _buildRatingBar(
+                                      context,
+                                      "4",
+                                      summary.rating4Count,
+                                      summary.totalReviews,
+                                    ),
+                                    _buildRatingBar(
+                                      context,
+                                      "3",
+                                      summary.rating3Count,
+                                      summary.totalReviews,
+                                    ),
+                                    _buildRatingBar(
+                                      context,
+                                      "2",
+                                      summary.rating2Count,
+                                      summary.totalReviews,
+                                    ),
+                                    _buildRatingBar(
+                                      context,
+                                      "1",
+                                      summary.rating1Count,
+                                      summary.totalReviews,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -459,6 +512,17 @@ class _ProductratingsandreviewscomponentsState
                           ),
                         ),
                         const SizedBox(width: 8),
+                        Text(
+                          _getRatingDescriptor(
+                            double.tryParse(review.overallRating) ?? 0,
+                          ),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         if (review.isVerifiedPurchase == 1)
                           const Row(
                             children: [
@@ -510,6 +574,248 @@ class _ProductratingsandreviewscomponentsState
               fontSize: 14,
               height: 1.4,
             ),
+          ),
+
+          if (review.qualityRating.isNotEmpty ||
+              review.valueRating.isNotEmpty ||
+              review.deliveryRating.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0, bottom: 4.0),
+              child: Wrap(
+                spacing: 12,
+                runSpacing: 8,
+                children: [
+                  if (review.qualityRating.isNotEmpty)
+                    _buildSubRatingChip("Quality", review.qualityRating),
+                  if (review.valueRating.isNotEmpty)
+                    _buildSubRatingChip("Value", review.valueRating),
+                  if (review.deliveryRating.isNotEmpty)
+                    _buildSubRatingChip("Delivery", review.deliveryRating),
+                ],
+              ),
+            ),
+
+          if (review.pros.isNotEmpty || review.cons.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (review.pros.isNotEmpty)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Icon(
+                          Icons.check_circle_outline,
+                          color: Colors.green,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        const Text(
+                          "Pros: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            review.pros,
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  if (review.cons.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: review.pros.isNotEmpty ? 6.0 : 0.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.red,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            "Cons: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                              color: Colors.red,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              review.cons,
+                              style: const TextStyle(fontSize: 13),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
+          if (review.reviewImages.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: SizedBox(
+                height: 60,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: review.reviewImages.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, idx) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        review.reviewImages[idx],
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, error, stackTrace) => Container(
+                              width: 60,
+                              height: 60,
+                              color: Colors.grey[200],
+                              child: const Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                              ),
+                            ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+
+          if (review.vendorResponse != null &&
+              review.vendorResponse!.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 12.0),
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[50],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[200]!),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.storefront,
+                        size: 16,
+                        color: Colors.black87,
+                      ),
+                      const SizedBox(width: 6),
+                      const Text(
+                        "Seller Response",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (review.vendorResponseDate != null)
+                        Text(
+                          review.vendorResponseDate!,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    review.vendorResponse!,
+                    style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                  ),
+                ],
+              ),
+            ),
+
+          Productreviewishelpfull(review: review),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRatingBar(
+    BuildContext context,
+    String star,
+    int count,
+    int total,
+  ) {
+    final percentage = total > 0 ? count / total : 0.0;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      child: Row(
+        children: [
+          Text(
+            star,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+          const Icon(Icons.star, size: 12, color: Colors.grey),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: percentage,
+                backgroundColor: Colors.grey[200],
+                color: Colors.green,
+                minHeight: 6,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 30,
+            child: Text(
+              count.toString(),
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubRatingChip(String label, String rating) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[200]!),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            "$label: ",
+            style: TextStyle(
+              fontSize: 11,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const Icon(Icons.star, size: 12, color: Colors.amber),
+          const SizedBox(width: 2),
+          Text(
+            rating,
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
           ),
         ],
       ),

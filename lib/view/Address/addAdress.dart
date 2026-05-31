@@ -13,7 +13,7 @@ class AddAddress extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: AddAddressMainComponent(),
+      body: AddAddressComponent(),
     );
   }
 }

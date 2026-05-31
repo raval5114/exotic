@@ -282,4 +282,23 @@ class Reviews extends IReviewsRepo {
     await Future.delayed(const Duration(seconds: 1));
     return {"success": true, "message": "Review updated successfully!"};
   }
+
+  @override 
+  Future<Map<String, dynamic>> isHelpfull({
+    required int reviewId,
+    required bool isHelpfull,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${_baseUrl}helpful.php"),
+        body: {
+          "review_id": reviewId.toString(),
+          "is_helpful": isHelpfull ? "1" : "0",
+        },
+      );
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      return {"error": e.toString(), "success": false};
+    }
+  }
 }

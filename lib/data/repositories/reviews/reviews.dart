@@ -19,4 +19,8 @@ abstract class IReviewsRepo {
     Map<String, dynamic> review,
   );
   Future<Map<String, dynamic>> deleteReview(int reviewId);
+  Future<Map<String, dynamic>> isHelpfull({
+    required int reviewId,
+    required bool isHelpfull,
+  });
 }

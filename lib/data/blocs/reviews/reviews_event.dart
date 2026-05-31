@@ -47,3 +47,9 @@ class DeleteReviewEvent extends ReviewsEvent {
   final int reviewId;
   DeleteReviewEvent(this.reviewId);
 }
+
+class ChangeReviewHelpfulEvent extends ReviewsEvent {
+  final int reviewId;
+  final bool isHelpful;
+  ChangeReviewHelpfulEvent(this.reviewId, this.isHelpful);
+}

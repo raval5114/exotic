@@ -167,6 +167,7 @@ class _ProductListViewBuilderState extends State<ProductListViewBuilder> {
                     context.read<ProductProvider>().setProduct(
                       ProductModel.fromJson(product),
                     );
+                    print("${product['p_id']}");
                     context.push('/dynamicRoute', extra: () => ProductScreen());
                   },
                   child: ProductTile(product: ProductModel.fromJson(product)),
