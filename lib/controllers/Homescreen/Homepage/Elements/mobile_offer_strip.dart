@@ -10,9 +10,7 @@ class MobileOfferStripWidget extends StatelessWidget {
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
     hex = hex.replaceAll('#', '');
-    if (hex.length == 6) {
-      hex = 'FF$hex'; // default opacity
-    }
+    if (hex.length == 6) hex = 'FF$hex';
     return Color(int.parse(hex, radix: 16));
   }
 
@@ -26,30 +24,46 @@ class MobileOfferStripWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Section Title (optional)
-          if (element.config.title.isNotEmpty)
+          /// Section Header
+          if (element.config.title.isNotEmpty) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
-              child: Text(
-                element.config.title,
-                style: const TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.black,
-                  letterSpacing: -0.2,
-                ),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    element.config.title,
+                    style: const TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF111827),
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                  const Text(
+                    "View All →",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF7C3AED),
+                    ),
+                  ),
+                ],
               ),
             ),
+          ],
 
           /// Horizontal Cards
           SizedBox(
-            height: 170, // Increased height for better fit
+            height: 185,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.zero,
               itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 14),
+              separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final item = element.items[index];
                 return OfferStripCard(item: item);

@@ -18,19 +18,15 @@ class DotsIndicator extends StatelessWidget {
         count,
         (index) => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 4),
-          width: currentIndex == index ? 40 : 16,
+          curve: Curves.easeInOut,
+          margin: const EdgeInsets.symmetric(horizontal: 3),
+          width: currentIndex == index ? 24 : 6,
           height: 6,
           decoration: BoxDecoration(
-            color: currentIndex == index ? Colors.black87 : Colors.black12,
+            color: currentIndex == index
+                ? const Color(0xFF7C3AED)
+                : const Color(0xFFDDD6FE),
             borderRadius: BorderRadius.circular(6),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 2,
-                spreadRadius: 0.5,
-              ),
-            ],
           ),
         ),
       ),

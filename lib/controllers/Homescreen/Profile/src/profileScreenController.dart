@@ -15,12 +15,18 @@ class _ProfilescreencontrollerState extends State<Profilescreencontroller> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          ProfileScreenSection(),
-          ProfileScreenOptions(),
-          ProfileScreenLogoutSection(),
-        ],
+      physics: const BouncingScrollPhysics(),
+      child: ColoredBox(
+        color: const Color(0xFFF1F3F6),
+        child: Column(
+          children: [
+            ProfileScreenSection(),
+            const SizedBox(height: 2),
+            ProfileScreenOptions(),
+            const SizedBox(height: 2),
+            ProfileScreenLogoutSection(),
+          ],
+        ),
       ),
     );
   }

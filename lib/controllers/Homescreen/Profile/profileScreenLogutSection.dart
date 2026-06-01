@@ -4,6 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// ─── Brand tokens ─────────────────────────────────────────────────────────────
+const _kBrandSecondary = Color(0xFF9747FF);
+const _kDanger = Color(0xFFE53935);
+
 class ProfileScreenLogoutSection extends StatefulWidget {
   const ProfileScreenLogoutSection({super.key});
 
@@ -30,149 +34,202 @@ class _ProfileScreenLogoutSectionState
   Future<void> _confirmLogout() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF9747FF).withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.logout_rounded,
-                  color: Color(0xFF9747FF),
-                  size: 32,
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                "Log Out?",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "You'll need to sign in again to access your account.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 14,
-                  color: Colors.black45,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.pop(ctx, false),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        side: const BorderSide(color: Color(0xFFE0E0E0)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(ctx, true),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF9747FF),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        "Log Out",
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      barrierColor: Colors.black.withOpacity(0.45),
+      builder: (ctx) => _LogoutDialog(context: ctx),
     );
     if (confirmed == true) _doLogout();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: 2),
-        Container(
-          width: double.infinity,
-          color: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: const Text(
-            "Account",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        ListTile(
-          dense: true,
-          visualDensity: VisualDensity.compact,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-          tileColor: Colors.white,
-          leading: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFE5E5),
-              shape: BoxShape.circle,
+    final theme = Theme.of(context);
+    return Container(
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section header
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+            child: Text(
+              "Account",
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: Colors.black45,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.4,
+              ),
             ),
-            child: _isLoading
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: Color(0xFFE53935),
+          ),
+          const Divider(height: 0.5, thickness: 0.5, indent: 16, endIndent: 16),
+
+          // Log Out tile
+          InkWell(
+            onTap: _isLoading ? null : _confirmLogout,
+            splashColor: _kDanger.withOpacity(0.06),
+            highlightColor: _kDanger.withOpacity(0.03),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  // Icon badge
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: _kDanger.withOpacity(0.08),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  )
-                : const Icon(Icons.logout_rounded, color: Color(0xFFE53935), size: 20),
+                    child: _isLoading
+                        ? const Center(
+                            child: SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: _kDanger,
+                              ),
+                            ),
+                          )
+                        : const Icon(
+                            Icons.logout_rounded,
+                            color: _kDanger,
+                            size: 18,
+                          ),
+                  ),
+                  const SizedBox(width: 14),
+
+                  // Label
+                  Expanded(
+                    child: Text(
+                      "Log Out",
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: _kDanger,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 13,
+                    color: Colors.black26,
+                  ),
+                ],
+              ),
+            ),
           ),
-          title: const Text(
-            "Log Out",
-            style: TextStyle(fontSize: 14, color: Color(0xFFE53935), fontWeight: FontWeight.w500),
-          ),
-          trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-          onTap: _isLoading ? null : _confirmLogout,
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Logout Dialog ────────────────────────────────────────────────────────────
+class _LogoutDialog extends StatelessWidget {
+  final BuildContext context;
+  const _LogoutDialog({required this.context});
+
+  @override
+  Widget build(BuildContext dialogCtx) {
+    final theme = Theme.of(dialogCtx);
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 0,
+      backgroundColor: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Icon
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: _kBrandSecondary.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.logout_rounded,
+                color: _kBrandSecondary,
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Title
+            Text(
+              "Log Out?",
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Subtitle
+            Text(
+              "You'll need to sign in again\nto access your account.",
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.black45,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Actions
+            Row(
+              children: [
+                // Cancel
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(dialogCtx, false),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      side: const BorderSide(color: Color(0xFFE0E0E0)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Log Out
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(dialogCtx, true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _kBrandSecondary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Log Out",
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        const SizedBox(height: 24),
-      ],
+      ),
     );
   }
 }

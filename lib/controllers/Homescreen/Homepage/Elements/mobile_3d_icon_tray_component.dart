@@ -11,36 +11,44 @@ class Mobile3dIconTrayComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     final config = element.config;
 
-    return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFDFDFD),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            height: 138,
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 15),
-              itemBuilder: (context, index) {
-                final item = element.items[index];
-                return EnhancedTrayItem(
-                  item: item,
-                  labelColor: _parseColor(
-                    config.labelColor,
-                    fallback: Colors.black87,
-                  ),
-                );
-              },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section title if provided
+        if (element.title.isNotEmpty) ...[
+          Text(
+            element.title,
+            style: const TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF111827),
+              letterSpacing: -0.3,
             ),
           ),
+          const SizedBox(height: 14),
         ],
-      ),
+
+        SizedBox(
+          height: 138,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.zero,
+            itemCount: element.items.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final item = element.items[index];
+              return EnhancedTrayItem(
+                item: item,
+                labelColor: _parseColor(
+                  config.labelColor,
+                  fallback: const Color(0xFF374151),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

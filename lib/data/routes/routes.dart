@@ -1,4 +1,3 @@
-import 'package:exotic/Test/ProductViewerTesting/productViewerTesting.dart';
 import 'package:exotic/view/productViewer/productViewer.dart';
 import 'package:exotic/view/reviews/ReviewScreen.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';

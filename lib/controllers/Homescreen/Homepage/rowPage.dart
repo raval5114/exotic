@@ -130,11 +130,10 @@ class _RowPageComponentState extends State<RowPageComponent>
       child: SlideTransition(
         position: _slideAnimation,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 2), // Tiny gap between rows
-          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
           decoration: BoxDecoration(color: hexToColor(styling.backgroud_color)),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch, // IMPORTANT
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: parseElementToWidget(widget.rows.elements),
           ),
         ),

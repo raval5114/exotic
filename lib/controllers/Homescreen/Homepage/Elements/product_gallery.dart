@@ -1,14 +1,11 @@
 import 'package:go_router/go_router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/ProductItem.dart';
 import 'package:exotic/data/models/Homepage/elements/configs/mobile_suggestion.dart';
-import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shimmer/shimmer.dart';
 
 class MobileSuggestionProducts extends StatelessWidget {
   final String title;
@@ -26,80 +23,88 @@ class MobileSuggestionProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     if (products.isEmpty) return const SizedBox();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.black,
-                      fontFamily: 'Roboto',
-                      letterSpacing: -0.2,
-                    ),
-                  ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Section Header
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Text(
+                config.sectionTitle.isNotEmpty ? config.sectionTitle : title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  color: Color(0xFF111827),
+                  fontFamily: 'Roboto',
+                  letterSpacing: -0.3,
                 ),
-                if (config.viewAllLink.isNotEmpty)
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: Handle view all link
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(6),
+              ),
+            ),
+            if (config.viewAllLink.isNotEmpty)
+              GestureDetector(
+                onTap: () {
+                  // TODO: Handle view all link
+                },
+                child: Row(
+                  children: [
+                    const Text(
+                      "View All",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF7C3AED),
+                      ),
+                    ),
+                    const SizedBox(width: 2),
+                    Container(
+                      width: 20,
+                      height: 20,
                       decoration: const BoxDecoration(
-                        color: Colors.black,
+                        color: Color(0xFF7C3AED),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(
                         Icons.arrow_forward_rounded,
-                        size: 16,
+                        size: 13,
                         color: Colors.white,
                       ),
                     ),
-                  ),
-              ],
-            ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Product cards slider
+        SizedBox(
+          height: 310,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: products.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              return MobileSuggestionCard(
+                product: products[index],
+                onTap: () {
+                  context.read<FetchProductBloc>().add(
+                    FetchingSingleProductEvent(
+                      productid: products[index].productId.toString(),
+                    ),
+                  );
+                  context.push('/dynamicRoute', extra: () => ProductsShell());
+                },
+              );
+            },
           ),
-          const SizedBox(height: 18),
-          SizedBox(
-            height: 310, // Increased height for more details
-            child: ListView.separated(
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: products.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 14),
-              itemBuilder: (context, index) {
-                return MobileSuggestionCard(
-                  product: products[index],
-                  onTap: () {
-                    context.read<FetchProductBloc>().add(
-                      FetchingSingleProductEvent(
-                        productid: products[index].productId.toString(),
-                      ),
-                    );
-                    context.push('/dynamicRoute', extra: () => ProductsShell(),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -115,15 +120,15 @@ class MobileSuggestionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 170,
+        width: 168,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.withOpacity(0.12)),
+          border: Border.all(color: Colors.grey.withOpacity(0.10)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 12,
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 14,
               offset: const Offset(0, 4),
             ),
           ],
@@ -139,62 +144,25 @@ class MobileSuggestionCard extends StatelessWidget {
                     top: Radius.circular(16),
                   ),
                   child: SizedBox(
-                    height: 170,
-                    width: 170,
+                    height: 168,
+                    width: 168,
                     child: Hero(
                       tag: "product_img_${product.productId}",
                       child: Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, url, error) => const Center(
-                              child: Icon(
-                                Icons.broken_image_rounded,
-                                color: Colors.grey,
-                                size: 32,
-                              ),
-                            ),
+                        errorBuilder: (context, url, error) => const Center(
+                          child: Icon(
+                            Icons.broken_image_rounded,
+                            color: Colors.grey,
+                            size: 32,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                // Rating Badge
-                if (double.tryParse(product.rating.average) != null && double.parse(product.rating.average) > 0)
-                  Positioned(
-                    bottom: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(4),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 4,
-                          )
-                        ]
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            product.rating.average,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(width: 2),
-                          const Icon(Icons.star_rounded, size: 12, color: Colors.green),
-                        ],
-                      ),
-                    ),
-                  ),
+
                 // Discount Badge
                 if (product.price.discountPercentage > 0)
                   Positioned(
@@ -216,7 +184,51 @@ class MobileSuggestionCard extends StatelessWidget {
                           fontWeight: FontWeight.w800,
                           color: Colors.white,
                           fontFamily: 'Roboto',
+                          letterSpacing: 0.2,
                         ),
+                      ),
+                    ),
+                  ),
+
+                // Rating Badge
+                if (double.tryParse(product.rating.average) != null &&
+                    double.parse(product.rating.average) > 0)
+                  Positioned(
+                    bottom: 8,
+                    left: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.95),
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            product.rating.average,
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(width: 2),
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 12,
+                            color: Color(0xFF16A34A),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -225,7 +237,7 @@ class MobileSuggestionCard extends StatelessWidget {
 
             // Content
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -234,46 +246,52 @@ class MobileSuggestionCard extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                      height: 1.2,
+                      color: Color(0xFF1F2937),
+                      height: 1.25,
                       fontFamily: 'Roboto',
                     ),
                   ),
                   const SizedBox(height: 8),
 
+                  // Price row
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
                         "₹${product.price.sellingPrice.toInt()}",
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          color: Colors.black,
+                          color: Color(0xFF111827),
                           fontFamily: 'Roboto',
                         ),
                       ),
                       const SizedBox(width: 6),
                       if (product.price.mrpPrice > product.price.sellingPrice)
                         Text(
-                          "₹${product.price.mrpPrice}",
-                          style: TextStyle(
+                          "₹${product.price.mrpPrice.toInt()}",
+                          style: const TextStyle(
                             fontSize: 12,
-                            color: Colors.grey[400],
+                            color: Colors.black38,
                             decoration: TextDecoration.lineThrough,
                             fontFamily: 'Roboto',
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+
+                  const SizedBox(height: 5),
+
+                  // Savings indicator
                   Text(
-                    "Buy at ₹${(product.price.sellingPrice * 0.95).toInt()}", // Simulation of extra discount labell
+                    "Save ₹${(product.price.mrpPrice - product.price.sellingPrice).toInt()}",
                     style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF2E7D32),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF16A34A),
                       fontFamily: 'Roboto',
                     ),
                   ),

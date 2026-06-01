@@ -17,65 +17,82 @@ class MobileCharmSliderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = element.config;
+    final bgColor = _hexToColor(config.bgColor);
+    final titleColor = _hexToColor(config.sectionTitleColor);
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: _hexToColor(config.bgColor),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// 🔥 Section Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: Row(
-              children: [
-                if (config.sectionIcon.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      config.sectionIcon,
-                      height: 30,
-                      width: 30,
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        color: bgColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            /// Section Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+              child: Row(
+                children: [
+                  if (config.sectionIcon.isNotEmpty) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        config.sectionIcon,
+                        height: 28,
+                        width: 28,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                  Expanded(
+                    child: Text(
+                      "${config.sectionTitle} ${config.charm}",
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                        color: titleColor.opacity > 0
+                            ? titleColor
+                            : const Color(0xFF111827),
+                        letterSpacing: -0.3,
+                      ),
                     ),
                   ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    "${config.sectionTitle} ${config.charm}",
+                  // "See All" link
+                  const Text(
+                    "See All →",
                     style: TextStyle(
                       fontFamily: 'Roboto',
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: _hexToColor(config.sectionTitleColor),
-                      letterSpacing: -0.2,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF7C3AED),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
 
-          const SizedBox(height: 0),
+            const SizedBox(height: 8),
 
-          /// 💖 Cards Slider
-          SizedBox(
-            height: 280,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (context, index) {
-                final item = element.items[index];
-
-                return CharmCard(item: item, config: config);
-              },
+            /// Cards Slider
+            SizedBox(
+              height: 280,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: element.items.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final item = element.items[index];
+                  return CharmCard(item: item, config: config);
+                },
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+          ],
+        ),
       ),
     );
   }

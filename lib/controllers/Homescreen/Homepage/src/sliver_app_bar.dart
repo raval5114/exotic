@@ -19,66 +19,90 @@ class ExoticSliverAppBar extends StatelessWidget {
         final tabs = provider.tabs;
 
         return SliverAppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFF7C3AED),
           pinned: true,
-          expandedHeight: 185,
+          expandedHeight: 170,
           toolbarHeight: 0,
           elevation: 0,
+          surfaceTintColor: Colors.transparent,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFF9747FF), Colors.white],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF7C3AED), Color(0xFF9F67FF)],
               ),
             ),
             child: FlexibleSpaceBar(
               background: SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // --- ADDRESS BAR ---
-                      Ink(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: InkWell(
-                          onTap: () => _showAddressBottomSheet(context),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
+                      InkWell(
+                        onTap: () => _showAddressBottomSheet(context),
+                        borderRadius: BorderRadius.circular(10),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              size: 16,
+                              color: Colors.white,
                             ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.location_on_rounded,
-                                  size: 18,
-                                  color: Colors.black87,
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: RichText(
+                                text: const TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: "Deliver to ",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white70,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "388440 ▾",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(width: 8),
-                                Text(
-                                  "388440  ",
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "Add address",
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.bodySmall?.copyWith(
-                                    decoration: TextDecoration.underline,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Spacer(),
-                              ],
+                              ),
                             ),
-                          ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.18),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.35),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Text(
+                                "Change",
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -87,18 +111,10 @@ class ExoticSliverAppBar extends StatelessWidget {
                       Row(
                         children: [
                           const Expanded(child: BuildSearchBar()),
-                          const SizedBox(width: 12),
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.qr_code_scanner_rounded,
-                              color: Colors.black87,
-                              size: 26,
-                            ),
+                          const SizedBox(width: 10),
+                          _IconButton(
+                            icon: Icons.qr_code_scanner_rounded,
+                            onTap: () {},
                           ),
                         ],
                       ),
@@ -109,13 +125,13 @@ class ExoticSliverAppBar extends StatelessWidget {
             ),
           ),
           bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(85),
+            preferredSize: const Size.fromHeight(48),
             child: Container(
-              color: Colors.transparent,
+              color: Colors.white,
               child:
                   tabs.isEmpty
                       ? const SizedBox(
-                        height: 85,
+                        height: 48,
                         child: Center(
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
@@ -124,58 +140,45 @@ class ExoticSliverAppBar extends StatelessWidget {
                         controller: controller,
                         isScrollable: true,
                         tabAlignment: TabAlignment.start,
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: EdgeInsets.zero,
                         physics: const BouncingScrollPhysics(),
-                        dividerColor: Colors.grey.shade300,
-                        labelColor: Colors.deepPurple,
-                        unselectedLabelColor: Colors.black87,
-                        labelStyle: Theme.of(context).textTheme.bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w300),
-                        unselectedLabelStyle: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.copyWith(fontWeight: FontWeight.w300),
+                        dividerColor: Colors.grey.shade200,
+                        dividerHeight: 1,
+                        labelColor: const Color(0xFF7C3AED),
+                        unselectedLabelColor: Colors.black54,
+                        labelStyle: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          letterSpacing: 0.1,
+                        ),
+                        unselectedLabelStyle: const TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 13,
+                        ),
                         indicator: const UnderlineTabIndicator(
                           borderSide: BorderSide(
-                            color: Color(0xFF9747FF),
-                            width: 3,
+                            color: Color(0xFF7C3AED),
+                            width: 2.5,
                           ),
-                          insets: EdgeInsets.symmetric(horizontal: 16),
+                          insets: EdgeInsets.symmetric(horizontal: 12),
                         ),
-
                         tabs:
                             tabs.asMap().entries.map((entry) {
                               final index = entry.key;
                               final e = entry.value;
-
-                              // Testing icons for tabs
-                              IconData iconData;
-                              switch (index % 6) {
-                                case 0:
-                                  iconData = Icons.style_outlined;
-                                  break;
-                                case 1:
-                                  iconData = Icons.checkroom_outlined;
-                                  break;
-                                case 2:
-                                  iconData = Icons.smartphone_outlined;
-                                  break;
-                                case 3:
-                                  iconData = Icons.face_retouching_natural;
-                                  break;
-                                case 4:
-                                  iconData = Icons.computer_outlined;
-                                  break;
-                                case 5:
-                                  iconData = Icons.weekend_outlined;
-                                  break;
-                                default:
-                                  iconData = Icons.category_outlined;
-                              }
-
+                              final iconData = _tabIcon(index);
                               return Tab(
-                                icon: Icon(iconData, size: 24),
-                                text: e.title ?? "",
+                                height: 46,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(iconData, size: 16),
+                                    const SizedBox(width: 6),
+                                    Text(e.title),
+                                  ],
+                                ),
                               );
                             }).toList(),
                       ),
@@ -184,6 +187,25 @@ class ExoticSliverAppBar extends StatelessWidget {
         );
       },
     );
+  }
+
+  IconData _tabIcon(int index) {
+    switch (index % 6) {
+      case 0:
+        return Icons.style_outlined;
+      case 1:
+        return Icons.checkroom_outlined;
+      case 2:
+        return Icons.smartphone_outlined;
+      case 3:
+        return Icons.face_retouching_natural;
+      case 4:
+        return Icons.computer_outlined;
+      case 5:
+        return Icons.weekend_outlined;
+      default:
+        return Icons.category_outlined;
+    }
   }
 
   void _showAddressBottomSheet(BuildContext context) {
@@ -195,13 +217,13 @@ class ExoticSliverAppBar extends StatelessWidget {
         return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
           padding: EdgeInsets.only(
-            top: 16,
-            left: 16,
-            right: 16,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            top: 20,
+            left: 20,
+            right: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -209,9 +231,9 @@ class ExoticSliverAppBar extends StatelessWidget {
             children: [
               Center(
                 child: Container(
-                  width: 40,
+                  width: 36,
                   height: 4,
-                  margin: const EdgeInsets.only(bottom: 24),
+                  margin: const EdgeInsets.only(bottom: 20),
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(2),
@@ -221,66 +243,94 @@ class ExoticSliverAppBar extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Add new address",
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
+                  const Text(
+                    "Delivery Address",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Roboto',
+                      color: Colors.black,
                     ),
                   ),
-                  IconButton(
+                  TextButton.icon(
                     onPressed: () {
                       Navigator.of(context).pop();
                       context.push('/addAddress');
                     },
                     icon: const Icon(
-                      Icons.add_circle,
-                      color: Color(0xFF9747FF),
+                      Icons.add_rounded,
+                      size: 18,
+                      color: Color(0xFF7C3AED),
+                    ),
+                    label: const Text(
+                      "Add New",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF7C3AED),
+                        fontFamily: 'Roboto',
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "Search your area, street name...",
-                  prefixIcon: const Icon(
-                    Icons.search_rounded,
-                    color: Color(0xFF9747FF),
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[100],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
+              const SizedBox(height: 16),
+              Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.search_rounded,
+                      color: Color(0xFF7C3AED),
+                      size: 20,
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          hintText: "Search your area, street name...",
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.zero,
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black38,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Saved Addresses",
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Colors.grey,
-                      fontFamily: 'Poppins',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black54,
+                      fontFamily: 'Roboto',
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
+                  GestureDetector(
+                    onTap: () {
                       Navigator.of(context).pop();
                       context.push('/viewAddress');
                     },
-                    child: Text(
+                    child: const Text(
                       "View All",
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      style: TextStyle(
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF9747FF),
+                        color: Color(0xFF7C3AED),
+                        fontFamily: 'Roboto',
                       ),
                     ),
                   ),
@@ -313,20 +363,25 @@ class ExoticSliverAppBar extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
+                              onTap: () => Navigator.of(context).pop(),
+                              borderRadius: BorderRadius.circular(14),
                               child: Container(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color:
                                         isDefault
-                                            ? Theme.of(context).primaryColor
-                                            : Colors.grey[200]!,
-                                    width: isDefault ? 2 : 1,
+                                            ? const Color(0xFF7C3AED)
+                                            : Colors.grey.shade200,
+                                    width: isDefault ? 1.5 : 1,
                                   ),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(14),
+                                  color:
+                                      isDefault
+                                          ? const Color(
+                                            0xFF7C3AED,
+                                          ).withOpacity(0.04)
+                                          : Colors.white,
                                 ),
                                 child: Row(
                                   children: [
@@ -334,7 +389,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                                       padding: const EdgeInsets.all(8),
                                       decoration: BoxDecoration(
                                         color: const Color(
-                                          0xFF9747FF,
+                                          0xFF7C3AED,
                                         ).withOpacity(0.1),
                                         shape: BoxShape.circle,
                                       ),
@@ -348,8 +403,8 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                         'office')
                                                 ? Icons.work_rounded
                                                 : Icons.location_on_rounded),
-                                        color: const Color(0xFF9747FF),
-                                        size: 20,
+                                        color: const Color(0xFF7C3AED),
+                                        size: 18,
                                       ),
                                     ),
                                     const SizedBox(width: 12),
@@ -364,13 +419,11 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                 addr.caBadge?.isNotEmpty == true
                                                     ? addr.caBadge!
                                                     : "Address",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleSmall
-                                                    ?.copyWith(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 14,
+                                                  fontFamily: 'Roboto',
+                                                ),
                                               ),
                                               if (isDefault) ...[
                                                 const SizedBox(width: 8),
@@ -381,39 +434,35 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                         vertical: 2,
                                                       ),
                                                   decoration: BoxDecoration(
-                                                    color: Theme.of(context)
-                                                        .primaryColor
-                                                        .withOpacity(0.1),
+                                                    color: const Color(
+                                                      0xFF7C3AED,
+                                                    ).withOpacity(0.12),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                           4,
                                                         ),
                                                   ),
-                                                  child: Text(
+                                                  child: const Text(
                                                     "Default",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .labelSmall
-                                                        ?.copyWith(
-                                                          color:
-                                                              Theme.of(
-                                                                context,
-                                                              ).primaryColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
+                                                    style: TextStyle(
+                                                      color: Color(0xFF7C3AED),
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      fontSize: 10,
+                                                      fontFamily: 'Roboto',
+                                                    ),
                                                   ),
                                                 ),
                                               ],
                                             ],
                                           ),
-                                          const SizedBox(height: 4),
+                                          const SizedBox(height: 3),
                                           Text(
                                             "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.bodySmall?.copyWith(
-                                              color: Colors.grey[600],
+                                            style: const TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 12,
+                                              fontFamily: 'Roboto',
                                             ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -423,7 +472,8 @@ class ExoticSliverAppBar extends StatelessWidget {
                                     ),
                                     const Icon(
                                       Icons.chevron_right_rounded,
-                                      color: Colors.grey,
+                                      color: Colors.black26,
+                                      size: 20,
                                     ),
                                   ],
                                 ),
@@ -438,6 +488,30 @@ class ExoticSliverAppBar extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _IconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _IconButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.18),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+        ),
+        child: Icon(icon, color: Colors.white, size: 24),
+      ),
     );
   }
 }

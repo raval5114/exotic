@@ -3,151 +3,139 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
+// ─── Brand tokens ─────────────────────────────────────────────────────────────
+const _kBrandPrimary = Color(0xFF7C3AED);
+const _kBrandSecondary = Color(0xFF9747FF);
+
 class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
-  ExoticAppBar({super.key});
+  const ExoticAppBar({super.key});
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-  final ImagePicker picker = ImagePicker();
-  void openGallary() async {
+
+  // ── Gallery picker ──────────────────────────────────────────────────────────
+  Future<void> _openGallery() async {
+    final picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      print('Picked image: ${image.path}');
-      // You can pass this to Bloc, setState, etc.
-    } else {
-      print('No image selected.');
+      debugPrint('Picked image: ${image.path}');
     }
   }
 
-  Widget SearchBarCameraOverlay(OverlayEntry entry) {
-    return Stack(
-      children: [
-        // Semi-transparent background
-        GestureDetector(
-          onTap: () => entry.remove(),
-          child: Container(color: Colors.black.withOpacity(0.5)),
-        ),
+  // ── Camera picker ───────────────────────────────────────────────────────────
+  Future<void> _openCamera() async {
+    final picker = ImagePicker();
+    final XFile? photo = await picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      debugPrint('Captured photo: ${photo.path}');
+    }
+  }
 
-        // Centered dialog
-        Center(
-          child: Material(
-            borderRadius: BorderRadius.circular(12),
-            color: Colors.transparent,
-            child: Container(
-              width: 320,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+  // ── Image-search bottom sheet ────────────────────────────────────────────────
+  void _showImageSearchSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder:
+          (_) =>
+              _ImageSearchSheet(onGallery: _openGallery, onCamera: _openCamera),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return AppBar(
+      backgroundColor: _kBrandPrimary,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      // ── Search bar (title area) ─────────────────────────────────────────────
+      title: GestureDetector(
+        onTap:
+            () =>
+                context.push('/dynamicRoute', extra: () => SearchProductPage()),
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.96),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Search with a photo",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Upload a photo and search for Fashion, Toys,\nLifestyle and Home Products",
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
+            ],
+          ),
+          child: Row(
+            children: [
+              const SizedBox(width: 10),
+              // Camera icon — triggers image search
+              GestureDetector(
+                onTap: () => _showImageSearchSheet(context),
+                child: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: _kBrandSecondary,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 10),
+              // Tappable hint text (navigates to search)
+              Expanded(
+                child: AbsorbPointer(
+                  child: TextField(
+                    style: theme.textTheme.bodyMedium?.copyWith(
                       color: Colors.black87,
                     ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Filled button
-                  ElevatedButton(
-                    onPressed: () {
-                      openGallary();
-                      // Handle gallery action
-                      entry.remove();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF9747FF),
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: 'Search for products, brands...',
+                      hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.black38,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.image),
-                            SizedBox(width: 8),
-                            Text(
-                              "Choose from gallery",
-                              style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 13,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Icon(Icons.arrow_forward_ios, size: 16),
-                      ],
+                      isDense: true,
+                      contentPadding: EdgeInsets.zero,
                     ),
                   ),
-                  const SizedBox(height: 10),
-
-                  // Outlined button
-                  OutlinedButton(
-                    onPressed: () async {
-                      final XFile? photo = await picker.pickImage(
-                        source: ImageSource.camera,
-                      );
-
-                      if (photo != null) {
-                        print('Captured photo: ${photo.path}');
-                        // You can store, display, or upload the image here
-                      } else {
-                        print('No photo taken.');
-                      }
-
-                      entry.remove(); // Close the overlay regardless
-                    },
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Color(0xFF9747FF)),
-                      foregroundColor: const Color(0xFF9747FF),
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.camera_alt),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Click a photo",
-                              style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontSize: 13,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Icon(Icons.arrow_forward_ios, size: 16),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              // Mic icon
+              const Icon(
+                Icons.mic_none_rounded,
+                color: _kBrandSecondary,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              // Search icon
+              const Icon(
+                Icons.search_rounded,
+                color: _kBrandSecondary,
+                size: 22,
+              ),
+              const SizedBox(width: 10),
+            ],
+          ),
+        ),
+      ),
+      // ── Actions ─────────────────────────────────────────────────────────────
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: InkWell(
+            onTap: () => context.push('/wishlist'),
+            borderRadius: BorderRadius.circular(8),
+            splashColor: Colors.white.withOpacity(0.15),
+            highlightColor: Colors.white.withOpacity(0.08),
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: const Icon(
+                Icons.favorite_border_rounded,
+                size: 24,
+                color: Colors.white,
               ),
             ),
           ),
@@ -155,90 +143,145 @@ class ExoticAppBar extends StatelessWidget implements PreferredSizeWidget {
       ],
     );
   }
+}
 
-  void onTap(BuildContext context) {
-    final overlay = Overlay.of(context);
-    late OverlayEntry entry;
+// ─── Image Search Bottom Sheet ─────────────────────────────────────────────────
+class _ImageSearchSheet extends StatelessWidget {
+  final Future<void> Function() onGallery;
+  final Future<void> Function() onCamera;
 
-    entry = OverlayEntry(builder: (_) => SearchBarCameraOverlay(entry));
-    overlay.insert(entry);
-  }
+  const _ImageSearchSheet({required this.onGallery, required this.onCamera});
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.secondary,
-      centerTitle: true,
-      title: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(
-            color: Theme.of(context).colorScheme.onSecondaryContainer,
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Handle ──────────────────────────────────────────────────────────
+          const SizedBox(height: 12),
+          Container(
+            width: 36,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(2),
+            ),
           ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.only(top: 20, bottom: 20, right: 20),
-        width: 259,
-        height: 39,
-        child: Row(
-          children: [
-            InkWell(
-              onTap: () => onTap(context),
-              child: const Icon(
-                Icons.camera_alt_outlined,
-                color: Color(0xFF9747FF),
-                size: 22,
+          const SizedBox(height: 20),
+
+          // ── Icon ────────────────────────────────────────────────────────────
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: _kBrandSecondary.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.image_search_rounded,
+              color: _kBrandSecondary,
+              size: 28,
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // ── Title & subtitle ─────────────────────────────────────────────────
+          Text(
+            "Search with a Photo",
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              "Upload or capture a photo to find Fashion, Toys, Lifestyle and Home Products.",
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: Colors.black45,
+                height: 1.5,
               ),
             ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: GestureDetector(
-                onTap:
-                    () => context.push('/dynamicRoute', extra: () => SearchProductPage(),
+          ),
+          const SizedBox(height: 24),
+
+          // ── Actions ─────────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                // Gallery
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await onGallery();
+                    },
+                    icon: const Icon(Icons.photo_library_outlined, size: 18),
+                    label: Text(
+                      "Choose from Gallery",
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                child: const AbsorbPointer(
-                  child: TextField(
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      disabledBorder: InputBorder.none,
-                      hintText: 'Search',
-                      isDense: true,
-                      contentPadding: EdgeInsets.zero,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _kBrandPrimary,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            const Icon(
-              Icons.mic_none_rounded,
-              color: Color(0xFF9747FF),
-              size: 22,
-            ),
-            const SizedBox(width: 8),
-            const Icon(
-              Icons.search_rounded,
-              color: Color(0xFF9747FF),
-              size: 24,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        InkWell(
-          onTap: () => context.push('/wishlist'),
-          child: Padding(
-            padding: EdgeInsets.only(right: 16.0),
-            child: Icon(
-              Icons.favorite_border_outlined,
-              size: 28,
-              color: Colors.black54,
+                const SizedBox(height: 10),
+                // Camera
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await onCamera();
+                    },
+                    icon: const Icon(Icons.camera_alt_outlined, size: 18),
+                    label: Text(
+                      "Take a Photo",
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: _kBrandSecondary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: _kBrandSecondary,
+                      side: const BorderSide(
+                        color: _kBrandSecondary,
+                        width: 1.5,
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+          const SizedBox(height: 20),
+        ],
+      ),
     );
   }
 }

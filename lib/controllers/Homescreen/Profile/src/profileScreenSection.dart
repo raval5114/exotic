@@ -4,186 +4,244 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 
+// ─── Brand tokens ─────────────────────────────────────────────────────────────
+const _kBrandPrimary = Color(0xFF7C3AED);
+const _kBrandSecondary = Color(0xFF9747FF);
+
 class ProfileScreenSection extends StatelessWidget {
   const ProfileScreenSection({super.key});
-
-  Widget buildProfileItem(
-    IconData icon,
-    String title,
-    VoidCallback onTap,
-    BuildContext context,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.all(6),
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.grey.shade200),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF9747FF).withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: const Color(0xFF9747FF), size: 18),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final user = context.watch<UserProvider>().user;
     final theme = Theme.of(context);
 
+    return Column(
+      children: [
+        // ── Hero Header ──────────────────────────────────────────────────────
+        _ProfileHeader(user: user, theme: theme),
+        const SizedBox(height: 2),
+        // ── Quick-action grid ────────────────────────────────────────────────
+        _QuickActionsGrid(),
+      ],
+    );
+  }
+}
+
+// ─── Header Section ───────────────────────────────────────────────────────────
+class _ProfileHeader extends StatelessWidget {
+  final dynamic user;
+  final ThemeData theme;
+
+  const _ProfileHeader({required this.user, required this.theme});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      child: Column(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [_kBrandPrimary, _kBrandSecondary],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(28),
+          bottomRight: Radius.circular(28),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // User Profile Header Section
+          // Avatar with ring
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
+            padding: const EdgeInsets.all(3),
             decoration: BoxDecoration(
-              color: theme.colorScheme.secondary,
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(32),
-                bottomRight: Radius.circular(32),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.white.withOpacity(0.6),
+                width: 2.5,
               ),
             ),
-            child: Row(
+            child: CircleAvatar(
+              radius: 34,
+              backgroundColor: Colors.white,
+              backgroundImage:
+                  user?.profilePhotoUrl != null &&
+                          user!.profilePhotoUrl.isNotEmpty
+                      ? NetworkImage(user.profilePhotoUrl)
+                      : null,
+              child:
+                  user?.profilePhotoUrl == null || user!.profilePhotoUrl.isEmpty
+                      ? Icon(
+                        Icons.person_rounded,
+                        size: 38,
+                        color: _kBrandSecondary,
+                      )
+                      : null,
+            ),
+          ),
+          const SizedBox(width: 16),
+
+          // Name & email
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withOpacity(0.5),
-                      width: 3,
-                    ),
+                Text(
+                  user != null
+                      ? "${user.firstName} ${user.lastName}".trim()
+                      : "Guest User",
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
                   ),
-                  child: CircleAvatar(
-                    radius: 36,
-                    backgroundColor: Colors.white,
-                    backgroundImage:
-                        user?.profilePhotoUrl != null &&
-                                user!.profilePhotoUrl.isNotEmpty
-                            ? NetworkImage(user.profilePhotoUrl)
-                            : null,
-                    child:
-                        user?.profilePhotoUrl == null ||
-                                user!.profilePhotoUrl.isEmpty
-                            ? Icon(
-                              Icons.person_rounded,
-                              size: 40,
-                              color: theme.colorScheme.secondary,
-                            )
-                            : null,
-                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user != null
-                            ? "${user.firstName} ${user.lastName}".trim()
-                            : "Guest User",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: -0.5,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        user?.email ?? "Sign in to view info",
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white70,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                const SizedBox(height: 4),
+                Text(
+                  user?.email ?? "Sign in to view info",
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withOpacity(0.75),
+                    fontWeight: FontWeight.w500,
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    context.push('/dynamicRoute', extra: () => EditProfile());
-                  },
-                  icon: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 5,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.edit_rounded,
-                      color: theme.colorScheme.secondary,
-                      size: 20,
-                    ),
-                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
 
-          // Grid Section
-          GridView.count(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            crossAxisCount: 2,
-            padding: const EdgeInsets.only(top: 10),
-            childAspectRatio: 3.2, // Increased to drastically reduce height
+          // Edit button
+          GestureDetector(
+            onTap:
+                () => context.push('/dynamicRoute', extra: () => EditProfile()),
+            child: Container(
+              padding: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: const Icon(
+                Icons.edit_rounded,
+                color: Colors.white,
+                size: 18,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Quick Actions Grid ───────────────────────────────────────────────────────
+class _QuickActionsGrid extends StatelessWidget {
+  const _QuickActionsGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: 4,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 0.85,
+        children: [
+          _QuickActionTile(
+            icon: Icons.inventory_2_outlined,
+            label: "Orders",
+            onTap: () => context.push('/orderList'),
+          ),
+          _QuickActionTile(
+            icon: Icons.favorite_border_rounded,
+            label: "Wishlist",
+            onTap: () => context.push('/wishlist'),
+          ),
+          _QuickActionTile(
+            icon: Icons.card_giftcard_outlined,
+            label: "Coupons",
+            onTap: () => context.push('/coupensAndOffers'),
+          ),
+          _QuickActionTile(
+            icon: Icons.help_outline_rounded,
+            label: "Help",
+            onTap: () {},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickActionTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickActionTile({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        splashColor: _kBrandSecondary.withOpacity(0.08),
+        highlightColor: _kBrandSecondary.withOpacity(0.04),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+          decoration: BoxDecoration(
+            color: _kBrandSecondary.withOpacity(0.05),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _kBrandSecondary.withOpacity(0.12),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildProfileItem(Icons.inventory_2_outlined, "Orders", () {
-                context.push('/orderList');
-              }, context),
-              buildProfileItem(Icons.favorite_border, "Wishlist", () {
-                context.push('/wishlist');
-              }, context),
-              buildProfileItem(Icons.card_giftcard, "Coupons", () {
-                context.push('/coupensAndOffers');
-              }, context),
-              buildProfileItem(
-                Icons.lock_outline,
-                "Help Center",
-                () {},
-                context,
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: _kBrandSecondary.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: _kBrandSecondary, size: 20),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                label,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }

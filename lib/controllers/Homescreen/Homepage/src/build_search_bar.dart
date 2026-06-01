@@ -1,99 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-Widget _buildSearchBar(BuildContext context) {
-  return Container(
-    height: 45,
-    padding: const EdgeInsets.symmetric(horizontal: 12),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12),
-    ),
-    child: const Row(
-      children: [
-        Icon(Icons.camera_alt, size: 20),
-        SizedBox(width: 8),
-        Expanded(
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: "Search",
-              border: InputBorder.none,
-            ),
-          ),
-        ),
-        Icon(Icons.mic, size: 20),
-        SizedBox(width: 8),
-        Icon(Icons.search, size: 20),
-      ],
-    ),
-  );
-}
-
 class BuildSearchBar extends StatelessWidget {
   const BuildSearchBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFF9747FF).withOpacity(0.5),
-          width: 1.5,
+    return GestureDetector(
+      onTap: () => context.push('/searchProductPage'),
+      child: Container(
+        height: 48,
+        padding: const EdgeInsets.symmetric(horizontal: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.06),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(right: 12.0),
-            child: Icon(
+        child: Row(
+          children: [
+            const Icon(
               Icons.search_rounded,
-              color: Color(0xFF9747FF),
-              size: 24,
+              color: Colors.black45,
+              size: 22,
             ),
-          ),
-          Expanded(
-            child: TextField(
-              readOnly: true,
-              onTap: () => context.push('/searchProductPage'),
-              decoration: InputDecoration(
-                hintText: "Search",
-                border: InputBorder.none,
-                isDense: true,
-                contentPadding: EdgeInsets.zero,
-                hintStyle: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: Colors.black45),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                "Search products, brands...",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black38,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
-          ),
-          InkWell(
-            onTap: () => debugPrint("mic taped"),
-            child: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(
+            Container(
+              width: 1,
+              height: 22,
+              color: Colors.black12,
+              margin: const EdgeInsets.symmetric(horizontal: 8),
+            ),
+            GestureDetector(
+              onTap: () => debugPrint("mic tapped"),
+              child: const Icon(
                 Icons.mic_none_rounded,
-                color: Color(0xFF9747FF),
-                size: 22,
+                color: Colors.black45,
+                size: 20,
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          InkWell(
-            onTap: () => debugPrint("camera taped"),
-            child: const Padding(
-              padding: EdgeInsets.all(4.0),
-              child: Icon(
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => debugPrint("camera tapped"),
+              child: const Icon(
                 Icons.camera_alt_outlined,
-                color: Color(0xFF9747FF),
-                size: 22,
+                color: Colors.black45,
+                size: 20,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

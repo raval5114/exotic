@@ -9,49 +9,53 @@ class MobileFeaturedSliderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 2),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// 🔥 Section Title
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// Section Header
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
               element.config.sectionTitle,
               style: const TextStyle(
                 fontFamily: 'Roboto',
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w800,
-                color: Colors.black,
-                letterSpacing: -0.2,
+                color: Color(0xFF111827),
+                letterSpacing: -0.3,
               ),
             ),
-          ),
-
-          const SizedBox(height: 20),
-
-          /// 🎯 Horizontal Cards
-          SizedBox(
-            height: 170,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              physics: const BouncingScrollPhysics(),
-              itemCount: element.items.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 14),
-              itemBuilder: (context, index) {
-                final item = element.items[index];
-                return FeaturedCard(item: item);
-              },
+            const Text(
+              "See All →",
+              style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF7C3AED),
+              ),
             ),
+          ],
+        ),
+
+        const SizedBox(height: 16),
+
+        /// Horizontal Cards
+        SizedBox(
+          height: 185,
+          child: ListView.separated(
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: element.items.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 12),
+            itemBuilder: (context, index) {
+              final item = element.items[index];
+              return FeaturedCard(item: item);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
