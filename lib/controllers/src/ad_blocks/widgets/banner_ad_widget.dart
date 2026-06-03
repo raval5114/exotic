@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:exotic/data/providers/ad_provider.dart';
-import '../ad_service.dart';
+import '../../../../data/domains/ads/ad_service.dart';
 
 class BannerAdWidget extends StatefulWidget {
   final Map<String, dynamic> adData;
@@ -20,9 +20,11 @@ class BannerAdWidget extends StatefulWidget {
   State<BannerAdWidget> createState() => _BannerAdWidgetState();
 }
 
-class _BannerAdWidgetState extends State<BannerAdWidget> with SingleTickerProviderStateMixin {
+class _BannerAdWidgetState extends State<BannerAdWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _scaleAnimation;
+  final AdService _adService = AdService();
 
   @override
   void initState() {
@@ -50,7 +52,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> with SingleTickerProvid
     final String? bannerUrl = widget.adData['cb_banner_url'];
 
     // 1. Track click & obtain the click_id
-    final clickResponse = await AdService.trackClick(
+    final clickResponse = await _adService.trackClick(
       campaignId: campaignId,
       adType: 'banner',
       bannerId: bannerId,
@@ -104,10 +106,10 @@ class _BannerAdWidgetState extends State<BannerAdWidget> with SingleTickerProvid
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.12),
-              blurRadius: 15,
-              spreadRadius: 1,
-              offset: const Offset(0, 6),
+              color: Colors.black.withValues(alpha: 0.13),
+              blurRadius: 18,
+              spreadRadius: 0,
+              offset: const Offset(0, 7),
             ),
           ],
         ),
@@ -115,108 +117,144 @@ class _BannerAdWidgetState extends State<BannerAdWidget> with SingleTickerProvid
           borderRadius: BorderRadius.circular(20),
           child: Stack(
             children: [
-              // High resolution ad image
+              // Ad image
               imageUrl != null
                   ? Image.network(
-                      imageUrl,
-                      width: double.infinity,
-                      height: 155,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-                    )
+                    imageUrl,
+                    width: double.infinity,
+                    height: 180,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => _buildPlaceholder(),
+                  )
                   : _buildPlaceholder(),
 
-              // Vibrant double gradient overlay for ultra sleek visuals
+              // Bottom gradient overlay
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Colors.black.withOpacity(0.75),
-                        Colors.black.withOpacity(0.2),
+                        Colors.black.withValues(alpha: 0.78),
+                        Colors.black.withValues(alpha: 0.15),
                         Colors.transparent,
                       ],
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
-                      stops: const [0.0, 0.6, 1.0],
+                      stops: const [0.0, 0.55, 1.0],
                     ),
                   ),
                 ),
               ),
 
-              // Glassmorphic "Sponsored" badge with a shimmering design
+              // "Sponsored" badge — top left, brand purple
               Positioned(
-                top: 14,
-                left: 14,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    color: Colors.black.withOpacity(0.55),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.star, color: Color(0xFFFFD700), size: 13),
-                        SizedBox(width: 5),
-                        Text(
-                          'SPONSORED',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 9.5,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 1.2,
-                            fontFamily: 'NunitoSans',
-                          ),
+                top: 12,
+                left: 12,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF9747FF),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.campaign_rounded,
+                        color: Colors.white,
+                        size: 11,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        'SPONSORED',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 1.1,
+                          fontFamily: 'Roboto',
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
 
-              // Campaign Title & Description (Bottom-Left)
+              // Campaign title + CTA (bottom)
               Positioned(
                 bottom: 14,
                 left: 16,
                 right: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17.5,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Poppins',
-                        letterSpacing: 0.3,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Roboto',
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          const Text(
+                            'Tap to discover premium collections',
+                            style: TextStyle(
+                              color: Color(0xCCFFFFFF),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 2),
-                    Text(
-                      'Tap to discover premium collections',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'Roboto',
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF9747FF),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'Shop Now →',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Tap Animation Overlay
+              // Tap ripple overlay
               Positioned.fill(
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => _onAdTap(context),
-                    splashColor: const Color(0xFF9747FF).withOpacity(0.18),
-                    highlightColor: Colors.white.withOpacity(0.08),
+                    splashColor: const Color(
+                      0xFF9747FF,
+                    ).withValues(alpha: 0.18),
+                    highlightColor: Colors.white.withValues(alpha: 0.06),
                   ),
                 ),
               ),
@@ -230,27 +268,27 @@ class _BannerAdWidgetState extends State<BannerAdWidget> with SingleTickerProvid
   Widget _buildPlaceholder() {
     return Container(
       width: double.infinity,
-      height: 155,
+      height: 180,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF9747FF), Color(0xFFB57AFF)],
+          colors: [Color(0xFF7B2FF7), Color(0xFFB57AFF)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
-      child: Center(
+      child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Icon(Icons.shopping_bag_rounded, color: Colors.white, size: 44),
-            SizedBox(height: 8),
+          children: [
+            Icon(Icons.shopping_bag_rounded, color: Colors.white, size: 48),
+            SizedBox(height: 10),
             Text(
               'XOTIC EXCLUSIVE',
               style: TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
-                fontSize: 12,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 2.0,
+                fontSize: 13,
               ),
             ),
           ],

@@ -7,6 +7,7 @@ import 'package:exotic/data/blocs/cart/bloc/cart_bloc.dart';
 import 'package:exotic/data/models/cart.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -31,9 +32,7 @@ class _CartComponentState extends State<CartComponent> {
     context.read<CartBloc>().add(CartFetchingEvent(cid: cid!));
   }
 
-  Widget emptyCartWidget({
-    required VoidCallback onShopNow,
-  }) {
+  Widget emptyCartWidget({required VoidCallback onShopNow}) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -70,7 +69,10 @@ class _CartComponentState extends State<CartComponent> {
                 foregroundColor: Colors.white,
                 elevation: 6,
                 shadowColor: const Color(0xFF9747FF).withOpacity(0.4),
-                padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 34,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
@@ -149,10 +151,17 @@ class _CartComponentState extends State<CartComponent> {
 
           context.read<CartProvider>().updateFromApi(
             products: products,
-            totalMrp: (data['data']['summary']['total_mrp'] as num?)?.toInt() ?? 0,
-            totalDiscount: (data['data']['summary']['total_discount'] as num?)?.toDouble() ?? 0.0,
-            platformFee: (data['data']['summary']['platform_fee'] as num?)?.toInt() ?? 0,
-            grandTotal: (data['data']['summary']['grand_total'] as num?)?.toDouble() ?? 0.0,
+            totalMrp:
+                (data['data']['summary']['total_mrp'] as num?)?.toInt() ?? 0,
+            totalDiscount:
+                (data['data']['summary']['total_discount'] as num?)
+                    ?.toDouble() ??
+                0.0,
+            platformFee:
+                (data['data']['summary']['platform_fee'] as num?)?.toInt() ?? 0,
+            grandTotal:
+                (data['data']['summary']['grand_total'] as num?)?.toDouble() ??
+                0.0,
           );
           print("done");
         }
@@ -166,81 +175,96 @@ class _CartComponentState extends State<CartComponent> {
         }
       },
       builder: (context, state) {
-        bool isLoading = state is CartLoadingState || state is CartInitial; 
+        bool isLoading = state is CartLoadingState || state is CartInitial;
         bool isCartEmpty = context.watch<CartProvider>().cartProducts.isEmpty;
-        
+
         Widget bodyContent;
         if (isLoading && isCartEmpty) {
-           bodyContent = _buildCartShimmer();
+          bodyContent = _buildCartShimmer();
         } else if (isCartEmpty) {
-           bodyContent = emptyCartWidget(
-             onShopNow: () {
-               context.go('/home');
-             },
-           );
+          bodyContent = emptyCartWidget(
+            onShopNow: () {
+              context.go('/home');
+            },
+          );
         } else {
-           bodyContent = SingleChildScrollView(
-             child: Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-               child: Column(
-                 children: [
-                   CartItemBuilder(),
-                   const SizedBox(height: 12),
-                   CartPriceingComponent(),
-                   const SizedBox(height: 12),
-                   HomePageItemShowingSection(
-                     title: "Recently Viewed",
-                     itemList: const [
-                       {
-                         'productName': 'ESSPY Wall Mounted Toothbrush Holder',
-                         'discountedPrice': 129,
-                         'initialPrice': 249,
-                         'discountPercentage': 48,
-                         'rating': 4.1,
-                         'reviews': 128,
-                         'isFreeShipping': true,
-                       },
-                       {
-                         'productName': 'XEAMUZY Travel Soap Holder Portable',
-                         'discountedPrice': 99,
-                         'initialPrice': 199,
-                         'discountPercentage': 50,
-                         'rating': 4.5,
-                         'reviews': 432,
-                         'isFreeShipping': true,
-                       },
-                       {
-                         'productName': 'Luxury Cotton Bath Towel Set 400 GSM',
-                         'discountedPrice': 499,
-                         'initialPrice': 999,
-                         'discountPercentage': 50,
-                         'rating': 4.8,
-                         'reviews': 1054,
-                         'isFreeShipping': false,
-                       },
-                       {
-                         'productName': 'Anti-slip Bathroom Mat Super Absorbent',
-                         'discountedPrice': 299,
-                         'initialPrice': 599,
-                         'discountPercentage': 50,
-                         'rating': 4.3,
-                         'reviews': 89,
-                         'isFreeShipping': true,
-                       },
-                     ],
-                     frontItemLength: 4,
-                   ),
-                 ],
-               ),
-             ),
-           );
+          bodyContent = SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+              child: Column(
+                children: [
+                  // Dynamic Top Ad Placement
+                  const AdBlock(page: 'cart', position: 'top', limit: 2),
+                  const SizedBox(height: 12),
+
+                  CartItemBuilder(),
+                  const SizedBox(height: 12),
+
+                  // Dynamic Middle Ad Placement
+                  const AdBlock(page: 'cart', position: 'middle', limit: 2),
+                  const SizedBox(height: 12),
+
+                  CartPriceingComponent(),
+                  const SizedBox(height: 12),
+
+                  HomePageItemShowingSection(
+                    title: "Recently Viewed",
+                    itemList: const [
+                      {
+                        'productName': 'ESSPY Wall Mounted Toothbrush Holder',
+                        'discountedPrice': 129,
+                        'initialPrice': 249,
+                        'discountPercentage': 48,
+                        'rating': 4.1,
+                        'reviews': 128,
+                        'isFreeShipping': true,
+                      },
+                      {
+                        'productName': 'XEAMUZY Travel Soap Holder Portable',
+                        'discountedPrice': 99,
+                        'initialPrice': 199,
+                        'discountPercentage': 50,
+                        'rating': 4.5,
+                        'reviews': 432,
+                        'isFreeShipping': true,
+                      },
+                      {
+                        'productName': 'Luxury Cotton Bath Towel Set 400 GSM',
+                        'discountedPrice': 499,
+                        'initialPrice': 999,
+                        'discountPercentage': 50,
+                        'rating': 4.8,
+                        'reviews': 1054,
+                        'isFreeShipping': false,
+                      },
+                      {
+                        'productName': 'Anti-slip Bathroom Mat Super Absorbent',
+                        'discountedPrice': 299,
+                        'initialPrice': 599,
+                        'discountPercentage': 50,
+                        'rating': 4.3,
+                        'reviews': 89,
+                        'isFreeShipping': true,
+                      },
+                    ],
+                    frontItemLength: 4,
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Dynamic Bottom Ad Placement
+                  const AdBlock(page: 'cart', position: 'bottom', limit: 2),
+                ],
+              ),
+            ),
+          );
         }
 
         return Scaffold(
           appBar: ExoticAppBar(),
           backgroundColor: Colors.grey.shade50,
           body: bodyContent,
-          bottomNavigationBar: context.watch<CartProvider>().cartProducts.isNotEmpty
+          bottomNavigationBar:
+              context.watch<CartProvider>().cartProducts.isNotEmpty
                   ? const CartBottomNavigationBarComponent()
                   : const SizedBox.shrink(),
         );
@@ -256,7 +280,8 @@ class AnimatedEmptyCartIcon extends StatefulWidget {
   State<AnimatedEmptyCartIcon> createState() => _AnimatedEmptyCartIconState();
 }
 
-class _AnimatedEmptyCartIconState extends State<AnimatedEmptyCartIcon> with SingleTickerProviderStateMixin {
+class _AnimatedEmptyCartIconState extends State<AnimatedEmptyCartIcon>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -264,14 +289,13 @@ class _AnimatedEmptyCartIconState extends State<AnimatedEmptyCartIcon> with Sing
   void initState() {
     super.initState();
     _controller = AnimationController(
-       vsync: this,
-       duration: const Duration(seconds: 2),
+      vsync: this,
+      duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-    
-    _animation = Tween<double>(begin: -10, end: 10).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOutSine,
-    ));
+
+    _animation = Tween<double>(begin: -10, end: 10).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
+    );
   }
 
   @override
@@ -297,8 +321,8 @@ class _AnimatedEmptyCartIconState extends State<AnimatedEmptyCartIcon> with Sing
                   color: const Color(0xFF9747FF).withOpacity(0.15),
                   blurRadius: 30,
                   spreadRadius: 5,
-                )
-              ]
+                ),
+              ],
             ),
             child: const Icon(
               Icons.shopping_cart_outlined,

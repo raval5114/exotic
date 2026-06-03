@@ -52,55 +52,144 @@ class _ProductsdescriptionComponentState
   Widget build(BuildContext context) {
     List<String> imagesList = parseImageList(widget.imgages);
 
+    final bool hasDiscount =
+        widget.discount.isNotEmpty && widget.discount != '0';
+
     return Container(
       color: Colors.white,
-      padding: EdgeInsets.all(12),
-      margin: EdgeInsets.only(bottom: 2),
+      margin: const EdgeInsets.only(bottom: 2),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Image Carousel ────────────────────────────────────────────
           ProductCarousel(
             imageMaps:
                 imagesList.map((e) => ProductImage.fromString(e)).toList(),
-            height: 287,
+            height: 320,
           ),
-          SizedBox(
-            width: double.infinity,
+
+          // ── Product Info ──────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Product Name
                 Text(
                   widget.productName,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontFamily: 'Roboto',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
+                    color: Color(0xFF111111),
+                    fontFamily: 'Roboto',
+                    height: 1.35,
                   ),
                 ),
-                RatingDisplay(rating: widget.ratings, iconSize: 25),
+
+                const SizedBox(height: 8),
+
+                // Ratings row
+                Row(
+                  children: [
+                    RatingDisplay(rating: widget.ratings, iconSize: 18),
+                    const SizedBox(width: 8),
+                    Text(
+                      '(${widget.ratings.toStringAsFixed(1)})',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey.shade500,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                // Pricing
+                ProductPricingSection(
+                  discount: widget.discount,
+                  initialPrice: widget.initialPrice,
+                  discountedPrice: widget.discountedPrice,
+                ),
+
+                const SizedBox(height: 10),
+
+                // Badges row
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  children: [
+                    if (widget.isFreeDelivery)
+                      _Badge(
+                        icon: Icons.local_shipping_outlined,
+                        label: 'Free Delivery',
+                        color: const Color(0xFF1B8A5A),
+                        bgColor: const Color(0xFFE6F6EF),
+                      ),
+                    if (hasDiscount)
+                      _Badge(
+                        icon: Icons.discount_outlined,
+                        label: '${widget.discount}% OFF',
+                        color: const Color(0xFFD44000),
+                        bgColor: const Color(0xFFFFF0E6),
+                      ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                // ── Size Selector ─────────────────────────────────────
+                SizeSelector(productData: widget.sizeChart),
+
+                const SizedBox(height: 16),
               ],
             ),
           ),
-          ProductPricingSection(
-            discount: widget.discount,
-            initialPrice: widget.initialPrice,
-            discountedPrice: widget.discountedPrice,
-          ),
-          if (widget.isFreeDelivery)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  "Free Delivery",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Small pill-shaped badge used in the badges row.
+class _Badge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final Color bgColor;
+
+  const _Badge({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.bgColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.5,
+              color: color,
+              fontFamily: 'Roboto',
+              fontWeight: FontWeight.w600,
             ),
-          SizedBox(height: 12),
-          SizeSelector(productData: widget.sizeChart),
+          ),
         ],
       ),
     );

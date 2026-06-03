@@ -1,6 +1,5 @@
 import 'package:exotic/data/blocs/reviews/reviews_bloc.dart';
 import 'package:exotic/data/models/reviews.dart';
-import 'package:exotic/view/products/allReviewsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -25,19 +24,18 @@ class _ProductratingsandreviewscomponentsState
     extends State<Productratingsandreviewscomponents> {
   late ReviewsBloc _reviewsBloc;
   final ReviewsProvider _reviewsProvider = ReviewsProvider();
-  final Map<int, int> _userVotes = {}; // 1 for helpful, -1 for not helpful
+
+  bool _sectionExpanded = true;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the BLoC and fire the fetching event instantly
     _reviewsBloc = ReviewsBloc()..add(FetchReviewsEvent(widget.productId));
   }
 
   @override
   void didUpdateWidget(covariant Productratingsandreviewscomponents oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Automatically refetch if the product ID completely changes without leaving the screen
     if (oldWidget.productId != widget.productId) {
       _reviewsBloc.add(FetchReviewsEvent(widget.productId));
     }
@@ -45,261 +43,81 @@ class _ProductratingsandreviewscomponentsState
 
   @override
   void dispose() {
-    // Explicitly dispose of the BLoC the moment this component/screen is removed from the tree
     _reviewsBloc.close();
     super.dispose();
   }
 
   String _getRatingDescriptor(double rating) {
-    if (rating >= 4.5) return "Excellent";
-    if (rating >= 3.5) return "Good";
-    if (rating >= 2.5) return "Average";
-    if (rating >= 1.5) return "Poor";
-    return "Very Poor";
+    if (rating >= 4.5) return 'Excellent';
+    if (rating >= 3.5) return 'Good';
+    if (rating >= 2.5) return 'Average';
+    if (rating >= 1.5) return 'Poor';
+    return 'Very Poor';
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _reviewsBloc,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(bottom: 60),
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Color _getRatingColor(double rating) {
+    if (rating >= 4.0) return const Color(0xFF1B8A5A);
+    if (rating >= 3.0) return const Color(0xFFF5A623);
+    return const Color(0xFFE53935);
+  }
+
+  // ── Collapsible section header ──────────────────────────────────────────
+  Widget _buildSectionHeader({
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+  }) {
+    return InkWell(
+      onTap: () => setState(() => _sectionExpanded = !_sectionExpanded),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Internal Builder handles states dynamically
-            BlocConsumer<ReviewsBloc, ReviewsState>(
-              listener: (context, state) {
-                if (state is ReviewsLoadedState) {
-                  _reviewsProvider.setReviewsData(state.reviewsData);
-                }
-              },
-              builder: (context, state) {
-                if (state is ReviewsInitial || state is ReviewsLoadingState) {
-                  return _buildHeaderAndShimmer();
-                }
-
-                if (state is ReviewsErrorState) {
-                  return _buildHeaderAndError(context, state.errorMessage);
-                }
-
-                if (state is ReviewsLoadedState) {
-                  final reviewsData = state.reviewsData;
-                  final summary = reviewsData.summary;
-                  final reviews = reviewsData.reviews;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header with View All Button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Ratings & Reviews",
-                            style: Theme.of(
-                              context,
-                            ).textTheme.titleLarge?.copyWith(
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          if (summary.totalReviews > 0)
-                            InkWell(
-                              onTap: () {
-                                context.push(
-                                  '/reviews',
-                                  extra: _reviewsProvider,
-                                );
-                              },
-                              child: Text(
-                                "View All",
-                                style: TextStyle(
-                                  fontFamily: 'Roboto',
-                                  color: Theme.of(context).primaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-
-                      if (reviews.isEmpty)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 32.0),
-                          child: Center(
-                            child: Text(
-                              "No reviews found for this product.",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                          ),
-                        )
-                      else ...[
-                        // Quick Summary
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    summary.averageRating,
-                                    style: const TextStyle(
-                                      fontSize: 40,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    _getRatingDescriptor(
-                                      double.tryParse(summary.averageRating) ??
-                                          0,
-                                    ),
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[700],
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: List.generate(5, (index) {
-                                      return Icon(
-                                        Icons.star_rounded,
-                                        size: 20,
-                                        color:
-                                            index <
-                                                    (double.tryParse(
-                                                              summary
-                                                                  .averageRating,
-                                                            ) ??
-                                                            0)
-                                                        .round()
-                                                ? Colors.amber
-                                                : Colors.grey[300],
-                                      );
-                                    }),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    "${summary.totalReviews} Ratings",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodySmall?.copyWith(
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(width: 24),
-                              // Rating Distribution
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    _buildRatingBar(
-                                      context,
-                                      "5",
-                                      summary.rating5Count,
-                                      summary.totalReviews,
-                                    ),
-                                    _buildRatingBar(
-                                      context,
-                                      "4",
-                                      summary.rating4Count,
-                                      summary.totalReviews,
-                                    ),
-                                    _buildRatingBar(
-                                      context,
-                                      "3",
-                                      summary.rating3Count,
-                                      summary.totalReviews,
-                                    ),
-                                    _buildRatingBar(
-                                      context,
-                                      "2",
-                                      summary.rating2Count,
-                                      summary.totalReviews,
-                                    ),
-                                    _buildRatingBar(
-                                      context,
-                                      "1",
-                                      summary.rating1Count,
-                                      summary.totalReviews,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Dynamic list of up to 3 reviews for brief view
-                        ...reviews.take(3).toList().asMap().entries.map((
-                          entry,
-                        ) {
-                          final index = entry.key;
-                          final review = entry.value;
-                          return Column(
-                            children: [
-                              _buildReviewCard(context, review),
-                              if (index != reviews.take(3).length - 1)
-                                const Divider(thickness: 0.5, height: 24),
-                            ],
-                          );
-                        }),
-
-                        // Footer for More Reviews
-                        if (summary.totalReviews > 3) ...[
-                          const Divider(
-                            thickness: 1,
-                            height: 1,
-                            color: Colors.black12,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              context.push('/reviews', extra: _reviewsProvider);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                                horizontal: 16.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "All ${summary.totalReviews} reviews",
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleSmall?.copyWith(
-                                      fontFamily: 'Roboto',
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.chevron_right,
-                                    size: 24,
-                                    color: Colors.black,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ],
-                  );
-                }
-
-                return const SizedBox.shrink();
-              },
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: Color(0xFF111111),
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      color: Colors.grey.shade500,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            Row(
+              children: [
+                if (trailing != null) ...[trailing, const SizedBox(width: 8)],
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF2F2F2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    _sectionExpanded
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    size: 22,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -307,82 +125,277 @@ class _ProductratingsandreviewscomponentsState
     );
   }
 
-  Widget _buildHeaderAndShimmer() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Ratings & Reviews",
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontFamily: 'Roboto',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 12),
-        const Divider(thickness: 0.5),
-        Shimmer.fromColors(
-          baseColor: Colors.grey[200]!,
-          highlightColor: Colors.grey[50]!,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: _reviewsBloc,
+      child: Container(
+        color: Colors.white,
+        margin: const EdgeInsets.only(bottom: 4),
+        child: BlocConsumer<ReviewsBloc, ReviewsState>(
+          listener: (context, state) {
+            if (state is ReviewsLoadedState) {
+              _reviewsProvider.setReviewsData(state.reviewsData);
+            }
+          },
+          builder: (context, state) {
+            // ── Loading ─────────────────────────────────────────────────
+            if (state is ReviewsInitial || state is ReviewsLoadingState) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 60,
-                    height: 40,
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(4),
-                  ),
-                  const SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(width: 100, height: 16, color: Colors.white),
-                      const SizedBox(height: 6),
-                      Container(width: 140, height: 12, color: Colors.white),
-                    ],
-                  ),
+                  _buildSectionHeader(title: 'Ratings & Reviews'),
+                  if (_sectionExpanded) _buildShimmer(),
                 ],
-              ),
-              const SizedBox(height: 24),
-              ...List.generate(
-                2,
-                (index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            width: 32,
-                            height: 32,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
+              );
+            }
+
+            // ── Error ────────────────────────────────────────────────────
+            if (state is ReviewsErrorState) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSectionHeader(title: 'Ratings & Reviews'),
+                  if (_sectionExpanded)
+                    _buildErrorState(context, state.errorMessage),
+                ],
+              );
+            }
+
+            // ── Loaded ───────────────────────────────────────────────────
+            if (state is ReviewsLoadedState) {
+              final reviewsData = state.reviewsData;
+              final summary = reviewsData.summary;
+              final reviews = reviewsData.reviews;
+              final avgRating =
+                  double.tryParse(summary.averageRating) ?? 0.0;
+
+              final subtitle =
+                  summary.totalReviews > 0
+                      ? '${summary.totalReviews} ratings · ${_getRatingDescriptor(avgRating)}'
+                      : 'No reviews yet';
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section header with "View All" trailing action
+                  _buildSectionHeader(
+                    title: 'Ratings & Reviews',
+                    subtitle: subtitle,
+                    trailing:
+                        summary.totalReviews > 0
+                            ? GestureDetector(
+                              onTap: () => context.push(
+                                '/reviews',
+                                extra: _reviewsProvider,
+                              ),
+                              child: Text(
+                                'View All',
+                                style: TextStyle(
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: Theme.of(context).primaryColor,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            )
+                            : null,
+                  ),
+
+                  if (_sectionExpanded) ...[
+                    const Divider(
+                      height: 1,
+                      thickness: 0.8,
+                      color: Color(0xFFEEEEEE),
+                      indent: 16,
+                      endIndent: 16,
+                    ),
+                    const SizedBox(height: 16),
+
+                    if (reviews.isEmpty)
+                      _buildEmptyState()
+                    else ...[
+                      // Rating summary block
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: _buildRatingSummary(
+                          context,
+                          summary,
+                          avgRating,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                      const Divider(
+                        height: 1,
+                        thickness: 0.8,
+                        color: Color(0xFFEEEEEE),
+                        indent: 16,
+                        endIndent: 16,
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Reviews list (up to 3)
+                      ...reviews.take(3).toList().asMap().entries.map((entry) {
+                        final idx = entry.key;
+                        final review = entry.value;
+                        final isLast =
+                            idx == (reviews.take(3).length - 1) ||
+                            idx == 2;
+                        return Column(
+                          children: [
+                            _buildReviewCard(context, review),
+                            if (!isLast)
+                              const Divider(
+                                height: 1,
+                                thickness: 0.6,
+                                color: Color(0xFFEEEEEE),
+                                indent: 16,
+                                endIndent: 16,
+                              ),
+                          ],
+                        );
+                      }),
+
+                      // "All X reviews" footer
+                      if (summary.totalReviews > 3) ...[
+                        const Divider(
+                          height: 1,
+                          thickness: 0.8,
+                          color: Color(0xFFEEEEEE),
+                        ),
+                        InkWell(
+                          onTap: () => context.push(
+                            '/reviews',
+                            extra: _reviewsProvider,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'All ${summary.totalReviews} reviews',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF111111),
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                                Container(
+                                  width: 36,
+                                  height: 36,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF2F2F2),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: const Icon(
+                                    Icons.chevron_right_rounded,
+                                    size: 22,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Container(
-                            width: 100,
-                            height: 14,
-                            color: Colors.white,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: double.infinity,
-                        height: 14,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height: 6),
-                      Container(width: 200, height: 14, color: Colors.white),
+                        ),
+                      ],
                     ],
-                  ),
+                    const SizedBox(height: 8),
+                  ],
+                ],
+              );
+            }
+
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+  }
+
+  // ── Rating summary (big number + bars) ──────────────────────────────────
+  Widget _buildRatingSummary(
+    BuildContext context,
+    dynamic summary,
+    double avgRating,
+  ) {
+    final ratingColor = _getRatingColor(avgRating);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Left: big number + stars + label
+        SizedBox(
+          width: 110,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                avgRating.toStringAsFixed(1),
+                style: TextStyle(
+                  fontSize: 52,
+                  fontWeight: FontWeight.w800,
+                  color: ratingColor,
+                  fontFamily: 'Roboto',
+                  height: 1.0,
                 ),
               ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (i) {
+                  return Icon(
+                    i < avgRating.round()
+                        ? Icons.star_rounded
+                        : Icons.star_border_rounded,
+                    size: 16,
+                    color: ratingColor,
+                  );
+                }),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                _getRatingDescriptor(avgRating),
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w700,
+                  color: ratingColor,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${summary.totalReviews} ratings',
+                style: TextStyle(
+                  fontSize: 11.5,
+                  color: Colors.grey.shade500,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(width: 20),
+
+        // Right: horizontal rating bars
+        Expanded(
+          child: Column(
+            children: [
+              _buildRatingBar(context, '5', summary.rating5Count,
+                  summary.totalReviews),
+              _buildRatingBar(context, '4', summary.rating4Count,
+                  summary.totalReviews),
+              _buildRatingBar(context, '3', summary.rating3Count,
+                  summary.totalReviews),
+              _buildRatingBar(context, '2', summary.rating2Count,
+                  summary.totalReviews),
+              _buildRatingBar(context, '1', summary.rating1Count,
+                  summary.totalReviews),
             ],
           ),
         ),
@@ -390,73 +403,22 @@ class _ProductratingsandreviewscomponentsState
     );
   }
 
-  Widget _buildHeaderAndError(BuildContext context, String error) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Ratings & Reviews",
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton.icon(
-              onPressed:
-                  () => context.read<ReviewsBloc>().add(
-                    FetchReviewsEvent(widget.productId),
-                  ),
-              icon: const Icon(Icons.refresh, size: 18),
-              label: const Text("Retry"),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        const Divider(thickness: 0.5),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24.0),
-          child: Center(
-            child: Column(
-              children: [
-                Icon(
-                  Icons.warning_amber_rounded,
-                  color: Colors.red[300],
-                  size: 48,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  "Failed to load reviews.",
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
+  // ── Individual review card ───────────────────────────────────────────────
   Widget _buildReviewCard(BuildContext context, Review review) {
+    final rating = double.tryParse(review.overallRating) ?? 0.0;
+    final ratingColor = _getRatingColor(rating);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: User avatar, Rating & Date
+          // User row
           Row(
             children: [
               CircleAvatar(
-                radius: 18,
-                backgroundColor: Theme.of(
-                  context,
-                ).colorScheme.primaryContainer.withOpacity(0.5),
+                radius: 19,
+                backgroundColor: ratingColor.withValues(alpha: 0.12),
                 child: Text(
                   review.customerName.isNotEmpty
                       ? review.customerName[0].toUpperCase()
@@ -464,7 +426,8 @@ class _ProductratingsandreviewscomponentsState
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: ratingColor,
+                    fontFamily: 'Roboto',
                   ),
                 ),
               ),
@@ -476,72 +439,62 @@ class _ProductratingsandreviewscomponentsState
                     Text(
                       review.customerName,
                       style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                        fontSize: 14.5,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF111111),
+                        fontFamily: 'Roboto',
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 3),
                     Row(
                       children: [
+                        // Rating badge
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
+                            horizontal: 7,
+                            vertical: 2.5,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(4),
+                            color: ratingColor,
+                            borderRadius: BorderRadius.circular(5),
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
                                 review.overallRating,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              const SizedBox(width: 2),
+                              const SizedBox(width: 3),
                               const Icon(
-                                Icons.star,
+                                Icons.star_rounded,
                                 color: Colors.white,
-                                size: 10,
+                                size: 11,
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(
-                          _getRatingDescriptor(
-                            double.tryParse(review.overallRating) ?? 0,
+                        if (review.isVerifiedPurchase == 1) ...[
+                          const Icon(
+                            Icons.verified_rounded,
+                            color: Color(0xFF1B8A5A),
+                            size: 13,
                           ),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey[800],
+                          const SizedBox(width: 3),
+                          Text(
+                            'Verified',
+                            style: TextStyle(
+                              fontSize: 11.5,
+                              color: Colors.grey.shade500,
+                              fontFamily: 'Roboto',
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        if (review.isVerifiedPurchase == 1)
-                          const Row(
-                            children: [
-                              Icon(
-                                Icons.verified,
-                                color: Colors.grey,
-                                size: 14,
-                              ),
-                              SizedBox(width: 3),
-                              Text(
-                                "Verified Purchase",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+                        ],
                       ],
                     ),
                   ],
@@ -549,162 +502,125 @@ class _ProductratingsandreviewscomponentsState
               ),
               Text(
                 review.createdAtFormatted,
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                style: TextStyle(
+                  fontSize: 11.5,
+                  color: Colors.grey.shade400,
+                  fontFamily: 'Roboto',
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
-          if (review.reviewTitle.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 6.0),
-              child: Text(
-                review.reviewTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+          // Title
+          if (review.reviewTitle.isNotEmpty) ...[
+            Text(
+              review.reviewTitle,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF111111),
+                fontFamily: 'Roboto',
               ),
             ),
+            const SizedBox(height: 4),
+          ],
 
+          // Body
           Text(
             review.reviewText,
             style: TextStyle(
-              color: Colors.grey[800],
-              fontSize: 14,
-              height: 1.4,
+              fontSize: 13.5,
+              color: Colors.grey.shade700,
+              fontFamily: 'Roboto',
+              height: 1.5,
             ),
           ),
 
+          // Sub-ratings (Quality / Value / Delivery)
           if (review.qualityRating.isNotEmpty ||
               review.valueRating.isNotEmpty ||
-              review.deliveryRating.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0, bottom: 4.0),
-              child: Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                children: [
-                  if (review.qualityRating.isNotEmpty)
-                    _buildSubRatingChip("Quality", review.qualityRating),
-                  if (review.valueRating.isNotEmpty)
-                    _buildSubRatingChip("Value", review.valueRating),
-                  if (review.deliveryRating.isNotEmpty)
-                    _buildSubRatingChip("Delivery", review.deliveryRating),
-                ],
-              ),
+              review.deliveryRating.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 6,
+              children: [
+                if (review.qualityRating.isNotEmpty)
+                  _buildSubRatingChip('Quality', review.qualityRating),
+                if (review.valueRating.isNotEmpty)
+                  _buildSubRatingChip('Value', review.valueRating),
+                if (review.deliveryRating.isNotEmpty)
+                  _buildSubRatingChip('Delivery', review.deliveryRating),
+              ],
             ),
+          ],
 
-          if (review.pros.isNotEmpty || review.cons.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (review.pros.isNotEmpty)
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(
-                          Icons.check_circle_outline,
-                          color: Colors.green,
-                          size: 16,
-                        ),
-                        const SizedBox(width: 4),
-                        const Text(
-                          "Pros: ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            color: Colors.green,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            review.pros,
-                            style: const TextStyle(fontSize: 13),
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (review.cons.isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: review.pros.isNotEmpty ? 6.0 : 0.0,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.red,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          const Text(
-                            "Cons: ",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
-                              color: Colors.red,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              review.cons,
-                              style: const TextStyle(fontSize: 13),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
+          // Pros & Cons
+          if (review.pros.isNotEmpty || review.cons.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            if (review.pros.isNotEmpty)
+              _buildProConRow(
+                icon: Icons.check_circle_outline_rounded,
+                label: 'Pros',
+                value: review.pros,
+                color: const Color(0xFF1B8A5A),
               ),
-            ),
-
-          if (review.reviewImages.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: SizedBox(
-                height: 60,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: review.reviewImages.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
-                  itemBuilder: (context, idx) {
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        review.reviewImages[idx],
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) => Container(
-                              width: 60,
-                              height: 60,
-                              color: Colors.grey[200],
-                              child: const Icon(
-                                Icons.broken_image,
-                                color: Colors.grey,
-                              ),
-                            ),
-                      ),
-                    );
-                  },
+            if (review.cons.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(top: review.pros.isNotEmpty ? 6 : 0),
+                child: _buildProConRow(
+                  icon: Icons.cancel_outlined,
+                  label: 'Cons',
+                  value: review.cons,
+                  color: Colors.redAccent,
                 ),
               ),
-            ),
+          ],
 
+          // Review images
+          if (review.reviewImages.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 68,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: review.reviewImages.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                itemBuilder: (context, idx) {
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.network(
+                      review.reviewImages[idx],
+                      width: 68,
+                      height: 68,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        width: 68,
+                        height: 68,
+                        color: Colors.grey.shade100,
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          color: Colors.grey.shade400,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+
+          // Seller response
           if (review.vendorResponse != null &&
-              review.vendorResponse!.isNotEmpty)
+              review.vendorResponse!.isNotEmpty) ...[
+            const SizedBox(height: 12),
             Container(
-              margin: const EdgeInsets.only(top: 12.0),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.grey[50],
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey[200]!),
+                color: const Color(0xFFF7F7F7),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFEAEAEA)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -712,25 +628,27 @@ class _ProductratingsandreviewscomponentsState
                   Row(
                     children: [
                       const Icon(
-                        Icons.storefront,
-                        size: 16,
-                        color: Colors.black87,
+                        Icons.storefront_rounded,
+                        size: 15,
+                        color: Color(0xFF555555),
                       ),
                       const SizedBox(width: 6),
                       const Text(
-                        "Seller Response",
+                        'Seller Response',
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF333333),
+                          fontFamily: 'Roboto',
                         ),
                       ),
                       const Spacer(),
                       if (review.vendorResponseDate != null)
                         Text(
                           review.vendorResponseDate!,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
-                            color: Colors.grey,
+                            color: Colors.grey.shade400,
                           ),
                         ),
                     ],
@@ -738,53 +656,79 @@ class _ProductratingsandreviewscomponentsState
                   const SizedBox(height: 6),
                   Text(
                     review.vendorResponse!,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey.shade700,
+                      height: 1.45,
+                    ),
                   ),
                 ],
               ),
             ),
+          ],
 
+          // Helpful buttons
           Productreviewishelpfull(review: review),
         ],
       ),
     );
   }
 
+  // ── Rating bar row ────────────────────────────────────────────────────────
   Widget _buildRatingBar(
     BuildContext context,
     String star,
     int count,
     int total,
   ) {
-    final percentage = total > 0 ? count / total : 0.0;
+    final pct = total > 0 ? count / total : 0.0;
+
+    Color barColor;
+    if (star == '5' || star == '4') {
+      barColor = const Color(0xFF1B8A5A);
+    } else if (star == '3') {
+      barColor = const Color(0xFFF5A623);
+    } else {
+      barColor = const Color(0xFFE53935);
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2.0),
+      padding: const EdgeInsets.symmetric(vertical: 3),
       child: Row(
         children: [
           Text(
             star,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF444444),
+            ),
           ),
-          const Icon(Icons.star, size: 12, color: Colors.grey),
+          const SizedBox(width: 4),
+          const Icon(Icons.star_rounded, size: 12, color: Color(0xFFCCCCCC)),
           const SizedBox(width: 8),
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(6),
               child: LinearProgressIndicator(
-                value: percentage,
-                backgroundColor: Colors.grey[200],
-                color: Colors.green,
-                minHeight: 6,
+                value: pct,
+                backgroundColor: const Color(0xFFEEEEEE),
+                valueColor: AlwaysStoppedAnimation<Color>(barColor),
+                minHeight: 7,
               ),
             ),
           ),
           const SizedBox(width: 8),
           SizedBox(
-            width: 30,
+            width: 26,
             child: Text(
               count.toString(),
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
               textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 11.5,
+                color: Colors.grey.shade500,
+                fontFamily: 'Roboto',
+              ),
             ),
           ),
         ],
@@ -792,32 +736,279 @@ class _ProductratingsandreviewscomponentsState
     );
   }
 
+  // ── Sub-rating chip ──────────────────────────────────────────────────────
   Widget _buildSubRatingChip(String label, String rating) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFEAEAEA)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            "$label: ",
+            '$label ',
             style: TextStyle(
-              fontSize: 11,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+              fontSize: 11.5,
+              color: Colors.grey.shade600,
+              fontFamily: 'Roboto',
             ),
           ),
-          const Icon(Icons.star, size: 12, color: Colors.amber),
-          const SizedBox(width: 2),
+          const Icon(Icons.star_rounded, size: 12, color: Colors.amber),
+          const SizedBox(width: 3),
           Text(
             rating,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+              fontSize: 11.5,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Roboto',
+            ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ── Pros / Cons row ──────────────────────────────────────────────────────
+  Widget _buildProConRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 15, color: color),
+        const SizedBox(width: 5),
+        Text(
+          '$label: ',
+          style: TextStyle(
+            fontSize: 12.5,
+            fontWeight: FontWeight.w700,
+            color: color,
+            fontFamily: 'Roboto',
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 12.5,
+              color: Color(0xFF444444),
+              fontFamily: 'Roboto',
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // ── Shimmer loading state ─────────────────────────────────────────────────
+  Widget _buildShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Summary block placeholder
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: 80,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    children: List.generate(
+                      5,
+                      (_) => Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        child: Container(
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
+            // Review card placeholders
+            ...List.generate(
+              2,
+              (_) => Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 38,
+                          height: 38,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 110,
+                              height: 13,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              width: 70,
+                              height: 11,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Container(
+                      width: double.infinity,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: 220,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Empty state ──────────────────────────────────────────────────────────
+  Widget _buildEmptyState() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(
+              Icons.rate_review_outlined,
+              size: 44,
+              color: Colors.grey.shade300,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'No reviews yet',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade500,
+                fontFamily: 'Roboto',
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Be the first to review this product',
+              style: TextStyle(
+                fontSize: 12.5,
+                color: Colors.grey.shade400,
+                fontFamily: 'Roboto',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Error state ───────────────────────────────────────────────────────────
+  Widget _buildErrorState(BuildContext context, String error) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(
+              Icons.warning_amber_rounded,
+              size: 44,
+              color: Colors.red.shade300,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Failed to load reviews',
+              style: TextStyle(
+                fontSize: 14.5,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade700,
+                fontFamily: 'Roboto',
+              ),
+            ),
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: () =>
+                  context.read<ReviewsBloc>().add(
+                    FetchReviewsEvent(widget.productId),
+                  ),
+              icon: const Icon(Icons.refresh_rounded, size: 16),
+              label: const Text('Retry'),
+              style: OutlinedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

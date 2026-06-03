@@ -6,7 +6,7 @@ import 'package:exotic/view/widgets/searched_items_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
-import 'package:exotic/data/domains/ads/widgets/ad_block.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 
 class SearchedItemsWidget extends StatelessWidget {
   final List<SearchedItems> items;
@@ -38,30 +38,81 @@ class SearchedItemsWidget extends StatelessWidget {
           Expanded(
             child: LayoutBuilder(
               builder: (context, constraints) {
-                // Automatically determine aspect ratio based on available width
-                // A standard 2-column grid will give approx (constraints.maxWidth - 36) / 2 width per item
                 final itemWidth = (constraints.maxWidth - 36) / 2;
-                // Assume fixed vertical size for text components (~100 to 110px) + width for image
                 final aspect = itemWidth / (itemWidth + 110);
+                final gridAspectRatio =
+                    aspect < 0.5 ? 0.5 : (aspect > 0.8 ? 0.8 : aspect);
 
-                return GridView.builder(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: items.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio:
-                        aspect < 0.5 ? 0.5 : (aspect > 0.8 ? 0.8 : aspect),
-                  ),
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    return _buildProductCard(item, context);
-                  },
+                if (items.length <= 4) {
+                  return GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: items.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: gridAspectRatio,
+                    ),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return _buildProductCard(item, context);
+                    },
+                  );
+                }
+
+                // Injects a middle ad block dynamically between rows of products
+                final firstHalf = items.take(4).toList();
+                final secondHalf = items.skip(4).toList();
+
+                return CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.all(12),
+                      sliver: SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: gridAspectRatio,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) =>
+                              _buildProductCard(firstHalf[index], context),
+                          childCount: firstHalf.length,
+                        ),
+                      ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: AdBlock(
+                        page: 'search',
+                        position: 'middle',
+                        limit: 2,
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(12),
+                      sliver: SliverGrid(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: gridAspectRatio,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) =>
+                              _buildProductCard(secondHalf[index], context),
+                          childCount: secondHalf.length,
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
           ),
+        // Premium Sponsored Bottom Ad Placement
+        const AdBlock(page: 'search', position: 'bottom', limit: 2),
       ],
     );
   }
@@ -216,8 +267,7 @@ class SearchedItemsWidget extends StatelessWidget {
       context.read<FetchProductBloc>().add(
         FetchingSingleProductEvent(productid: item.id.toString()),
       );
-      context.push('/dynamicRoute', extra: () => ProductsShell(),
-      );
+      context.push('/dynamicRoute', extra: () => ProductsShell());
     }
 
     final imagePath = item.image ?? '';

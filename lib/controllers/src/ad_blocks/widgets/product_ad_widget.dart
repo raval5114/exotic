@@ -6,7 +6,7 @@ import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/providers/ad_provider.dart';
-import '../ad_service.dart';
+import '../../../../data/domains/ads/ad_service.dart';
 
 class ProductAdWidget extends StatefulWidget {
   final Map<String, dynamic> adData;
@@ -26,9 +26,11 @@ class ProductAdWidget extends StatefulWidget {
   State<ProductAdWidget> createState() => _ProductAdWidgetState();
 }
 
-class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProviderStateMixin {
+class _ProductAdWidgetState extends State<ProductAdWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _scaleAnimation;
+  final AdService _adService = AdService();
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
     final int productId = widget.adData['product_id'] ?? 0;
 
     // 1. Track the click on the backend
-    final clickResponse = await AdService.trackClick(
+    final clickResponse = await _adService.trackClick(
       campaignId: campaignId,
       adType: widget.adType,
       productId: productId,
@@ -90,9 +92,11 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
   Widget build(BuildContext context) {
     final imageUrl = widget.adData['product_image_url'];
     final name = widget.adData['product_name'] ?? 'Featured Product';
-    final double sellingPrice = double.tryParse(widget.adData['selling_price'].toString()) ?? 0.0;
+    final double sellingPrice =
+        double.tryParse(widget.adData['selling_price'].toString()) ?? 0.0;
     final double mrp = double.tryParse(widget.adData['mrp'].toString()) ?? 0.0;
-    final double discountPercent = mrp > sellingPrice ? ((mrp - sellingPrice) / mrp) * 100 : 0.0;
+    final double discountPercent =
+        mrp > sellingPrice ? ((mrp - sellingPrice) / mrp) * 100 : 0.0;
 
     return ScaleTransition(
       scale: _scaleAnimation,
@@ -105,9 +109,9 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
           border: Border.all(color: Colors.grey.shade100, width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              spreadRadius: 0.5,
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
+              spreadRadius: 0,
               offset: const Offset(0, 4),
             ),
           ],
@@ -124,30 +128,48 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
                     child: Container(
                       color: Colors.grey.shade50,
                       width: double.infinity,
-                      child: imageUrl != null
-                          ? Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const Center(
-                                child: Icon(Icons.image_not_supported_rounded, color: Colors.grey, size: 28),
+                      child:
+                          imageUrl != null
+                              ? Image.network(
+                                imageUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder:
+                                    (context, error, stackTrace) =>
+                                        const Center(
+                                          child: Icon(
+                                            Icons.image_not_supported_rounded,
+                                            color: Colors.grey,
+                                            size: 28,
+                                          ),
+                                        ),
+                              )
+                              : const Center(
+                                child: Icon(
+                                  Icons.image_rounded,
+                                  color: Colors.grey,
+                                  size: 28,
+                                ),
                               ),
-                            )
-                          : const Center(
-                              child: Icon(Icons.image_rounded, color: Colors.grey, size: 28),
-                            ),
                     ),
                   ),
 
                   // Product Details Card Info
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // "Sponsored" indicator line with brand color
                         Row(
                           children: const [
-                            Icon(Icons.campaign, color: Color(0xFF9747FF), size: 14),
+                            Icon(
+                              Icons.campaign,
+                              color: Color(0xFF9747FF),
+                              size: 14,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'Sponsored',
@@ -219,7 +241,10 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
                   top: 10,
                   left: 10,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3.5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 7,
+                      vertical: 3.5,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFFEF4444),
                       borderRadius: BorderRadius.circular(8),
@@ -242,8 +267,12 @@ class _ProductAdWidgetState extends State<ProductAdWidget> with SingleTickerProv
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => _onAdTap(context),
-                    splashColor: const Color(0xFF9747FF).withOpacity(0.09),
-                    highlightColor: const Color(0xFF9747FF).withOpacity(0.04),
+                    splashColor: const Color(
+                      0xFF9747FF,
+                    ).withValues(alpha: 0.09),
+                    highlightColor: const Color(
+                      0xFF9747FF,
+                    ).withValues(alpha: 0.04),
                   ),
                 ),
               ),

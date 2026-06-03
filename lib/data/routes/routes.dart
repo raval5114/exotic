@@ -1,3 +1,4 @@
+import 'package:exotic/Test/AdTesting/AdTesting.dart';
 import 'package:exotic/view/productViewer/productViewer.dart';
 import 'package:exotic/view/reviews/ReviewScreen.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';
@@ -37,7 +38,7 @@ final goRoutes = GoRouter(
       },
     ),
     //testing routes
-    GoRoute(path: '/test', builder: (context, state) => SearchProductTesting()),
+    GoRoute(path: '/test', builder: (context, state) => AdTesting()),
     GoRoute(
       path: '/ProductsViewer',
       builder: (context, state) {

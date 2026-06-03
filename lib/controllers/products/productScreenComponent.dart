@@ -12,6 +12,7 @@ import 'package:exotic/controllers/products/shared/productsDescriptionComponent.
 import 'package:exotic/controllers/products/shared/src/productReview.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/utils/newProductList.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,6 +43,9 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Dynamic Top Ad Placement
+              const AdBlock(page: 'product', position: 'top', limit: 3),
+
               ProductsdescriptionComponent(
                 productName: product.pName ?? "Name not found",
                 imgages: provider.images,
@@ -71,6 +75,9 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
 
               ProductDetailsComponent(product: product),
 
+              // Dynamic Middle Ad Placement
+              const AdBlock(page: 'product', position: 'middle', limit: 3),
+
               Productsellerdetailscomponent(
                 sellerName: "Vendor Name",
                 isTrusted: true,
@@ -92,7 +99,16 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
                 productId: int.parse(product.pId!),
               ),
 
-              const SizedBox(height: 32),
+              // Dynamic Bottom Ad Placement
+              const AdBlock(page: 'product', position: 'bottom', limit: 3),
+              // Dynamic Bottom Ad Placement
+              const AdBlock(page: 'product', position: 'bottom', limit: 3),
+              // Dynamic Bottom Ad Placement
+              const AdBlock(page: 'product', position: 'bottom', limit: 3),
+              // Dynamic Bottom Ad Placement
+              const AdBlock(page: 'product', position: 'bottom', limit: 3),
+
+              const SizedBox(height: 60),
             ],
           ),
         );

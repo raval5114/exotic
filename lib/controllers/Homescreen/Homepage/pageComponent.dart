@@ -1,6 +1,6 @@
 import 'package:exotic/controllers/Homescreen/Homepage/rowPage.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
-import 'package:exotic/data/domains/ads/widgets/ad_block.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
 
 class Pagecomponent extends StatelessWidget {
@@ -34,7 +34,11 @@ class Pagecomponent extends StatelessWidget {
                   children: [
                     rowWidget,
                     const SizedBox(height: 12),
-                    const AdBlock(page: 'homepage', position: 'middle', limit: 4),
+                    const AdBlock(
+                      page: 'homepage',
+                      position: 'middle',
+                      limit: 4,
+                    ),
                   ],
                 );
               }

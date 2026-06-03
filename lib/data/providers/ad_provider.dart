@@ -7,6 +7,9 @@ class AdProvider extends ChangeNotifier {
   int? _activeClickId;
   int? _activeProductId;
 
+  /// Private AdService instance (no longer static after extending AdRepo)
+  final AdService _adService = AdService();
+
   int? get activeCampaignId => _activeCampaignId;
   int? get activeClickId => _activeClickId;
   int? get activeProductId => _activeProductId;
@@ -23,15 +26,19 @@ class AdProvider extends ChangeNotifier {
       _activeProductId = prefs.getInt('active_product_id');
       notifyListeners();
     } catch (e) {
-      print('AdProvider._loadFromPrefs Error: $e');
+      debugPrint('AdProvider._loadFromPrefs Error: $e');
     }
   }
 
-  Future<void> setActiveAd({int? campaignId, int? clickId, int? productId}) async {
+  Future<void> setActiveAd({
+    int? campaignId,
+    int? clickId,
+    int? productId,
+  }) async {
     _activeCampaignId = campaignId;
     _activeClickId = clickId;
     _activeProductId = productId;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       if (campaignId != null) {
@@ -39,7 +46,7 @@ class AdProvider extends ChangeNotifier {
       } else {
         await prefs.remove('active_campaign_id');
       }
-      
+
       if (clickId != null) {
         await prefs.setInt('active_click_id', clickId);
       } else {
@@ -52,9 +59,9 @@ class AdProvider extends ChangeNotifier {
         await prefs.remove('active_product_id');
       }
     } catch (e) {
-      print('AdProvider.setActiveAd Error: $e');
+      debugPrint('AdProvider.setActiveAd Error: $e');
     }
-    
+
     notifyListeners();
   }
 
@@ -62,14 +69,14 @@ class AdProvider extends ChangeNotifier {
     _activeCampaignId = null;
     _activeClickId = null;
     _activeProductId = null;
-    
+
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('active_campaign_id');
       await prefs.remove('active_click_id');
       await prefs.remove('active_product_id');
     } catch (e) {
-      print('AdProvider.clearActiveAd Error: $e');
+      debugPrint('AdProvider.clearActiveAd Error: $e');
     }
     notifyListeners();
   }
@@ -81,9 +88,9 @@ class AdProvider extends ChangeNotifier {
     required int? userId,
   }) async {
     if (_activeCampaignId == null) return;
-    
-    // Call AdService conversion endpoint
-    await AdService.trackConversion(
+
+    // Call AdService conversion endpoint via instance (not static)
+    await _adService.trackConversion(
       campaignId: _activeCampaignId!,
       orderId: orderId,
       userId: userId,
@@ -91,7 +98,7 @@ class AdProvider extends ChangeNotifier {
       productId: _activeProductId,
       conversionValue: totalValue,
     );
-    
+
     // Clear once attributed
     await clearActiveAd();
   }

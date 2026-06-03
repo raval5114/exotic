@@ -1,5 +1,6 @@
 import 'package:exotic/controllers/payment/orderPaymentOptions.dart';
 import 'package:exotic/controllers/payment/src/orderPaymentAmountShowing.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
 
 class OrderPaymentComponent extends StatefulWidget {
@@ -15,8 +16,22 @@ class _OrderPaymentComponentState extends State<OrderPaymentComponent> {
     return SingleChildScrollView(
       child: Column(
         children: [
+          // Dynamic Top Ad Placement
+          const AdBlock(page: 'checkout', position: 'top', limit: 2),
+          const SizedBox(height: 10),
+
           OrderPaymentAmountShowing(totalAmount: 500, cashbackAmount: 5),
+
+          // Dynamic Middle Ad Placement
+          const AdBlock(page: 'checkout', position: 'middle', limit: 2),
+          const SizedBox(height: 10),
+
           OrderPaymentOptions(),
+
+          // Dynamic Bottom Ad Placement
+          const AdBlock(page: 'checkout', position: 'bottom', limit: 2),
+          const SizedBox(height: 10),
+
           Container(
             color: Colors.grey[200], // light gray background
             width: double.infinity,
