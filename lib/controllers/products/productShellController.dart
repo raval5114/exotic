@@ -7,7 +7,9 @@ import 'package:exotic/data/blocs/products/bloc/fetch_products_state.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_event.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_state.dart';
+import 'package:exotic/data/models/interactions.dart';
 import 'package:exotic/data/models/product_orignal.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
@@ -144,8 +146,16 @@ class _ProductsShellState extends State<ProductsShell> {
               if (state is FetchSingleProductSuccess) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (context.mounted) {
-                    context.read<ProductProvider>().setProduct(
-                      ProductModel.fromJson(state.product['data']),
+                    final product = ProductModel.fromJson(
+                      state.product['data'],
+                    );
+                    context.read<ProductProvider>().setProduct(product);
+
+                    // Record a ProductView interaction every time a product
+                    // screen is opened. The provider enforces the 20-item cap.
+                    context.read<InteractionProvider>().addInteraction(
+                      product: product,
+                      interactionType: InteractionType.ProductView,
                     );
                   }
                 });

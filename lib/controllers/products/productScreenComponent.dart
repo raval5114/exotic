@@ -9,7 +9,7 @@ import 'package:exotic/controllers/products/shared/productRatingsAndReviewsCompo
 import 'package:exotic/controllers/products/shared/productSellerDetailsComponent.dart';
 import 'package:exotic/controllers/products/shared/productVariantComponet.dart';
 import 'package:exotic/controllers/products/shared/productsDescriptionComponent.dart';
-import 'package:exotic/controllers/products/shared/src/productReview.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/utils/newProductList.dart';
 import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
@@ -84,15 +84,51 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
                 ratings: 4.3,
               ),
 
-              Container(
-                color: Colors.white,
-                margin: const EdgeInsets.only(bottom: 2),
-                child: HomePageItemShowingSection(
-                  title: "Recently Added",
-                  itemList: products,
-                  frontItemLength: 4,
-                  rows: 1,
-                ),
+              Consumer<InteractionProvider>(
+                builder: (context, interactionProvider, _) {
+                  // Map InteractionProductModel → the shape HomePageItemShowingSection expects.
+                  final recentItems =
+                      interactionProvider.interactions.reversed
+                          .map(
+                            (entry) => <String, dynamic>{
+                              'productName': entry.product.pName ?? '',
+                              'imgages': entry.product.pMainImage ?? '',
+                              'discountedPrice':
+                                  double.tryParse(
+                                    entry.product.pSellingPrice ?? '0',
+                                  ) ??
+                                  0.0,
+                              'initialPrice':
+                                  double.tryParse(
+                                    entry.product.pMrpPrice ?? '0',
+                                  ) ??
+                                  0.0,
+                              'discount':
+                                  int.tryParse(
+                                    entry.product.pDiscount ?? '0',
+                                  ) ??
+                                  0,
+                              'isFreeDelivery':
+                                  entry.product.pFreeShipping == '1',
+                              'ratings': 0,
+                              'pId': entry.product.pId,
+                            },
+                          )
+                          .toList();
+
+                  if (recentItems.isEmpty) return const SizedBox.shrink();
+
+                  return Container(
+                    color: Colors.white,
+                    margin: const EdgeInsets.only(bottom: 2),
+                    child: HomePageItemShowingSection(
+                      title: 'Recently Viewed',
+                      itemList: recentItems,
+                      frontItemLength: recentItems.length.clamp(1, 10),
+                      rows: 1,
+                    ),
+                  );
+                },
               ),
 
               Productratingsandreviewscomponents(

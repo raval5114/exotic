@@ -10,6 +10,7 @@ import 'package:exotic/data/blocs/splashScreen/bloc/splash_screen_bloc.dart';
 import 'package:exotic/data/blocs/vendorStore/bloc/vender_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/repositories/address/addressesRepo.dart';
 import 'package:exotic/data/providers/brands_provider.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
@@ -53,6 +54,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => OrderListProvider()),
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => AdProvider()),
+        ChangeNotifierProvider(create: (_) => InteractionProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
@@ -102,13 +104,13 @@ class MyApp extends StatelessWidget {
           headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
           titleLarge: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-          
+
           // Medium (Body/Primary Text): 14px-16px
           bodyLarge: TextStyle(fontSize: 16),
           bodyMedium: TextStyle(fontSize: 14),
           titleMedium: TextStyle(fontSize: 16),
           titleSmall: TextStyle(fontSize: 14),
-          
+
           // Small (Captions/Hints): 12px-14px
           bodySmall: TextStyle(fontSize: 12),
           labelLarge: TextStyle(fontSize: 14),
