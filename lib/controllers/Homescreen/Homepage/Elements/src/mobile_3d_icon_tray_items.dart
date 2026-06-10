@@ -1,6 +1,9 @@
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_3d_icon_tray.dart';
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EnhancedTrayItem extends StatelessWidget {
   final Mobile3DIconTrayItem item;
@@ -13,6 +16,10 @@ class EnhancedTrayItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // TODO: navigation logic using item.url
+        context.read<InteractionProvider>().addInteraction(
+          interactionType: InteractionType.mobile3dIconGallery,
+          pageName: "HomePage/3d-icon-tray/${item.label}",
+        );
       },
       child: SizedBox(
         width: 78,
@@ -69,11 +76,12 @@ class EnhancedTrayItem extends StatelessWidget {
                         child: Image.memory(
                           base64ToBytes(item.img),
                           fit: BoxFit.fill,
-                          errorBuilder: (_, __, ___) => const Icon(
-                            Icons.image_not_supported,
-                            size: 24,
-                            color: Colors.grey,
-                          ),
+                          errorBuilder:
+                              (_, __, ___) => const Icon(
+                                Icons.image_not_supported,
+                                size: 24,
+                                color: Colors.grey,
+                              ),
                         ),
                       ),
                     ),

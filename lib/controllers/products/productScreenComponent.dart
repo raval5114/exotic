@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:exotic/controllers/Homescreen/widgets/homepageItemShowingSection.dart';
 import 'package:exotic/controllers/products/shared/ProductDetailsComponent.dart';
 import 'package:exotic/controllers/products/shared/productAllOffersAndCoupens.dart';
@@ -88,9 +90,10 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
                 builder: (context, interactionProvider, _) {
                   // Map InteractionProductModel → the shape HomePageItemShowingSection expects.
                   final recentItems =
-                      interactionProvider.interactions.reversed
+                      interactionProvider.productInteractions.reversed
                           .map(
                             (entry) => <String, dynamic>{
+                              'p_id': entry.product.pId,
                               'productName': entry.product.pName ?? '',
                               'imgages': entry.product.pMainImage ?? '',
                               'discountedPrice':

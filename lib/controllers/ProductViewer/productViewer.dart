@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exotic/data/blocs/productViewer/bloc/product_viewer_bloc.dart';
@@ -8,7 +10,12 @@ import 'package:shimmer/shimmer.dart';
 
 class ProductViewerComponent extends StatefulWidget {
   final String url;
-  const ProductViewerComponent({super.key, required this.url});
+  final String pageName;
+  const ProductViewerComponent({
+    super.key,
+    required this.url,
+    required this.pageName,
+  });
 
   @override
   State<ProductViewerComponent> createState() => _ProductViewerComponentState();
@@ -20,6 +27,7 @@ class _ProductViewerComponentState extends State<ProductViewerComponent> {
   @override
   void initState() {
     super.initState();
+
     _productViewerBloc = ProductViewerBloc(ProductViewerRepo());
     _productViewerBloc.add(FetchProductDetailsEvent(url: widget.url));
   }
@@ -38,6 +46,10 @@ class _ProductViewerComponentState extends State<ProductViewerComponent> {
         builder: (context, state) {
           if (state is ProductViewerLoadingState ||
               state is ProductViewerInitial) {
+            context.read<InteractionProvider>().addInteraction(
+              interactionType: InteractionType.productGridView,
+              pageName: widget.pageName,
+            );
             return Shimmer.fromColors(
               baseColor: Colors.grey.shade300,
               highlightColor: Colors.grey.shade100,

@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/abtract/interaction_shell.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/wishlist/src/wishlist_emty.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
@@ -197,6 +199,10 @@ class _WishlistComponentState extends State<WishlistComponent> {
     context.read<WishlistBloc>().add(
       FetchWishlistEvent(context.read<UserProvider>().user!.customerId),
     );
+    context.read<InteractionProvider>().addInteraction(
+      interactionType: InteractionType.wishlistPage,
+      pageName: 'Wishlist Page',
+    );
   }
 
   @override
@@ -283,7 +289,9 @@ class _WishlistComponentState extends State<WishlistComponent> {
 
                         return InkWell(
                           onTap: () {
-                            context.push('/dynamicRoute', extra: () => const ProductScreen(),
+                            context.push(
+                              '/dynamicRoute',
+                              extra: () => const ProductScreen(),
                             );
                           },
                           child: wishlistCard(

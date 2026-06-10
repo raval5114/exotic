@@ -4,8 +4,10 @@ import 'package:exotic/controllers/Homescreen/Cart/shared/cartItemsDetails.dart'
 import 'package:exotic/controllers/Homescreen/widgets/homepageItemShowingSection.dart';
 import 'package:exotic/controllers/src/appbar.dart';
 import 'package:exotic/data/blocs/cart/bloc/cart_bloc.dart';
+import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:exotic/data/models/cart.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +28,12 @@ class _CartComponentState extends State<CartComponent> {
   void initState() {
     super.initState();
     cid = context.read<UserProvider>().user!.customerId.toString();
-    debugPrint(
-      "Cid:${context.read<UserProvider>().user!.customerId.toString() ?? ""}",
-    );
+
     context.read<CartBloc>().add(CartFetchingEvent(cid: cid!));
+    context.read<InteractionProvider>().addInteraction(
+      interactionType: InteractionType.cartPage,
+      pageName: 'Cart Page',
+    );
   }
 
   Widget emptyCartWidget({required VoidCallback onShopNow}) {
@@ -138,6 +142,9 @@ class _CartComponentState extends State<CartComponent> {
   bool isloaded = false;
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> recentItems =
+        context.read<InteractionProvider>().productInteractionsAsJson;
+
     return BlocConsumer<CartBloc, CartState>(
       listener: (context, state) {
         // TODO: implement listener
@@ -207,47 +214,15 @@ class _CartComponentState extends State<CartComponent> {
                   CartPriceingComponent(),
                   const SizedBox(height: 12),
 
-                  HomePageItemShowingSection(
-                    title: "Recently Viewed",
-                    itemList: const [
-                      {
-                        'productName': 'ESSPY Wall Mounted Toothbrush Holder',
-                        'discountedPrice': 129,
-                        'initialPrice': 249,
-                        'discountPercentage': 48,
-                        'rating': 4.1,
-                        'reviews': 128,
-                        'isFreeShipping': true,
-                      },
-                      {
-                        'productName': 'XEAMUZY Travel Soap Holder Portable',
-                        'discountedPrice': 99,
-                        'initialPrice': 199,
-                        'discountPercentage': 50,
-                        'rating': 4.5,
-                        'reviews': 432,
-                        'isFreeShipping': true,
-                      },
-                      {
-                        'productName': 'Luxury Cotton Bath Towel Set 400 GSM',
-                        'discountedPrice': 499,
-                        'initialPrice': 999,
-                        'discountPercentage': 50,
-                        'rating': 4.8,
-                        'reviews': 1054,
-                        'isFreeShipping': false,
-                      },
-                      {
-                        'productName': 'Anti-slip Bathroom Mat Super Absorbent',
-                        'discountedPrice': 299,
-                        'initialPrice': 599,
-                        'discountPercentage': 50,
-                        'rating': 4.3,
-                        'reviews': 89,
-                        'isFreeShipping': true,
-                      },
-                    ],
-                    frontItemLength: 4,
+                  Container(
+                    color: Colors.white,
+                    margin: const EdgeInsets.only(bottom: 2),
+                    child: HomePageItemShowingSection(
+                      title: 'Recently Viewed',
+                      itemList: recentItems,
+                      frontItemLength: recentItems.length.clamp(1, 10),
+                      rows: 1,
+                    ),
                   ),
                   const SizedBox(height: 12),
 

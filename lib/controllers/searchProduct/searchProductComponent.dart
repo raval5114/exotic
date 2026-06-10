@@ -1,6 +1,8 @@
 import 'package:exotic/controllers/products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/product_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/searchProduct/searchQuerySectionComponent.dart';
@@ -44,6 +46,10 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
 
   @override
   Widget build(BuildContext context) {
+    context.read<InteractionProvider>().addInteraction(
+      interactionType: InteractionType.searchPage,
+      pageName: 'Search Product Page',
+    );
     return ChangeNotifierProvider.value(
       value: _searchProvider,
       child: Scaffold(
@@ -65,7 +71,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withOpacity(0.4),
                       width: 1,
                     ),
                   ),
@@ -212,7 +220,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                                   item.title ?? '',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.bodyMedium?.copyWith(
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black87,
@@ -225,7 +235,9 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
                                     item.subtitle!,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall?.copyWith(
                                       fontFamily: 'Roboto',
                                       color: Colors.grey.shade600,
                                       fontWeight: FontWeight.w400,

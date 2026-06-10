@@ -28,6 +28,8 @@ void showCustomAlertBox({
       break;
 
     case AlertType.error:
+      break;
+
     default:
       bgColor = Colors.red.shade50;
       iconColor = Colors.red;

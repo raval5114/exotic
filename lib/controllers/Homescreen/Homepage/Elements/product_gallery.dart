@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/Products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
@@ -46,7 +48,10 @@ class MobileSuggestionProducts extends StatelessWidget {
             if (config.viewAllLink.isNotEmpty)
               GestureDetector(
                 onTap: () {
-                  // TODO: Handle view all link
+                  context.read<InteractionProvider>().addInteraction(
+                    interactionType: InteractionType.imageGallery,
+                    pageName: "Homepage/product-gallery:${title}/view-all",
+                  );
                 },
                 child: Row(
                   children: [
@@ -93,6 +98,11 @@ class MobileSuggestionProducts extends StatelessWidget {
               return MobileSuggestionCard(
                 product: products[index],
                 onTap: () {
+                  context.read<InteractionProvider>().addInteraction(
+                    interactionType: InteractionType.imageGallery,
+                    pageName:
+                        "Homepage/product-gallery:${title}/${products[index].productId}",
+                  );
                   context.read<FetchProductBloc>().add(
                     FetchingSingleProductEvent(
                       productid: products[index].productId.toString(),
@@ -151,13 +161,14 @@ class MobileSuggestionCard extends StatelessWidget {
                       child: Image.network(
                         product.imageUrl,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, url, error) => const Center(
-                          child: Icon(
-                            Icons.broken_image_rounded,
-                            color: Colors.grey,
-                            size: 32,
-                          ),
-                        ),
+                        errorBuilder:
+                            (context, url, error) => const Center(
+                              child: Icon(
+                                Icons.broken_image_rounded,
+                                color: Colors.grey,
+                                size: 32,
+                              ),
+                            ),
                       ),
                     ),
                   ),

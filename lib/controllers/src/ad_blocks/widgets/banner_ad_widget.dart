@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +47,11 @@ class _BannerAdWidgetState extends State<BannerAdWidget>
   }
 
   void _onAdTap(BuildContext context) async {
+    // context.read<InteractionProvider>().addInteraction(
+    //   interactionType: InteractionType.adBanner,
+    //   pageName: "Homepage Banner Ad",
+    // );
+
     _animController.forward().then((_) => _animController.reverse());
 
     final int campaignId = widget.adData['campaign_id'] ?? 0;

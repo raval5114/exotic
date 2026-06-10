@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,6 +69,17 @@ class _AdBlockState extends State<AdBlock> {
         }
       });
     }
+    if (widget.page == "product") {
+      context.read<InteractionProvider>().addInteraction(
+        interactionType: InteractionType.adProductList,
+        pageName: "${_placement!["vc_name"]}",
+      );
+    } else {
+      context.read<InteractionProvider>().addInteraction(
+        interactionType: InteractionType.adBanner,
+        pageName: "${_placement!["vc_name"]}",
+      );
+    }
   }
 
   @override
@@ -106,6 +119,10 @@ class _AdBlockState extends State<AdBlock> {
 
     // ── Banner (promote_brand) ─────────────────────────────────────────
     if (adType == 'promote_brand') {
+      // context.read<InteractionProvider>().addInteraction(
+      //   interactionType: InteractionType.adBanner,
+      //   pageName: "${_placement!['vc_name']}",
+      // );
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
@@ -125,6 +142,10 @@ class _AdBlockState extends State<AdBlock> {
 
     // ── Product carousel (promote_product / display_product) ────────────
     if (adType == 'promote_product' || adType == 'display_product') {
+      // context.read<InteractionProvider>().addInteraction(
+      //   interactionType: InteractionType.adProductList,
+      //   pageName: _placement!['vc_name'],
+      // );
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
         child: Column(

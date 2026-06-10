@@ -1,4 +1,3 @@
-import 'package:exotic/data/models/cart.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,7 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
 
     final int price = cart.totalMrp;
     final int discount = cart.totalDiscount.toInt();
-    final int coupon = 0;
+    //final int coupon = 0;
     final int platformFee = cart.platformFee;
     final bool isFreeDelivery = true;
     final int totalAmount = cart.grandTotal.toInt();
@@ -47,7 +46,10 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
           const SizedBox(height: 8),
           const Divider(thickness: 1, height: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 8),
-          _priceRow('Price (${cart.cartProducts.length} items)', '₹${price.toString()}'),
+          _priceRow(
+            'Price (${cart.cartProducts.length} items)',
+            '₹${price.toString()}',
+          ),
           _priceRow(
             'Discount',
             '-₹${discount.toString()}',
@@ -58,17 +60,27 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
           _priceRow(
             'Delivery charges',
             isFreeDelivery == true ? '' : '₹$deliveryCharge',
-            trailingWidget: isFreeDelivery
-                ? const Text(
-                    'Free Delivery',
-                    style: TextStyle(color: Colors.green, fontSize: 13, fontWeight: FontWeight.w500),
-                  )
-                : null,
+            trailingWidget:
+                isFreeDelivery
+                    ? const Text(
+                      'Free Delivery',
+                      style: TextStyle(
+                        color: Colors.green,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    )
+                    : null,
           ),
           const SizedBox(height: 8),
           const Divider(thickness: 1, height: 1, color: Color(0xFFEEEEEE)),
           const SizedBox(height: 8),
-          _priceRow('Total Amount', '₹${totalAmount.toString()}', isBold: true, fontSize: 15),
+          _priceRow(
+            'Total Amount',
+            '₹${totalAmount.toString()}',
+            isBold: true,
+            fontSize: 15,
+          ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -79,7 +91,11 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
             ),
             child: Row(
               children: [
-                Icon(Icons.stars_rounded, color: Colors.green.shade600, size: 16),
+                Icon(
+                  Icons.stars_rounded,
+                  color: Colors.green.shade600,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(
@@ -127,7 +143,10 @@ class _CartPriceingComponentState extends State<CartPriceingComponent> {
                     value,
                     style: textStyle.copyWith(
                       color: valueColor,
-                      decoration: trailingWidget != null && isBold == false ? TextDecoration.lineThrough : null,
+                      decoration:
+                          trailingWidget != null && isBold == false
+                              ? TextDecoration.lineThrough
+                              : null,
                     ),
                   ),
                   const SizedBox(width: 4),

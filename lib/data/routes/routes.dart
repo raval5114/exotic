@@ -38,7 +38,7 @@ final goRoutes = GoRouter(
       },
     ),
     //testing routes
-    GoRoute(path: '/test', builder: (context, state) => AdTesting()),
+    GoRoute(path: '/test', builder: (context, state) => SearchProductTesting()),
     GoRoute(
       path: '/ProductsViewer',
       builder: (context, state) {

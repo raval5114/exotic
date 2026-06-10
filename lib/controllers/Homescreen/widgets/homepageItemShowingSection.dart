@@ -1,5 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:exotic/controllers/products/productShellController.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
+import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
+import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -57,17 +60,30 @@ class _HomePageItemShowingSectionState
 
   // ── Product card ─────────────────────────────────────────────────────────
   Widget _buildItemCard(Map<String, dynamic> item, VoidCallback onTap) {
-    final String name = item['productName'] ?? '';
+    final productData = item['product'] ?? item;
+
+    final String name =
+        productData['p_name'] ?? productData['productName'] ?? '';
     final double discountedPrice =
-        (item['discountedPrice'] as num?)?.toDouble() ?? 0;
-    final double initialPrice = (item['initialPrice'] as num?)?.toDouble() ?? 0;
-    final int discount = (item['discount'] as num?)?.toInt() ?? 0;
-    final num rating = (item['ratings'] as num?) ?? 0;
-    final bool isFreeDelivery = item['isFreeDelivery'] == true;
+        double.tryParse(productData['p_selling_price']?.toString() ?? '') ??
+        (productData['discountedPrice'] as num?)?.toDouble() ??
+        0.0;
+    final double initialPrice =
+        double.tryParse(productData['p_mrp_price']?.toString() ?? '') ??
+        (productData['initialPrice'] as num?)?.toDouble() ??
+        0.0;
+    final int discount =
+        double.tryParse(productData['p_discount']?.toString() ?? '')?.toInt() ??
+        (productData['discount'] as num?)?.toInt() ??
+        0;
+    final num rating = (productData['ratings'] as num?) ?? 0;
+    final bool isFreeDelivery =
+        productData['p_free_shipping'] == '1' ||
+        productData['isFreeDelivery'] == true;
 
     // Image: may be a List<String> of asset paths or a single String
     String? imagePath;
-    final raw = item['imgages'];
+    final raw = productData['p_main_image'] ?? productData['imgages'];
     if (raw is List && raw.isNotEmpty) {
       imagePath = raw.first as String?;
     } else if (raw is String) {
@@ -104,8 +120,8 @@ class _HomePageItemShowingSectionState
                   children: [
                     // Image / placeholder
                     imagePath != null
-                        ? Image.asset(
-                          imagePath,
+                        ? Image.network(
+                          "https://xotic.in/UploadImages/Variant/" + imagePath,
                           fit: BoxFit.cover,
                           errorBuilder:
                               (_, __, ___) => _buildImagePlaceholder(),
@@ -376,6 +392,22 @@ class _HomePageItemShowingSectionState
     );
   }
 
+  // ── Navigate to product detail ────────────────────────────────────────────
+  void _handleItemTap(Map<String, dynamic> item) {
+    if (!mounted) return;
+    final productData = item['product'] ?? item;
+    final String productId = productData['p_id']?.toString() ?? '';
+    if (productId.isEmpty) {
+      debugPrint('[_handleItemTap] p_id missing for item: $item');
+      return;
+    }
+    debugPrint(productId);
+    context.read<FetchProductBloc>().add(
+      FetchingSingleProductEvent(productid: productId),
+    );
+    context.push('/dynamicRoute', extra: () => ProductsShell());
+  }
+
   // ── Horizontal item grid ─────────────────────────────────────────────────
   Widget _buildItemGrid(List<Map<String, dynamic>> itemsToShow) {
     return SingleChildScrollView(
@@ -389,18 +421,12 @@ class _HomePageItemShowingSectionState
           final columnItems = List.generate(widget.rows, (rowIndex) {
             final index = columnIndex * widget.rows + rowIndex;
             if (index >= itemsToShow.length) return const SizedBox.shrink();
+            final item = itemsToShow[index];
             return Padding(
               padding: EdgeInsets.only(
                 bottom: rowIndex < widget.rows - 1 ? itemSpacing : 0,
               ),
-              child: _buildItemCard(itemsToShow[index], () {
-                final item = itemsToShow[index];
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (mounted) {
-                    context.pushNamed('productScreen', extra: item);
-                  }
-                });
-              }),
+              child: _buildItemCard(item, () => _handleItemTap(item)),
             );
           });
 
@@ -426,7 +452,8 @@ class _HomePageItemShowingSectionState
       ),
       items:
           itemsToShow.map((item) {
-            final raw = item['imgages'];
+            final productData = item['product'] ?? item;
+            final raw = productData['p_main_image'] ?? productData['imgages'];
             String? path;
             if (raw is List && raw.isNotEmpty) {
               path = raw.first as String?;

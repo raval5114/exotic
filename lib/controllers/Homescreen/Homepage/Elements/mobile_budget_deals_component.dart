@@ -1,6 +1,9 @@
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/src/mobile_budget_deals_card.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_budget_deals.dart';
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MobileBudgetDealsComponent extends StatelessWidget {
   final MobileBudgetDealsElement element;
@@ -45,19 +48,31 @@ class MobileBudgetDealsComponent extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF7C3AED), width: 1),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                "See All",
-                style: TextStyle(
-                  fontFamily: 'Roboto',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF7C3AED),
+            InkWell(
+              onTap: () {
+                context.read<InteractionProvider>().addInteraction(
+                  interactionType: InteractionType.mobileBudgetDeals,
+                  pageName:
+                      "Homepage/budget-deals/${element.config.sectionTitle.trim()}",
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFF7C3AED), width: 1),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  "See All",
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF7C3AED),
+                  ),
                 ),
               ),
             ),

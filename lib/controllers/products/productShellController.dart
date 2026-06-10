@@ -1,3 +1,4 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/products/productScreenComponent.dart';
 import 'package:exotic/controllers/products/productScreenLoadingController.dart';
@@ -7,7 +8,6 @@ import 'package:exotic/data/blocs/products/bloc/fetch_products_state.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_bloc.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_event.dart';
 import 'package:exotic/data/blocs/wishList/bloc/wishlist_state.dart';
-import 'package:exotic/data/models/interactions.dart';
 import 'package:exotic/data/models/product_orignal.dart';
 import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/product_provider.dart';
@@ -151,14 +151,17 @@ class _ProductsShellState extends State<ProductsShell> {
                     );
                     context.read<ProductProvider>().setProduct(product);
 
-                    // Record a ProductView interaction every time a product
+                    // Record a productView interaction every time a product
                     // screen is opened. The provider enforces the 20-item cap.
                     context.read<InteractionProvider>().addInteraction(
                       product: product,
-                      interactionType: InteractionType.ProductView,
+                      interactionType: InteractionType.productView,
                     );
                   }
                 });
+                debugPrint(
+                  "interaction :${context.read<InteractionProvider>().productInteractions}",
+                );
                 return ProductScreenComponent();
               }
               if (state is FetchProductFailure) {

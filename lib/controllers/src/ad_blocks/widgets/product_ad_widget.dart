@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -52,7 +54,10 @@ class _ProductAdWidgetState extends State<ProductAdWidget>
 
   void _onAdTap(BuildContext context) async {
     _animController.forward().then((_) => _animController.reverse());
-
+    // context.read<InteractionProvider>().addInteraction(
+    //   interactionType: InteractionType.adProductList,
+    //   pageName: "${widget.adType}",
+    // );
     final int campaignId = widget.adData['campaign_id'] ?? 0;
     final int productId = widget.adData['product_id'] ?? 0;
 

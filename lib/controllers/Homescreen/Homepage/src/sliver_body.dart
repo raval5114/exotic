@@ -1,7 +1,9 @@
 import 'package:exotic/controllers/Homescreen/Homepage/pageComponent.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
+import 'package:exotic/data/models/Interaction/abtract/interaction_shell.dart';
 import 'package:exotic/data/models/homepage_page_model.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -25,33 +27,38 @@ class ExoticSliverBody extends StatelessWidget {
 
     return TabBarView(
       controller: controller,
-      children: tabs.map((tab) {
-        return BlocBuilder<HomepageBloc, HomepageState>(
-          buildWhen: (previous, current) {
-            if (current is HomepageTabLoadingState) {
-              return current.slug == tab.slug;
-            }
-            if (current is HomepageApiFetchedState) {
-              return current.slug == tab.slug;
-            }
-            return false;
-          },
-          builder: (context, state) {
-            if (state is HomepageTabLoadingState &&
-                state.slug == tab.slug) {
-              return _buildShimmer();
-            }
+      children:
+          tabs.map((tab) {
+            return BlocBuilder<HomepageBloc, HomepageState>(
+              buildWhen: (previous, current) {
+                if (current is HomepageTabLoadingState) {
+                  context.read<InteractionProvider>().addInteraction(
+                    interactionType: InteractionType.tabPageView,
+                    pageName: tab.slug,
+                  );
+                  return current.slug == tab.slug;
+                }
+                if (current is HomepageApiFetchedState) {
+                  return current.slug == tab.slug;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is HomepageTabLoadingState &&
+                    state.slug == tab.slug) {
+                  return _buildShimmer();
+                }
 
-            if (state is HomepageApiFetchedState &&
-                state.slug == tab.slug) {
-              final Map<String, dynamic> pageData = state.data;
-              return Pagecomponent(pageData: Pagemodel.fromJson(pageData));
-            }
+                if (state is HomepageApiFetchedState &&
+                    state.slug == tab.slug) {
+                  final Map<String, dynamic> pageData = state.data;
+                  return Pagecomponent(pageData: Pagemodel.fromJson(pageData));
+                }
 
-            return const SizedBox();
-          },
-        );
-      }).toList(),
+                return const SizedBox();
+              },
+            );
+          }).toList(),
     );
   }
 
@@ -98,31 +105,32 @@ class ExoticSliverBody extends StatelessWidget {
               crossAxisSpacing: 10,
               childAspectRatio: 0.72,
             ),
-            itemBuilder: (_, __) => Shimmer.fromColors(
-              baseColor: Colors.grey.shade200,
-              highlightColor: Colors.grey.shade50,
-              child: Column(
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+            itemBuilder:
+                (_, __) => Shimmer.fromColors(
+                  baseColor: Colors.grey.shade200,
+                  highlightColor: Colors.grey.shade50,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: 40,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: 40,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
           ),
 
           const SizedBox(height: 20),
@@ -139,11 +147,9 @@ class ExoticSliverBody extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: 4,
               separatorBuilder: (_, __) => const SizedBox(width: 12),
-              itemBuilder: (_, __) => _shimmerBox(
-                height: 185,
-                width: 148,
-                borderRadius: 16,
-              ),
+              itemBuilder:
+                  (_, __) =>
+                      _shimmerBox(height: 185, width: 148, borderRadius: 16),
             ),
           ),
 

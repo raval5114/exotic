@@ -1,6 +1,9 @@
+import 'package:exotic/data/models/Interaction/abtract/interaction_shell.dart';
 import 'package:exotic/data/models/categories.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/utils/cachedImage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class CategoryTile extends StatelessWidget {
@@ -40,8 +43,10 @@ class CategoryTile extends StatelessWidget {
               final product = products[index];
               return InkWell(
                 onTap: () {
-                  debugPrint("Id:${product.id}");
-                  debugPrint("category:{${product.name}}");
+                  context.read<InteractionProvider>().addInteraction(
+                    interactionType: InteractionType.categoryChildItem,
+                    pageName: 'category-child-item:${product.name}',
+                  );
                   context.push(
                     "/ProductsViewer",
                     extra: {

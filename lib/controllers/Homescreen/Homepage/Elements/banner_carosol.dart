@@ -53,7 +53,8 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
     if (widget.content != null) {
       shouldAutoplay = widget.content!.autoplay;
       if (widget.content!.interval > 0) interval = widget.content!.interval;
-      if (widget.content!.transitionTime > 0) transitionTime = widget.content!.transitionTime;
+      if (widget.content!.transitionTime > 0)
+        transitionTime = widget.content!.transitionTime;
     } else if (widget.banners != null && widget.banners!.isNotEmpty) {
       shouldAutoplay = true;
     }
@@ -73,8 +74,8 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
     }
   }
 
-  void onTap(dynamic item) {
-    debugPrint("Banner tapped: $item");
+  void onTap(MobileBannerItems item) {
+    debugPrint("Banner tapped: $item \n Product url ${item.url}");
   }
 
   @override
@@ -87,7 +88,6 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
   @override
   Widget build(BuildContext context) {
     final items = _items;
-    if (items.isEmpty) return const SizedBox.shrink();
 
     double height = 160;
     double width = double.infinity;
@@ -202,11 +202,7 @@ class _SectionHeader extends StatelessWidget {
   final String? actionLabel;
   final VoidCallback? onAction;
 
-  const _SectionHeader({
-    required this.title,
-    this.actionLabel,
-    this.onAction,
-  });
+  const _SectionHeader({required this.title, this.actionLabel, this.onAction});
 
   @override
   Widget build(BuildContext context) {

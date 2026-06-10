@@ -1,5 +1,7 @@
 import 'package:exotic/data/blocs/homescreen/categories/bloc/categories_bloc.dart';
+import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -72,6 +74,12 @@ class _CategoriesBuilderState extends State<CategoriesBuilder> {
                     context.read<CategoriesProvider>().setCurrentCategory(
                       state.data[index],
                     );
+
+                    context.read<InteractionProvider>().addInteraction(
+                      interactionType: InteractionType.categoryParentItem,
+                      pageName:
+                          'category-parent-item:${state.data[index].name}',
+                    );
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -92,13 +100,24 @@ class _CategoriesBuilderState extends State<CategoriesBuilder> {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(24),
-                          child: (state.data[index].photo != null && state.data[index].photo!.isNotEmpty) 
-                            ? Image.network(
-                                state.data[index].photo!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (c,e,s) => Icon(Icons.category, color: Colors.grey.shade400, size: 24)
-                              )
-                            : Icon(Icons.category, color: Colors.grey.shade400, size: 24),
+                          child:
+                              (state.data[index].photo != null &&
+                                      state.data[index].photo!.isNotEmpty)
+                                  ? Image.network(
+                                    state.data[index].photo!,
+                                    fit: BoxFit.cover,
+                                    errorBuilder:
+                                        (c, e, s) => Icon(
+                                          Icons.category,
+                                          color: Colors.grey.shade400,
+                                          size: 24,
+                                        ),
+                                  )
+                                  : Icon(
+                                    Icons.category,
+                                    color: Colors.grey.shade400,
+                                    size: 24,
+                                  ),
                         ),
                       ),
                       const SizedBox(height: 6),

@@ -47,7 +47,7 @@ class ProductViewer extends StatelessWidget {
         ],
       ),
 
-      body: ProductViewerComponent(url: url),
+      body: ProductViewerComponent(url: url, pageName: title),
     );
   }
 }
