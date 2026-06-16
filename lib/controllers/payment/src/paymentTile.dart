@@ -1,7 +1,8 @@
+import 'package:exotic/data/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class PaymentTile extends StatelessWidget {
+class PaymentTile extends StatefulWidget {
   final String productName;
   final String category;
   final String sellerName;
@@ -30,86 +31,110 @@ class PaymentTile extends StatelessWidget {
     required this.deliveryBy,
     required this.isFreeDelivery,
   });
-  Widget _actionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    return TextButton(
-      style: TextButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        minimumSize: const Size(0, 36),
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      ),
-      onPressed: onPressed,
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: Colors.black),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ],
-      ),
-    );
+
+  @override
+  State<PaymentTile> createState() => _PaymentTileState();
+}
+
+class _PaymentTileState extends State<PaymentTile> {
+  late int _selectedQty;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedQty = widget.qty;
   }
 
-  Widget _extraOffSection() {
-    final safeItemsForOff = itemsForOff == 0 ? 1 : itemsForOff;
-    final remaining = (itemsForOff - qty).clamp(0, itemsForOff);
-    final progress = (qty / safeItemsForOff).clamp(0.0, 1.0);
+  Widget _extraOffSection(AppTheme t, ThemeData theme) {
+    final safeItemsForOff = widget.itemsForOff == 0 ? 1 : widget.itemsForOff;
+    final remaining = (widget.itemsForOff - _selectedQty).clamp(
+      0,
+      widget.itemsForOff,
+    );
+    final progress = (_selectedQty / safeItemsForOff).clamp(0.0, 1.0);
+    final unlocked = remaining == 0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      color: Colors.grey.shade100,
+      padding: EdgeInsets.symmetric(
+        horizontal: t.spaceLG,
+        vertical: t.spaceSM,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: unlocked
+              ? [
+                  const Color(0xFF16A34A).withOpacity(0.08),
+                  const Color(0xFF16A34A).withOpacity(0.04),
+                ]
+              : [
+                  t.brandPrimary.withOpacity(0.06),
+                  t.brandPrimary.withOpacity(0.02),
+                ],
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              Icon(
+                unlocked ? Icons.celebration_rounded : Icons.local_offer_rounded,
+                size: 14,
+                color: unlocked ? const Color(0xFF16A34A) : t.brandPrimary,
+              ),
+              SizedBox(width: t.spaceXS),
               Expanded(
                 child: Text.rich(
                   TextSpan(
+                    style: theme.textTheme.bodySmall,
                     children: [
                       TextSpan(
-                        text:
-                            remaining > 0
-                                ? "Add $remaining more item${remaining > 1 ? 's' : ''} to get "
-                                : "Offer unlocked! You've earned ",
+                        text: unlocked
+                            ? 'Offer unlocked! You\'ve earned '
+                            : 'Add $remaining more item${remaining > 1 ? 's' : ''} to get ',
                       ),
                       TextSpan(
-                        text: "Extra ₹${priceForOff.toInt()} off",
-                        style: const TextStyle(color: Colors.green),
+                        text: 'Extra ₹${widget.priceForOff.toInt()} off',
+                        style: TextStyle(
+                          color: unlocked
+                              ? const Color(0xFF16A34A)
+                              : t.brandPrimary,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),
-                  style: const TextStyle(fontSize: 12),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (remaining > 0)
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                  child: const Text("Add", style: TextStyle(fontSize: 12)),
+              if (!unlocked)
+                GestureDetector(
+                  onTap: () {},
+                  child: Text(
+                    'Add',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: t.brandPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
             ],
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: t.spaceXS),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(t.radiusSM),
             child: LinearProgressIndicator(
               value: progress,
-              minHeight: 6,
-              backgroundColor: Colors.grey.shade300,
-              color: Colors.green,
+              minHeight: 5,
+              backgroundColor: Colors.grey.shade200,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                unlocked ? const Color(0xFF16A34A) : t.brandPrimary,
+              ),
             ),
           ),
-          const SizedBox(height: 2),
+          SizedBox(height: 2),
           Text(
-            "$qty of $itemsForOff items added",
-            style: const TextStyle(fontSize: 10, color: Colors.grey),
+            '$_selectedQty of ${widget.itemsForOff} items added',
+            style: theme.textTheme.labelSmall?.copyWith(color: Colors.black38),
           ),
         ],
       ),
@@ -118,154 +143,292 @@ class PaymentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedDeliveryDate = DateFormat('MMM d, EEE').format(deliveryBy);
+    final t = Theme.of(context).extension<AppTheme>()!;
+    final theme = Theme.of(context);
+    final formattedDate = DateFormat('EEE, MMM d').format(widget.deliveryBy);
 
-    return Card(
-      margin: const EdgeInsets.all(4),
+    return Container(
+      color: Colors.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (itemsForOff > 0) _extraOffSection(),
+          if (widget.itemsForOff > 0) _extraOffSection(t, theme),
+
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+            padding: EdgeInsets.all(t.spaceLG),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // ── Product image + qty picker ───────────────────────────
                 Column(
                   children: [
-                    SizedBox(
-                      width: 73,
-                      height: 80,
+                    Container(
+                      width: 84,
+                      height: 96,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(t.radiusMD),
+                        color: const Color(0xFFF5F5F5),
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.12),
+                        ),
+                      ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child:
-                            Placeholder(), // Replace with Image.network(image)
+                        borderRadius: BorderRadius.circular(t.radiusMD),
+                        child: widget.image.isNotEmpty
+                            ? Image.network(
+                                widget.image,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) =>
+                                    const _ImagePlaceholder(),
+                              )
+                            : const _ImagePlaceholder(),
                       ),
                     ),
-                    DropdownButton<int>(
-                      value: qty,
-                      dropdownColor: Colors.white,
-                      style: const TextStyle(fontSize: 12),
-                      iconSize: 18,
-                      underline: const SizedBox(),
-                      items:
-                          List.generate(10, (index) => index + 1)
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(
-                                    "Qty: $e",
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (_) {},
+                    SizedBox(height: t.spaceXS),
+
+                    // Qty selector
+                    Container(
+                      height: 30,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey.withOpacity(0.2),
+                        ),
+                        borderRadius: BorderRadius.circular(t.radiusSM),
+                      ),
+                      child: DropdownButton<int>(
+                        value: _selectedQty,
+                        dropdownColor: Colors.white,
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: Colors.black87,
+                        ),
+                        iconSize: 16,
+                        underline: const SizedBox(),
+                        isDense: true,
+                        padding: EdgeInsets.symmetric(horizontal: t.spaceXS),
+                        borderRadius: BorderRadius.circular(t.radiusMD),
+                        items: List.generate(10, (i) => i + 1)
+                            .map(
+                              (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text('Qty: $e'),
+                              ),
+                            )
+                            .toList(),
+                        onChanged: (v) {
+                          if (v != null) setState(() => _selectedQty = v);
+                        },
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 8),
+
+                SizedBox(width: t.spaceMD),
+
+                // ── Product details ──────────────────────────────────────
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        productName,
-                        maxLines: 1,
+                        widget.productName,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          height: 1.3,
+                        ),
+                      ),
+                      SizedBox(height: t.spaceXS),
+                      Text(
+                        widget.category,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.black38,
                         ),
                       ),
                       Text(
-                        category,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: Colors.grey,
+                        'Seller: ${widget.sellerName}',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: Colors.black38,
                         ),
                       ),
-                      Text(
-                        "Seller: $sellerName",
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
+
+                      SizedBox(height: t.spaceSM),
+
+                      // ── Price row ────────────────────────────────────────
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: t.spaceXS,
                         children: [
-                          Text(
-                            "↓$discount%",
-                            style: const TextStyle(
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: t.spaceXS + 2,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF16A34A).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '${widget.discount}% off',
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: const Color(0xFF16A34A),
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
-                          const SizedBox(width: 4),
                           Text(
-                            "₹${discountedPrice.toInt()}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
+                            '₹${widget.discountedPrice.toInt()}',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.black87,
                             ),
                           ),
-                          const SizedBox(width: 4),
                           Text(
-                            "₹${intialPrice.toInt()}",
-                            style: const TextStyle(
+                            '₹${widget.intialPrice.toInt()}',
+                            style: theme.textTheme.labelSmall?.copyWith(
                               decoration: TextDecoration.lineThrough,
-                              color: Colors.grey,
-                              fontSize: 11,
+                              color: Colors.black38,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 2),
-                      Text(
-                        "Delivery by $formattedDeliveryDate, ${isFreeDelivery ? 'Free' : '₹40'}",
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: isFreeDelivery ? Colors.green : Colors.black,
-                        ),
+
+                      SizedBox(height: t.spaceXS),
+
+                      // ── Delivery info ────────────────────────────────────
+                      Row(
+                        children: [
+                          Icon(
+                            widget.isFreeDelivery
+                                ? Icons.local_shipping_rounded
+                                : Icons.local_shipping_outlined,
+                            size: 13,
+                            color: widget.isFreeDelivery
+                                ? const Color(0xFF16A34A)
+                                : Colors.black54,
+                          ),
+                          SizedBox(width: t.spaceXS),
+                          Text(
+                            widget.isFreeDelivery
+                                ? 'Free delivery by $formattedDate'
+                                : 'Delivery ₹40 · $formattedDate',
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: widget.isFreeDelivery
+                                  ? const Color(0xFF16A34A)
+                                  : Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                Column(
-                  children: [
-                    DropdownButton<int>(
-                      value: qty,
-                      hint: const Text("Qty"),
-                      dropdownColor: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      style: const TextStyle(fontSize: 12),
-                      iconSize: 18,
-                      underline: const SizedBox(),
-                      items:
-                          List.generate(10, (index) => index + 1)
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(
-                                    "$e",
-                                    style: const TextStyle(fontSize: 12),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                      onChanged: (_) {},
-                    ),
-                  ],
+              ],
+            ),
+          ),
+
+          // ── Action row ─────────────────────────────────────────────────────
+          Divider(height: 1, color: Colors.grey.withOpacity(0.1)),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: t.spaceSM,
+              vertical: t.spaceXS,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _ActionBtn(
+                  icon: Icons.edit_outlined,
+                  label: 'Edit',
+                  onTap: () {},
+                ),
+                Container(
+                  width: 1,
+                  height: 20,
+                  color: Colors.grey.withOpacity(0.2),
+                ),
+                _ActionBtn(
+                  icon: Icons.favorite_border_rounded,
+                  label: 'Save for later',
+                  onTap: () {},
+                ),
+                Container(
+                  width: 1,
+                  height: 20,
+                  color: Colors.grey.withOpacity(0.2),
+                ),
+                _ActionBtn(
+                  icon: Icons.delete_outline_rounded,
+                  label: 'Remove',
+                  onTap: () {},
+                  isDestructive: true,
                 ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool isDestructive;
+
+  const _ActionBtn({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.isDestructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).extension<AppTheme>()!;
+    final color = isDestructive ? t.brandPink : Colors.black54;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(t.radiusSM),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: t.spaceSM,
+          vertical: t.spaceSM,
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 15, color: color),
+            SizedBox(width: t.spaceXS),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w500,
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ImagePlaceholder extends StatelessWidget {
+  const _ImagePlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF0EAF8),
+      child: Icon(
+        Icons.image_outlined,
+        color: Colors.purple.withOpacity(0.3),
+        size: 32,
       ),
     );
   }

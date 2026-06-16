@@ -1,3 +1,5 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/providers/categories_provider.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CategoriesGrid extends StatefulWidget {
-  const CategoriesGrid({super.key});
+  final String? tabName;
+  const CategoriesGrid({super.key, this.tabName});
 
   @override
   State<CategoriesGrid> createState() => _CategoriesGridState();
@@ -43,10 +46,11 @@ class _CategoriesGridState extends State<CategoriesGrid> {
         ),
 
         BlocBuilder<HomepageBloc, HomepageState>(
-          buildWhen: (previous, current) =>
-              current is HomepageLoadingState ||
-              current is HomePageCategoriesFetchedState ||
-              current is HomepageErrorState,
+          buildWhen:
+              (previous, current) =>
+                  current is HomepageLoadingState ||
+                  current is HomePageCategoriesFetchedState ||
+                  current is HomepageErrorState,
           builder: (context, state) {
             /// Loading shimmer
             if (state is HomepageLoadingState) {
@@ -141,7 +145,19 @@ class _CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepageElement",
+            updatedAt: DateTime.now().toString(),
+            elementName: name,
+            elementType: "category",
+            tabBarName: "tabBarName",
+          ),
+        );
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -161,21 +177,23 @@ class _CategoryItem extends StatelessWidget {
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: imageUrl.isNotEmpty
-                  ? Image.asset(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => const Icon(
+              child:
+                  imageUrl.isNotEmpty
+                      ? Image.asset(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (context, error, stackTrace) => const Icon(
+                              Icons.category_rounded,
+                              color: Color(0xFF7C3AED),
+                              size: 24,
+                            ),
+                      )
+                      : const Icon(
                         Icons.category_rounded,
                         color: Color(0xFF7C3AED),
                         size: 24,
                       ),
-                    )
-                  : const Icon(
-                      Icons.category_rounded,
-                      color: Color(0xFF7C3AED),
-                      size: 24,
-                    ),
             ),
           ),
           const SizedBox(height: 8),

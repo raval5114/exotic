@@ -1,16 +1,37 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_featured_items.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FeaturedCard extends StatelessWidget {
   final MobileFeaturedSliderCard item;
-
-  const FeaturedCard({required this.item});
+  final String tabName;
+  final String title;
+  const FeaturedCard({
+    super.key,
+    required this.item,
+    required this.tabName,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepage-element",
+            updatedAt: DateTime.now().toString(),
+            elementName: "${title}",
+            elementType: "mobile-feature-card",
+            tabBarName: tabName,
+          ),
+        );
+      },
       child: SizedBox(
         width: 148,
         child: Column(

@@ -1,21 +1,25 @@
 import 'dart:async';
 import 'package:exotic/Test/HomepagesTesting/model/bannertesting.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/src/dotIndicator.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_banner_items.dart';
 import 'package:exotic/utils/cachedImage.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BannerCarouselWidget extends StatefulWidget {
   final String? title;
   final BannerContent? content;
   final List<MobileBannerItems>? banners;
-
+  final String? tabName;
   const BannerCarouselWidget({
     super.key,
     this.title,
     this.content,
     this.banners,
+    this.tabName,
   });
 
   @override
@@ -76,6 +80,17 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
 
   void onTap(MobileBannerItems item) {
     debugPrint("Banner tapped: $item \n Product url ${item.url}");
+    context.read<InteractionTestProvider>().addInteraction(
+      ExotichomepageElement(
+        createdAt: DateTime.now().toString(),
+        interactionId: 1,
+        interactionType: "homepage-element",
+        updatedAt: DateTime.now().toString(),
+        elementName: widget.title ?? "",
+        elementType: "Banner",
+        tabBarName: "" ?? "",
+      ),
+    );
   }
 
   @override

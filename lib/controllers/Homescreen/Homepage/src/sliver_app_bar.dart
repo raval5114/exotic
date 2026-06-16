@@ -1,5 +1,7 @@
 import 'package:exotic/controllers/Homescreen/Homepage/src/build_search_bar.dart';
 import 'package:exotic/data/providers/homepage_provider.dart';
+import 'package:exotic/data/providers/user_provider.dart';
+import 'package:exotic/utils/auth_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +16,9 @@ class ExoticSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.read<UserProvider>().user;
+    final isLoggedIn = user != null && user.customerId != 0;
+
     return Consumer<HomepageProvider>(
       builder: (context, provider, _) {
         final tabs = provider.tabs;
@@ -44,7 +49,8 @@ class ExoticSliverAppBar extends StatelessWidget {
                     children: [
                       // --- ADDRESS BAR ---
                       InkWell(
-                        onTap: () => _showAddressBottomSheet(context),
+                        onTap:
+                            () => _showAddressBottomSheet(context, isLoggedIn),
                         borderRadius: BorderRadius.circular(10),
                         child: Row(
                           children: [
@@ -208,287 +214,295 @@ class ExoticSliverAppBar extends StatelessWidget {
     }
   }
 
-  void _showAddressBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: EdgeInsets.only(
-            top: 20,
-            left: 20,
-            right: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 36,
-                  height: 4,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+  void _showAddressBottomSheet(BuildContext context, bool isLoggedIn) {
+    if (isLoggedIn) {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Delivery Address",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Roboto',
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      context.push('/addAddress');
-                    },
-                    icon: const Icon(
-                      Icons.add_rounded,
-                      size: 18,
-                      color: Color(0xFF7C3AED),
-                    ),
-                    label: const Text(
-                      "Add New",
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Delivery Address",
                       style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF7C3AED),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
                         fontFamily: 'Roboto',
+                        color: Colors.black,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Row(
-                  children: [
-                    Icon(
-                      Icons.search_rounded,
-                      color: Color(0xFF7C3AED),
-                      size: 20,
-                    ),
-                    SizedBox(width: 12),
-                    Expanded(
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: "Search your area, street name...",
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black38,
-                          ),
+                    TextButton.icon(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        context.push('/addAddress');
+                      },
+                      icon: const Icon(
+                        Icons.add_rounded,
+                        size: 18,
+                        color: Color(0xFF7C3AED),
+                      ),
+                      label: const Text(
+                        "Add New",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF7C3AED),
+                          fontFamily: 'Roboto',
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Saved Addresses",
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black54,
-                      fontFamily: 'Roboto',
-                    ),
+                const SizedBox(height: 16),
+                Container(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[100],
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      context.push('/viewAddress');
-                    },
-                    child: const Text(
-                      "View All",
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.search_rounded,
+                        color: Color(0xFF7C3AED),
+                        size: 20,
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Search your area, street name...",
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black38,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Saved Addresses",
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF7C3AED),
+                        color: Colors.black54,
                         fontFamily: 'Roboto',
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              BlocBuilder<AddressBloc, AddressState>(
-                builder: (context, state) {
-                  if (state.status == AddressStatus.loading ||
-                      state.status == AddressStatus.initial) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state.status == AddressStatus.error) {
-                    return Center(child: Text("Error: ${state.message}"));
-                  }
-
-                  final addresses = state.addresses;
-                  if (addresses.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text("No saved addresses found."),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        context.push('/viewAddress');
+                      },
+                      child: const Text(
+                        "View All",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF7C3AED),
+                          fontFamily: 'Roboto',
+                        ),
                       ),
-                    );
-                  }
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                BlocBuilder<AddressBloc, AddressState>(
+                  builder: (context, state) {
+                    if (state.status == AddressStatus.loading ||
+                        state.status == AddressStatus.initial) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state.status == AddressStatus.error) {
+                      return Center(child: Text("Error: ${state.message}"));
+                    }
 
-                  return Column(
-                    children:
-                        addresses.take(3).map((addr) {
-                          final isDefault = addr.caIsDefault == 1;
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: InkWell(
-                              onTap: () => Navigator.of(context).pop(),
-                              borderRadius: BorderRadius.circular(14),
-                              child: Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
+                    final addresses = state.addresses;
+                    if (addresses.isEmpty) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text("No saved addresses found."),
+                        ),
+                      );
+                    }
+
+                    return Column(
+                      children:
+                          addresses.take(3).map((addr) {
+                            final isDefault = addr.caIsDefault == 1;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                borderRadius: BorderRadius.circular(14),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          isDefault
+                                              ? const Color(0xFF7C3AED)
+                                              : Colors.grey.shade200,
+                                      width: isDefault ? 1.5 : 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
                                     color:
                                         isDefault
-                                            ? const Color(0xFF7C3AED)
-                                            : Colors.grey.shade200,
-                                    width: isDefault ? 1.5 : 1,
+                                            ? const Color(
+                                              0xFF7C3AED,
+                                            ).withOpacity(0.04)
+                                            : Colors.white,
                                   ),
-                                  borderRadius: BorderRadius.circular(14),
-                                  color:
-                                      isDefault
-                                          ? const Color(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: const Color(
                                             0xFF7C3AED,
-                                          ).withOpacity(0.04)
-                                          : Colors.white,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color(
-                                          0xFF7C3AED,
-                                        ).withOpacity(0.1),
-                                        shape: BoxShape.circle,
+                                          ).withOpacity(0.1),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          (addr.caBadge?.toLowerCase() ==
+                                                  'home')
+                                              ? Icons.home_rounded
+                                              : ((addr.caBadge?.toLowerCase() ==
+                                                          'work' ||
+                                                      addr.caBadge
+                                                              ?.toLowerCase() ==
+                                                          'office')
+                                                  ? Icons.work_rounded
+                                                  : Icons.location_on_rounded),
+                                          color: const Color(0xFF7C3AED),
+                                          size: 18,
+                                        ),
                                       ),
-                                      child: Icon(
-                                        (addr.caBadge?.toLowerCase() == 'home')
-                                            ? Icons.home_rounded
-                                            : ((addr.caBadge?.toLowerCase() ==
-                                                        'work' ||
-                                                    addr.caBadge
-                                                            ?.toLowerCase() ==
-                                                        'office')
-                                                ? Icons.work_rounded
-                                                : Icons.location_on_rounded),
-                                        color: const Color(0xFF7C3AED),
-                                        size: 18,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                addr.caBadge?.isNotEmpty == true
-                                                    ? addr.caBadge!
-                                                    : "Address",
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                ),
-                                              ),
-                                              if (isDefault) ...[
-                                                const SizedBox(width: 8),
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: const Color(
-                                                      0xFF7C3AED,
-                                                    ).withOpacity(0.12),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          4,
-                                                        ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  addr.caBadge?.isNotEmpty ==
+                                                          true
+                                                      ? addr.caBadge!
+                                                      : "Address",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w700,
+                                                    fontSize: 14,
+                                                    fontFamily: 'Roboto',
                                                   ),
-                                                  child: const Text(
-                                                    "Default",
-                                                    style: TextStyle(
-                                                      color: Color(0xFF7C3AED),
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize: 10,
-                                                      fontFamily: 'Roboto',
+                                                ),
+                                                if (isDefault) ...[
+                                                  const SizedBox(width: 8),
+                                                  Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 2,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                        0xFF7C3AED,
+                                                      ).withOpacity(0.12),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            4,
+                                                          ),
+                                                    ),
+                                                    child: const Text(
+                                                      "Default",
+                                                      style: TextStyle(
+                                                        color: Color(
+                                                          0xFF7C3AED,
+                                                        ),
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 10,
+                                                        fontFamily: 'Roboto',
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
+                                                ],
                                               ],
-                                            ],
-                                          ),
-                                          const SizedBox(height: 3),
-                                          Text(
-                                            "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
-                                            style: const TextStyle(
-                                              color: Colors.black45,
-                                              fontSize: 12,
-                                              fontFamily: 'Roboto',
                                             ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
+                                            const SizedBox(height: 3),
+                                            Text(
+                                              "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
+                                              style: const TextStyle(
+                                                color: Colors.black45,
+                                                fontSize: 12,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: Colors.black26,
-                                      size: 20,
-                                    ),
-                                  ],
+                                      const Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: Colors.black26,
+                                        size: 20,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }).toList(),
-                  );
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+                            );
+                          }).toList(),
+                    );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      showLoginDialog(context);
+    }
   }
 }
 

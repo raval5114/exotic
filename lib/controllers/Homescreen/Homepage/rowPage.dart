@@ -23,8 +23,13 @@ import 'package:exotic/data/models/Homepage/elements/shell/Element.dart';
 import 'package:flutter/material.dart';
 
 class RowPageComponent extends StatefulWidget {
+  final String tabName;
   final Rows rows;
-  const RowPageComponent({super.key, required this.rows});
+  const RowPageComponent({
+    super.key,
+    required this.rows,
+    required this.tabName,
+  });
 
   @override
   State<RowPageComponent> createState() => _RowPageComponentState();
@@ -81,29 +86,55 @@ class _RowPageComponentState extends State<RowPageComponent>
         child = BannerCarouselWidget(
           title: element.title,
           banners: element.items,
+          tabName: widget.tabName,
         );
       } else if (element is MobileSuggestionGrid) {
         child = MobileSuggestionProducts(
           title: element.title,
           config: element.config,
           products: element.items,
+          tabName: widget.tabName,
         );
       } else if (element is Mobile3DIconTrayElement) {
-        child = Mobile3dIconTrayComponent(element: element);
+        child = Mobile3dIconTrayComponent(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileBudgetDealsElement) {
-        child = MobileBudgetDealsComponent(element: element);
+        child = MobileBudgetDealsComponent(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileCategoryGridElement) {
-        child = MobileCategoryGridComponent(element: element);
+        child = MobileCategoryGridComponent(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileCharmSliderElement) {
-        child = MobileCharmSliderWidget(element: element);
+        child = MobileCharmSliderWidget(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileFeaturedSliderElement) {
-        child = MobileFeaturedSliderWidget(element: element);
+        child = MobileFeaturedSliderWidget(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileGridOffersElement) {
-        child = MobileGridOffersWidget(element: element);
+        child = MobileGridOffersWidget(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileOfferStripElement) {
-        child = MobileOfferStripWidget(element: element);
+        child = MobileOfferStripWidget(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else if (element is MobileSponsoredBanner) {
-        child = MobileSponsoredBannerWidget(element: element);
+        child = MobileSponsoredBannerWidget(
+          element: element,
+          tabName: widget.tabName,
+        );
       } else {
         debugPrint('Unhandled PageElement Widget: ${element.runtimeType}');
       }

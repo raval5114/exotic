@@ -1,12 +1,21 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_category_grid_items.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_category_strip.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MobileCategoryGridComponent extends StatelessWidget {
   final MobileCategoryGridElement element;
-
-  const MobileCategoryGridComponent({super.key, required this.element});
+  final String tabName;
+  //final String title;
+  const MobileCategoryGridComponent({
+    super.key,
+    required this.element,
+    required this.tabName,
+    // required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +65,11 @@ class MobileCategoryGridComponent extends StatelessWidget {
                   childAspectRatio: itemHeight / itemWidth,
                 ),
                 itemBuilder: (context, index) {
-                  return _ScrollableCategoryItem(item: element.items[index]);
+                  return _ScrollableCategoryItem(
+                    item: element.items[index],
+                    tab: tabName,
+                    title: element.title,
+                  );
                 },
               ),
             );
@@ -69,13 +82,30 @@ class MobileCategoryGridComponent extends StatelessWidget {
 
 class _ScrollableCategoryItem extends StatelessWidget {
   final MobileCategoryGridItems item;
-
-  const _ScrollableCategoryItem({required this.item});
+  final String tab;
+  final String title;
+  const _ScrollableCategoryItem({
+    required this.item,
+    required this.tab,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepage-element",
+            updatedAt: DateTime.now().toString(),
+            elementName: title,
+            elementType: "mobile-category-grid",
+            tabBarName: tab,
+          ),
+        );
+      },
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

@@ -87,15 +87,7 @@ final goRoutes = GoRouter(
       path: '/coupensAndOffers',
       builder: (context, state) => OffersandCoupens(),
     ),
-    GoRoute(
-      path: '/payment',
-      builder:
-          (context, state) => PaymentScreen(
-            productData: {},
-            discountedPrice: '',
-            intialPrice: '  ',
-          ),
-    ),
+    GoRoute(path: '/payment', builder: (context, state) => PaymentScreen()),
     GoRoute(
       path: '/dynamicRoute',
       builder: (context, state) {

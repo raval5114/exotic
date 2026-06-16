@@ -1,3 +1,5 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:go_router/go_router.dart';
@@ -13,12 +15,13 @@ class MobileSuggestionProducts extends StatelessWidget {
   final String title;
   final MobileSuggestionConfig config;
   final List<ProductItem> products;
-
+  final String tabName;
   const MobileSuggestionProducts({
     super.key,
     required this.title,
     required this.config,
     required this.products,
+    required this.tabName,
   });
 
   @override
@@ -48,10 +51,10 @@ class MobileSuggestionProducts extends StatelessWidget {
             if (config.viewAllLink.isNotEmpty)
               GestureDetector(
                 onTap: () {
-                  context.read<InteractionProvider>().addInteraction(
-                    interactionType: InteractionType.imageGallery,
-                    pageName: "Homepage/product-gallery:${title}/view-all",
-                  );
+                  // context.read<InteractionProvider>().addInteraction(
+                  //   interactionType: InteractionType.imageGallery,
+                  //   pageName: "Homepage/product-gallery:${title}/view-all",
+                  // );
                 },
                 child: Row(
                   children: [
@@ -98,10 +101,21 @@ class MobileSuggestionProducts extends StatelessWidget {
               return MobileSuggestionCard(
                 product: products[index],
                 onTap: () {
-                  context.read<InteractionProvider>().addInteraction(
-                    interactionType: InteractionType.imageGallery,
-                    pageName:
-                        "Homepage/product-gallery:${title}/${products[index].productId}",
+                  // context.read<InteractionProvider>().addInteraction(
+                  //   interactionType: InteractionType.imageGallery,
+                  //   pageName:
+                  //       "Homepage/product-gallery:${title}/${products[index].productId}",
+                  // );
+                  context.read<InteractionTestProvider>().addInteraction(
+                    ExotichomepageElement(
+                      createdAt: DateTime.now().toString(),
+                      interactionId: 1,
+                      interactionType: "product-gallery",
+                      updatedAt: DateTime.now().toString(),
+                      elementName: "$title",
+                      elementType: "mobile-suggestion-grid",
+                      tabBarName: tabName,
+                    ),
                   );
                   context.read<FetchProductBloc>().add(
                     FetchingSingleProductEvent(

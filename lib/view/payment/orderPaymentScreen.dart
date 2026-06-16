@@ -1,4 +1,5 @@
 import 'package:exotic/controllers/payment/orderPaymentController.dart';
+import 'package:exotic/data/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class OrderPaymentScreen extends StatelessWidget {
@@ -6,46 +7,59 @@ class OrderPaymentScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context).extension<AppTheme>()!;
+    final theme = Theme.of(context);
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF1F3F6),
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Removes the back arrow
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        backgroundColor: t.brandPrimary,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 60,
+        automaticallyImplyLeading: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "Step 3 of 3",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(
+              'Step 3 of 3',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: Colors.white60,
+                letterSpacing: 0.4,
+              ),
+            ),
+            Text(
+              'Payment',
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: t.spaceMD),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.lock_outline_rounded,
+                  color: Colors.white60,
+                  size: 14,
                 ),
+                SizedBox(width: t.spaceXS),
                 Text(
-                  "Payments",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                  '100% Secure',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: Colors.white60,
                   ),
                 ),
               ],
             ),
-            Row(
-              children: const [
-                Icon(Icons.lock, size: 16, color: Colors.grey),
-                SizedBox(width: 4),
-                Text(
-                  "100% Secure",
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-          ],
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+          ),
+        ],
       ),
-      backgroundColor: Colors.grey[200],
-      body: OrderPaymentComponent(),
+      body: const OrderPaymentComponent(),
     );
   }
 }

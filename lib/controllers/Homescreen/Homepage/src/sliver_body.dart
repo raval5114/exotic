@@ -1,9 +1,9 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticPage.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/pageComponent.dart';
 import 'package:exotic/data/blocs/homescreen/homepage/bloc/homepage_bloc.dart';
 import 'package:exotic/data/models/Homepage/PageModel.dart';
-import 'package:exotic/data/models/Interaction/abtract/interaction_shell.dart';
 import 'package:exotic/data/models/homepage_page_model.dart';
-import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
@@ -32,9 +32,16 @@ class ExoticSliverBody extends StatelessWidget {
             return BlocBuilder<HomepageBloc, HomepageState>(
               buildWhen: (previous, current) {
                 if (current is HomepageTabLoadingState) {
-                  context.read<InteractionProvider>().addInteraction(
-                    interactionType: InteractionType.tabPageView,
-                    pageName: tab.slug,
+                  context.read<InteractionTestProvider>().addInteraction(
+                    Exoticpage(
+                      tabBarName: '${tab.slug}',
+                      pageName: 'Home-screen',
+                      isTabBar: true,
+                      createdAt: DateTime.now().toString(),
+                      interactionId: 01,
+                      interactionType: 'page',
+                      updatedAt: DateTime.now().toString(),
+                    ),
                   );
                   return current.slug == tab.slug;
                 }
@@ -52,7 +59,10 @@ class ExoticSliverBody extends StatelessWidget {
                 if (state is HomepageApiFetchedState &&
                     state.slug == tab.slug) {
                   final Map<String, dynamic> pageData = state.data;
-                  return Pagecomponent(pageData: Pagemodel.fromJson(pageData));
+                  return Pagecomponent(
+                    pageData: Pagemodel.fromJson(pageData),
+                    tabName: state.slug,
+                  );
                 }
 
                 return const SizedBox();

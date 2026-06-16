@@ -141,12 +141,7 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                       }
                       context.push(
                         '/dynamicRoute',
-                        extra:
-                            () => PaymentScreen(
-                              productData: {},
-                              discountedPrice: '10000',
-                              intialPrice: '13000',
-                            ),
+                        extra: () => PaymentScreen(),
                       );
                     },
                     child: Text(
@@ -193,10 +188,7 @@ class _ProductsScreenControllerState extends State<ProductsScreenController> {
                     showLoginDialog(context);
                     return;
                   }
-                  context.push(
-                    '/dynamicRoute',
-                    extra: () => CartScreen(),
-                  );
+                  context.push('/dynamicRoute', extra: () => CartScreen());
                 },
                 child: Padding(
                   padding: EdgeInsets.only(right: 16),

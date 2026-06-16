@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class MobileOfferStripWidget extends StatelessWidget {
   final MobileOfferStripElement element;
-
-  const MobileOfferStripWidget({super.key, required this.element});
+  final String tabName;
+  const MobileOfferStripWidget({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
@@ -66,7 +70,11 @@ class MobileOfferStripWidget extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final item = element.items[index];
-                return OfferStripCard(item: item);
+                return OfferStripCard(
+                  item: item,
+                  tabName: tabName,
+                  title: element.title,
+                );
               },
             ),
           ),

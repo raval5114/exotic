@@ -4,9 +4,14 @@ import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
 
 class Pagecomponent extends StatelessWidget {
+  final String tabName;
   final Pagemodel pageData;
 
-  const Pagecomponent({super.key, required this.pageData});
+  const Pagecomponent({
+    super.key,
+    required this.pageData,
+    required this.tabName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +30,10 @@ class Pagecomponent extends StatelessWidget {
             final rowIndex = index ~/ 2;
             if (index.isEven) {
               // Each section row — rowPage.dart handles its own internal padding
-              final rowWidget = RowPageComponent(rows: rows[rowIndex]);
+              final rowWidget = RowPageComponent(
+                rows: rows[rowIndex],
+                tabName: tabName,
+              );
 
               // Dynamically inject Middle Ad Placement right after the middle row
               if (rowIndex == midIndex) {

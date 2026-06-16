@@ -1,17 +1,36 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_offer_strip.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class OfferStripCard extends StatelessWidget {
   final MobileOfferItem item;
-
-  const OfferStripCard({required this.item});
+  final String title;
+  final String tabName;
+  const OfferStripCard({
+    required this.item,
+    required this.title,
+    required this.tabName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         debugPrint("Offer strip card tapped");
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepage-element",
+            updatedAt: DateTime.now().toString(),
+            elementName: "$title",
+            elementType: "mobile-offer-strip",
+            tabBarName: tabName,
+          ),
+        );
       },
       child: SizedBox(
         width: 134,

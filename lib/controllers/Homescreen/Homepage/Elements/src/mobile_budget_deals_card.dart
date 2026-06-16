@@ -1,16 +1,36 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_budget_deals_items.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BudgetDealCard extends StatelessWidget {
   final MobileBudgetDealItem deal;
-
-  const BudgetDealCard({required this.deal});
+  final String tabName;
+  final String title;
+  const BudgetDealCard({
+    required this.deal,
+    required this.tabName,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepage-element",
+            updatedAt: DateTime.now().toString(),
+            elementName: "${title}",
+            elementType: "mobile-budget-deals",
+            tabBarName: tabName,
+          ),
+        );
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Stack(
@@ -20,12 +40,17 @@ class BudgetDealCard extends StatelessWidget {
             Image.memory(
               base64ToBytes(deal.img),
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
-                color: Colors.grey.shade100,
-                child: const Center(
-                  child: Icon(Icons.image_not_supported, size: 30, color: Colors.grey),
-                ),
-              ),
+              errorBuilder:
+                  (_, __, ___) => Container(
+                    color: Colors.grey.shade100,
+                    child: const Center(
+                      child: Icon(
+                        Icons.image_not_supported,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
             ),
 
             /// Gradient overlay — bottom fade for text legibility
@@ -50,7 +75,10 @@ class BudgetDealCard extends StatelessWidget {
               top: 12,
               left: 12,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 7,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.92),
                   borderRadius: BorderRadius.circular(10),

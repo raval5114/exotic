@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class MobileGridOffersWidget extends StatelessWidget {
   final MobileGridOffersElement element;
-
-  const MobileGridOffersWidget({super.key, required this.element});
+  final String tabName;
+  const MobileGridOffersWidget({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
@@ -75,10 +79,7 @@ class MobileGridOffersWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Text(
-                      "🔥",
-                      style: TextStyle(fontSize: 18),
-                    ),
+                    child: const Text("🔥", style: TextStyle(fontSize: 18)),
                   ),
                 ),
               ],
@@ -105,7 +106,11 @@ class MobileGridOffersWidget extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final item = element.items[index];
-                  return OfferGridCard(item: item);
+                  return OfferGridCard(
+                    item: item,
+                    title: element.title,
+                    tabName: tabName,
+                  );
                 },
               ),
             ),

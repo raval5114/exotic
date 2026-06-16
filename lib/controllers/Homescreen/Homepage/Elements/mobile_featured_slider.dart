@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class MobileFeaturedSliderWidget extends StatelessWidget {
   final MobileFeaturedSliderElement element;
-
-  const MobileFeaturedSliderWidget({super.key, required this.element});
+  final String tabName;
+  const MobileFeaturedSliderWidget({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,11 @@ class MobileFeaturedSliderWidget extends StatelessWidget {
             separatorBuilder: (_, __) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
               final item = element.items[index];
-              return FeaturedCard(item: item);
+              return FeaturedCard(
+                item: item,
+                tabName: tabName,
+                title: element.title,
+              );
             },
           ),
         ),

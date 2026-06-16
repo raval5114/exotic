@@ -1,3 +1,4 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
 import 'package:exotic/data/blocs/cart/bloc/cart_bloc.dart';
 import 'package:exotic/data/blocs/homescreen/categories/bloc/categories_bloc.dart';
@@ -23,10 +24,11 @@ import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
 import 'package:exotic/data/providers/order_list_provider.dart';
-import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
+import 'package:exotic/data/providers/address_provider.dart';
 import 'package:exotic/data/providers/ad_provider.dart';
 import 'package:exotic/utils/injection.dart';
 import 'package:exotic/data/routes/routes.dart';
+import 'package:exotic/data/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -55,6 +57,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AddressProvider()),
         ChangeNotifierProvider(create: (_) => AdProvider()),
         ChangeNotifierProvider(create: (_) => InteractionProvider()),
+        ChangeNotifierProvider(create: (_) => InteractionTestProvider()),
 
         BlocProvider(create: (_) => FetchProductBloc()),
         BlocProvider(create: (_) => VenderBloc()),
@@ -82,19 +85,24 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Exotic',
       theme: ThemeData(
-        primaryColor: const Color(0xFF9747FF),
+        // ── Brand primary drives MaterialApp-level chrome ────────────────────
+        primaryColor: const Color(0xFF7C3AED),
         colorScheme: const ColorScheme(
           brightness: Brightness.light,
-          primary: Color(0xFF9747FF),
+          // brandPrimary
+          primary: Color(0xFF7C3AED),
           onPrimary: Colors.white,
-          secondary: Color(0xFFB57AFF),
+          // brandSecondary
+          secondary: Color(0xFF9747FF),
           onSecondary: Colors.white,
-          onSecondaryContainer: Color(0xFFD4AFFF),
+          // brandPink (used for error/accent surfaces)
+          onSecondaryContainer: Color(0xFFE94A75),
           error: Colors.red,
           onError: Colors.white,
           surface: Colors.white,
           onSurface: Colors.black,
         ),
+        extensions: const <ThemeExtension<dynamic>>[AppTheme.light()],
         textTheme: const TextTheme(
           // Large (Headings/Titles): 18px-32px
           displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),

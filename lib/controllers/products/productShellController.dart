@@ -1,4 +1,5 @@
 import 'package:exotic/data/models/Interaction/interactions.dart';
+import 'package:exotic/utils/auth_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/products/productScreenComponent.dart';
 import 'package:exotic/controllers/products/productScreenLoadingController.dart';
@@ -46,6 +47,9 @@ class ProductsShell extends StatefulWidget {
 
 class _ProductsShellState extends State<ProductsShell> {
   void _addToCart(BuildContext context) {
+    final user = context.read<UserProvider>().user;
+    final isLoggedIn = user != null && user.customerId != 0;
+
     final productProvider = context.read<ProductProvider>();
     final product = productProvider.product!;
 
@@ -55,14 +59,18 @@ class _ProductsShellState extends State<ProductsShell> {
     }
 
     HapticFeedback.selectionClick();
-    context.read<CartBloc>().add(
-      CartAddingEvent(
-        cid: context.read<UserProvider>().user!.customerId.toString(),
-        pid: product.pId!,
-        pvid: pvId,
-        quantity: "1",
-      ),
-    );
+    if (isLoggedIn) {
+      context.read<CartBloc>().add(
+        CartAddingEvent(
+          cid: context.read<UserProvider>().user!.customerId.toString(),
+          pid: product.pId!,
+          pvid: pvId,
+          quantity: "1",
+        ),
+      );
+    } else {
+      showLoginDialog(context);
+    }
   }
 
   @override
@@ -230,20 +238,30 @@ class _ProductsShellState extends State<ProductsShell> {
             ),
           ],
         ),
-        child: TextField(
-          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.black87),
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: 'Search products...',
-            hintStyle: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.black38,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(_kRadiusSM),
+          onTap: () {
+            context.push('/searchProductPage');
+          },
+          child: AbsorbPointer(
+            child: TextField(
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: Colors.black87,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Search products...',
+                hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.black38,
+                ),
+                prefixIcon: const Icon(
+                  Icons.search_rounded,
+                  color: Colors.black38,
+                  size: 20,
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              ),
             ),
-            prefixIcon: const Icon(
-              Icons.search_rounded,
-              color: Colors.black38,
-              size: 20,
-            ),
-            contentPadding: const EdgeInsets.symmetric(vertical: 10),
           ),
         ),
       ),
@@ -251,8 +269,14 @@ class _ProductsShellState extends State<ProductsShell> {
         Padding(
           padding: const EdgeInsets.only(right: _kSpaceMD),
           child: InkWell(
-            onTap:
-                () => context.push('/dynamicRoute', extra: () => CartScreen()),
+            onTap: () {
+              final user = context.read<UserProvider>().user;
+              if (user != null) {
+                showLoginDialog(context);
+                return;
+              }
+              context.push('/dynamicRoute', extra: () => CartScreen());
+            },
             borderRadius: BorderRadius.circular(_kRadiusSM),
             splashColor: Colors.white.withOpacity(0.15),
             highlightColor: Colors.white.withOpacity(0.08),
@@ -271,6 +295,9 @@ class _ProductsShellState extends State<ProductsShell> {
   }
 
   Widget _bottomBar(BuildContext context, bool isLoading) {
+    final user = context.read<UserProvider>().user;
+    final isLoggedIn = user != null && user.customerId != 0;
+
     final theme = Theme.of(context);
     return Container(
       // Consistent horizontal & vertical padding per 8-pt grid
@@ -344,21 +371,7 @@ class _ProductsShellState extends State<ProductsShell> {
                         if (isWishlisting) return;
                         final user = context.read<UserProvider>().user;
                         if (user == null) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                "Please login first",
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: Colors.white,
-                                ),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(_kRadiusMD),
-                              ),
-                              margin: const EdgeInsets.all(_kSpaceLG),
-                            ),
-                          );
+                          showLoginDialog(context);
                           return;
                         }
                         if (isWishlisted) {
@@ -434,15 +447,11 @@ class _ProductsShellState extends State<ProductsShell> {
                   ),
                 ),
                 onPressed: () {
-                  context.push(
-                    '/dynamicRoute',
-                    extra:
-                        () => PaymentScreen(
-                          productData: {},
-                          discountedPrice: '10000',
-                          intialPrice: '13000',
-                        ),
-                  );
+                  if (!isLoggedIn) {
+                    showLoginDialog(context);
+                    return;
+                  }
+                  context.push('/payment');
                 },
                 child: Text(
                   "Buy Now",

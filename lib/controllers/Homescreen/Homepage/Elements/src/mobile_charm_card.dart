@@ -1,12 +1,23 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/configs/mobile_charm_slider_config.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CharmCard extends StatelessWidget {
   final dynamic item;
+  final String title;
+  final String tabName;
   final MobileCharmSliderConfig config;
 
-  const CharmCard({super.key, required this.item, required this.config});
+  const CharmCard({
+    super.key,
+    required this.item,
+    required this.config,
+    required this.title,
+    required this.tabName,
+  });
 
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
@@ -27,6 +38,17 @@ class CharmCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           debugPrint("Charm item tapped: ${item.title}");
+          context.read<InteractionTestProvider>().addInteraction(
+            ExotichomepageElement(
+              createdAt: DateTime.now().toString(),
+              interactionId: 1,
+              interactionType: "homepage-element",
+              updatedAt: DateTime.now().toString(),
+              elementName: "$title",
+              elementType: "mobile-charm-slider",
+              tabBarName: "$tabName",
+            ),
+          );
         },
         borderRadius: BorderRadius.circular(20),
         child: Stack(

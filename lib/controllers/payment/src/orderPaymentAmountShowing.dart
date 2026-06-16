@@ -1,3 +1,4 @@
+import 'package:exotic/data/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class OrderPaymentAmountShowing extends StatelessWidget {
@@ -12,88 +13,141 @@ class OrderPaymentAmountShowing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context).extension<AppTheme>()!;
+    final theme = Theme.of(context);
+
     return Container(
-      padding: EdgeInsets.all(12),
-      width: double.infinity,
       color: Colors.white,
+      padding: EdgeInsets.all(t.spaceLG),
+      width: double.infinity,
       child: Column(
         children: [
-          // Total Amount Box
-          SizedBox(height: 30),
+          // ── Total Amount ──────────────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(
+              horizontal: t.spaceLG,
+              vertical: t.spaceMD,
+            ),
             decoration: BoxDecoration(
-              color: const Color(0xFFDDEEFF), // Light blue background
-              borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  t.brandPrimary.withOpacity(0.08),
+                  t.brandSecondary.withOpacity(0.04),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(t.radiusMD),
+              border: Border.all(
+                color: t.brandPrimary.withOpacity(0.15),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
-                  children: const [
+                  children: [
+                    Icon(
+                      Icons.receipt_long_rounded,
+                      color: t.brandPrimary,
+                      size: 18,
+                    ),
+                    SizedBox(width: t.spaceSM),
                     Text(
-                      "Total Amount",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                      'Total Amount',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: t.brandPrimary,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Icon(Icons.keyboard_arrow_down, color: Colors.blue),
+                    SizedBox(width: t.spaceXS),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: t.brandPrimary,
+                      size: 18,
+                    ),
                   ],
                 ),
                 Text(
                   '₹$totalAmount',
-                  style: const TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: t.brandPrimary,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 10),
-          // Cashback Banner
+
+          SizedBox(height: t.spaceSM),
+
+          // ── Cashback Banner ───────────────────────────────────────────────
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            margin: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(
+              horizontal: t.spaceLG,
+              vertical: t.spaceMD,
+            ),
             decoration: BoxDecoration(
-              color: const Color(0xFFDFF5E1), // Light green background
-              borderRadius: BorderRadius.circular(12),
+              gradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFFD1FAE5), Color(0xFFECFDF5)],
+              ),
+              borderRadius: BorderRadius.circular(t.radiusMD),
+              border: Border.all(color: const Color(0xFF16A34A).withOpacity(0.2)),
             ),
             child: Row(
               children: [
-                // Text Column
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        '5% Cashback',
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.celebration_rounded,
+                            size: 16,
+                            color: const Color(0xFF16A34A),
+                          ),
+                          SizedBox(width: t.spaceXS),
+                          Text(
+                            '5% Cashback',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: const Color(0xFF16A34A),
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: t.spaceXS),
                       Text(
-                        'Claim now with payment offers',
-                        style: TextStyle(color: Colors.green, fontSize: 14),
+                        'Claim now with eligible payment offers',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: const Color(0xFF15803D),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                // Bank Icon
-                const CircleAvatar(
-                  radius: 14,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.currency_rupee,
-                    color: Colors.deepPurple,
-                    size: 18,
+                SizedBox(width: t.spaceSM),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF16A34A).withOpacity(0.15),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.currency_rupee_rounded,
+                    color: Color(0xFF16A34A),
+                    size: 20,
                   ),
                 ),
               ],

@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class Mobile3dIconTrayComponent extends StatelessWidget {
   final Mobile3DIconTrayElement element;
-
-  const Mobile3dIconTrayComponent({super.key, required this.element});
+  final String tabName;
+  const Mobile3dIconTrayComponent({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +48,7 @@ class Mobile3dIconTrayComponent extends StatelessWidget {
                   config.labelColor,
                   fallback: const Color(0xFF374151),
                 ),
+                tab: tabName,
               );
             },
           ),

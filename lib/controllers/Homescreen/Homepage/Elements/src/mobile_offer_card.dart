@@ -1,16 +1,36 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_grid_offer_items.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OfferGridCard extends StatelessWidget {
   final MobileGridOfferItem item;
-
-  const OfferGridCard({required this.item});
+  final String tabName;
+  final String title;
+  const OfferGridCard({
+    required this.item,
+    required this.tabName,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "",
+            updatedAt: DateTime.now().toString(),
+            elementName: title,
+            elementType: "mobile-offers-grid",
+            tabBarName: tabName,
+          ),
+        );
+      },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -24,13 +44,14 @@ class OfferGridCard extends StatelessWidget {
                   base64ToBytes(item.img),
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const Center(
-                    child: Icon(
-                      Icons.broken_image,
-                      color: Colors.grey,
-                      size: 24,
-                    ),
-                  ),
+                  errorBuilder:
+                      (context, error, stackTrace) => const Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.grey,
+                          size: 24,
+                        ),
+                      ),
                 ),
               ),
             ),

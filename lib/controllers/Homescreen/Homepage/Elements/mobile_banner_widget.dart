@@ -1,11 +1,18 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/utils/image_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_sponsored_banner.dart';
+import 'package:provider/provider.dart';
 
 class MobileSponsoredBannerWidget extends StatelessWidget {
   final MobileSponsoredBanner element;
-
-  const MobileSponsoredBannerWidget({super.key, required this.element});
+  final String tabName;
+  const MobileSponsoredBannerWidget({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   double _parseHeight(String height) {
     final parsed = double.tryParse(height);
@@ -44,6 +51,17 @@ class MobileSponsoredBannerWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               onTap: () {
                 debugPrint("Sponsored Banner tapped");
+                context.read<InteractionTestProvider>().addInteraction(
+                  ExotichomepageElement(
+                    createdAt: DateTime.now().toString(),
+                    interactionId: 1,
+                    interactionType: "homepage-element",
+                    updatedAt: DateTime.now().toString(),
+                    elementName: "${element.item.sectionTitle}",
+                    elementType: "mobbile-banner-widget",
+                    tabBarName: tabName,
+                  ),
+                );
               },
               child: Stack(
                 children: [

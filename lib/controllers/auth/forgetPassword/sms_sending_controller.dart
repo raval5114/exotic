@@ -1,6 +1,9 @@
 import 'dart:ui';
+
+import 'package:exotic/controllers/auth/Signup/src/textfield.dart';
 import 'package:exotic/data/blocs/auth/bloc/auth_bloc.dart';
 import 'package:exotic/data/providers/user_login_provider.dart';
+import 'package:exotic/data/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,20 +30,17 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
   late AnimationController _shakeController;
   late Animation<double> _shakeAnimation;
 
+  late AnimationController _successController;
+  late Animation<double> _successAnimation;
+
   bool _isError = false;
   bool _isSuccess = false;
 
   @override
   void codeUpdated() {
-    if (code != null && code!.isNotEmpty) {
-      if (mounted) {
-        setState(() {
-          _otpController.text = code!;
-        });
-        if (_otpController.text.length == 4) {
-          onOtpSubmit();
-        }
-      }
+    if (code != null && code!.isNotEmpty && mounted) {
+      setState(() => _otpController.text = code!);
+      if (_otpController.text.length == 4) onOtpSubmit();
     }
   }
 
@@ -48,6 +48,8 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
   void initState() {
     super.initState();
     listenForCode();
+
+    // Entry animation
     _fadeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 700),
@@ -60,9 +62,9 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
       begin: const Offset(0.0, 0.08),
       end: Offset.zero,
     ).animate(_fadeAnimation);
-
     _fadeController.forward();
 
+    // Shake on error
     _shakeController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -70,10 +72,18 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
     _shakeAnimation = Tween<double>(begin: 0, end: 24)
       .chain(CurveTween(curve: Curves.elasticIn))
       .animate(_shakeController)..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        _shakeController.reset();
-      }
+      if (status == AnimationStatus.completed) _shakeController.reset();
     });
+
+    // Success pulse
+    _successController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _successAnimation = CurvedAnimation(
+      parent: _successController,
+      curve: Curves.elasticOut,
+    );
   }
 
   void _triggerErrorAnimation() {
@@ -84,23 +94,27 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
     _shakeController.forward();
   }
 
+  void _triggerSuccessAnimation() {
+    setState(() {
+      _isSuccess = true;
+      _isError = false;
+    });
+    _successController.forward();
+  }
+
   String maskMobile(String mobile) {
     if (mobile.length < 6) return mobile;
     return '${mobile.substring(0, 2)}${'*' * (mobile.length - 4)}${mobile.substring(mobile.length - 2)}';
   }
 
-  void _onCancel() {
-    context.pop();
-  }
+  void _onCancel() => context.pop();
 
   void onOtpSubmit() {
     final otpText = _otpController.text.trim();
-
     if (otpText.length != 4 || int.tryParse(otpText) == null) {
       _triggerErrorAnimation();
       return;
     }
-
     context.read<AuthBloc>().add(
       AuthOTPVerifyingEvent(smsCode: int.parse(otpText)),
     );
@@ -112,10 +126,17 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
       _isError = false;
       _isSuccess = false;
     });
+    _successController.reset();
     listenForCode();
     context.read<AuthBloc>().add(
       AuthOTPSentInternalEvent(email: email, mobileno: mobileno),
     );
+  }
+
+  Future<void> setEmailAndPasswordPrefs(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('email', email);
+    prefs.setString('password', password);
   }
 
   @override
@@ -125,27 +146,150 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
     _otpFocusNode.dispose();
     _fadeController.dispose();
     _shakeController.dispose();
+    _successController.dispose();
     super.dispose();
   }
 
-  void setEmailAndPasswordPrefs(String email, String password) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("email", email);
-    prefs.setString("password", password);
+  // ── OTP digit boxes ─────────────────────────────────────────────────────────
+  Widget _otpBoxes(AppTheme t) {
+    return AnimatedBuilder(
+      animation: _shakeAnimation,
+      builder:
+          (context, child) => Transform.translate(
+            offset: Offset(_isError ? -_shakeAnimation.value * 1.5 : 0, 0),
+            child: child,
+          ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Hidden real text field that handles keyboard
+          Opacity(
+            opacity: 0,
+            child: SizedBox(
+              height: 10,
+              width: double.infinity,
+              child: TextField(
+                controller: _otpController,
+                focusNode: _otpFocusNode,
+                keyboardType: TextInputType.number,
+                maxLength: 4,
+                onChanged: (val) {
+                  setState(() {
+                    _isError = false;
+                    _isSuccess = false;
+                  });
+                  if (val.length == 4) onOtpSubmit();
+                },
+              ),
+            ),
+          ),
+
+          // Visible styled boxes
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              if (_otpFocusNode.hasFocus) _otpFocusNode.unfocus();
+              Future.delayed(const Duration(milliseconds: 50), () {
+                if (mounted) FocusScope.of(context).requestFocus(_otpFocusNode);
+              });
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(4, (index) {
+                final char =
+                    _otpController.text.length > index
+                        ? _otpController.text[index]
+                        : '';
+                bool isFocused =
+                    _otpFocusNode.hasFocus &&
+                    _otpController.text.length == index;
+                if (_otpController.text.length == 4 && index == 3) {
+                  isFocused = _otpFocusNode.hasFocus;
+                }
+
+                Color bgColor;
+                Color borderColor;
+                List<BoxShadow> shadows = [];
+
+                if (_isError) {
+                  bgColor = const Color(0xFFFEF2F2);
+                  borderColor = t.brandPink;
+                } else if (_isSuccess) {
+                  bgColor = const Color(0xFFF0FDF4);
+                  borderColor = const Color(0xFF16A34A);
+                  shadows = [
+                    BoxShadow(
+                      color: const Color(0xFF16A34A).withValues(alpha: 0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ];
+                } else if (isFocused) {
+                  bgColor = Colors.white;
+                  borderColor = t.brandPrimary;
+                  shadows = [
+                    BoxShadow(
+                      color: t.brandPrimary.withValues(alpha: 0.2),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ];
+                } else if (char.isNotEmpty) {
+                  bgColor = t.brandPrimary.withValues(alpha: 0.06);
+                  borderColor = t.brandPrimary.withValues(alpha: 0.3);
+                } else {
+                  bgColor = Colors.white.withValues(alpha: 0.5);
+                  borderColor = Colors.white.withValues(alpha: 0.6);
+                }
+
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 7),
+                  width: 56,
+                  height: 66,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: bgColor,
+                    borderRadius: BorderRadius.circular(t.radiusMD),
+                    border: Border.all(
+                      color: borderColor,
+                      width: isFocused || _isError || _isSuccess ? 2 : 1.5,
+                    ),
+                    boxShadow: shadows,
+                  ),
+                  child: Text(
+                    char,
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color:
+                          _isError
+                              ? t.brandPink
+                              : _isSuccess
+                              ? const Color(0xFF16A34A)
+                              : Colors.black87,
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final t = Theme.of(context).extension<AppTheme>()!;
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthOTPVerifiedState) {
-            setState(() {
-              _isSuccess = true;
-              _isError = false;
-            });
-            Future.delayed(const Duration(milliseconds: 600), () {
+            _triggerSuccessAnimation();
+            Future.delayed(const Duration(milliseconds: 800), () {
               if (!mounted) return;
               context.read<UserLoginProvider>().clearOtp();
               setEmailAndPasswordPrefs(
@@ -157,9 +301,16 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
             });
           } else if (state is AuthErrorState) {
             _triggerErrorAnimation();
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: t.brandPink,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(t.radiusSM),
+                ),
+              ),
+            );
           }
           if (state is AuthOTPSentState) {
             context.read<UserLoginProvider>().setOtp(state.otp);
@@ -168,310 +319,320 @@ class _SmssendingscreenComponentState extends State<SmssendingscreenComponent>
         builder: (context, state) {
           final email = context.read<UserLoginProvider>().email;
           final mobileno = context.read<UserLoginProvider>().mobileno;
+          final isVerifying = state is AuthLoadingState;
+
           return Stack(
+            fit: StackFit.expand,
             children: [
-              // Blob Background matching mockup
-              Positioned(
-                top: -80,
-                left: -60,
-                right: 0,
-                height: 400,
-                child: Image.asset(
-                  'assets/src/login_blob_2.png',
-                  fit: BoxFit.cover,
-                ),
+              // ── Blob background ───────────────────────────────────────────
+              Image.asset(
+                'assets/src/login_blob_2.png',
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+                alignment: AlignmentDirectional.topStart,
+                errorBuilder:
+                    (_, __, ___) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            t.brandPrimary,
+                            const Color(0xFF5B21B6),
+                            t.brandSecondary,
+                          ],
+                        ),
+                      ),
+                    ),
               ),
 
-              Center(
-                child: SingleChildScrollView(
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(height: 180),
-
-                          /// User Avatar
-                          Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: Offset(0, 4),
+              // ── Content ───────────────────────────────────────────────────
+              SafeArea(
+                child: Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: t.spaceXXL),
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // ── Glassmorphism card ─────────────────────
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  t.radiusLG + 8,
                                 ),
-                              ],
-                            ),
-                            child: const CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.grey,
-                              backgroundImage: AssetImage(
-                                'assets/src/bubble 01.jpg',
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 18,
+                                    sigmaY: 18,
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.55,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        t.radiusLG + 8,
+                                      ),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.6,
+                                        ),
+                                        width: 1.5,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.06,
+                                          ),
+                                          blurRadius: 32,
+                                          offset: const Offset(0, 16),
+                                        ),
+                                      ],
+                                    ),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: t.spaceXXL,
+                                      vertical: t.spaceXXL + 8,
+                                    ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // ── Icon badge ─────────────────
+                                        ScaleTransition(
+                                          scale:
+                                              _isSuccess
+                                                  ? _successAnimation
+                                                  : const AlwaysStoppedAnimation(
+                                                    1.0,
+                                                  ),
+                                          child: Container(
+                                            padding: EdgeInsets.all(
+                                              t.spaceXL - 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  _isSuccess
+                                                      ? const Color(
+                                                        0xFF16A34A,
+                                                      ).withValues(alpha: 0.12)
+                                                      : Colors.white.withValues(
+                                                        alpha: 0.8,
+                                                      ),
+                                              shape: BoxShape.circle,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: (_isSuccess
+                                                          ? const Color(
+                                                            0xFF16A34A,
+                                                          )
+                                                          : t.brandPrimary)
+                                                      .withValues(alpha: 0.2),
+                                                  blurRadius: 16,
+                                                  offset: const Offset(0, 6),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Icon(
+                                              _isSuccess
+                                                  ? Icons.check_circle_rounded
+                                                  : Icons.sms_outlined,
+                                              size: 42,
+                                              color:
+                                                  _isSuccess
+                                                      ? const Color(0xFF16A34A)
+                                                      : t.brandPrimary,
+                                            ),
+                                          ),
+                                        ),
 
-                          /// Typography
-                          const Text(
-                            'OTP',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
+                                        SizedBox(height: t.spaceXXL),
 
-                          const Text(
-                            'Enter 4-digits code we sent you\non your phone number',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                              height: 1.4,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
+                                        // ── Headline ─────────────────────
+                                        Text(
+                                          _isSuccess
+                                              ? 'Verified! ✅'
+                                              : 'Enter OTP',
+                                          textAlign: TextAlign.center,
+                                          style: theme.textTheme.headlineSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w800,
+                                                color: Colors.black87,
+                                                letterSpacing: 0.3,
+                                              ),
+                                        ),
+                                        SizedBox(height: t.spaceXS),
+                                        Text(
+                                          _isSuccess
+                                              ? 'Login successful. Redirecting…'
+                                              : 'We sent a 4-digit code to',
+                                          textAlign: TextAlign.center,
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                                color: Colors.black54,
+                                                height: 1.5,
+                                              ),
+                                        ),
+                                        if (!_isSuccess) ...[
+                                          SizedBox(height: t.spaceXS),
+                                          Text(
+                                            mobileno.isNotEmpty
+                                                ? maskMobile(mobileno)
+                                                : '**********',
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
+                                                  fontWeight: FontWeight.w800,
+                                                  color: t.brandPrimary,
+                                                  letterSpacing: 2.0,
+                                                ),
+                                          ),
+                                        ],
 
-                          Text(
-                            mobileno.isNotEmpty
-                                ? maskMobile(mobileno)
-                                : '**********',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black87,
-                              letterSpacing: 2.0,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
+                                        SizedBox(height: t.spaceXXL),
 
-                          /// Custom OTP Four-Box Input
-                          AnimatedBuilder(
-                            animation: _shakeAnimation,
-                            builder: (context, child) {
-                              return Transform.translate(
-                                offset: Offset(
-                                  _isError ? -_shakeAnimation.value * 1.5 : 0,
-                                  0,
-                                ),
-                                child: child,
-                              );
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                /// Hidden Text Field handles keyboard gracefully natively
-                                Opacity(
-                                  opacity: 0,
-                                  child: SizedBox(
-                                    height: 10,
-                                    width: double.infinity,
-                                    child: TextField(
-                                      controller: _otpController,
-                                      focusNode: _otpFocusNode,
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 4,
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _isError = false;
-                                          _isSuccess = false;
-                                        });
-                                        if (val.length == 4) {
-                                          onOtpSubmit();
-                                        }
-                                      },
+                                        // ── OTP boxes ────────────────────
+                                        _otpBoxes(t),
+
+                                        // ── Status message ────────────────
+                                        AnimatedSwitcher(
+                                          duration: const Duration(
+                                            milliseconds: 250,
+                                          ),
+                                          child:
+                                              _isError
+                                                  ? Padding(
+                                                    key: const ValueKey('err'),
+                                                    padding: EdgeInsets.only(
+                                                      top: t.spaceSM,
+                                                    ),
+                                                    child: Text(
+                                                      'Invalid OTP. Please try again.',
+                                                      style: theme
+                                                          .textTheme
+                                                          .labelSmall
+                                                          ?.copyWith(
+                                                            color: t.brandPink,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                    ),
+                                                  )
+                                                  : _isSuccess
+                                                  ? Padding(
+                                                    key: const ValueKey('ok'),
+                                                    padding: EdgeInsets.only(
+                                                      top: t.spaceSM,
+                                                    ),
+                                                    child: Text(
+                                                      'OTP verified!',
+                                                      style: theme
+                                                          .textTheme
+                                                          .labelSmall
+                                                          ?.copyWith(
+                                                            color: const Color(
+                                                              0xFF16A34A,
+                                                            ),
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                    ),
+                                                  )
+                                                  : const SizedBox(
+                                                    key: ValueKey('none'),
+                                                  ),
+                                        ),
+
+                                        SizedBox(height: t.spaceXXL),
+
+                                        // ── Primary action ───────────────
+                                        if (!_isSuccess)
+                                          AuthPrimaryButton(
+                                            label:
+                                                isVerifying
+                                                    ? 'Verifying…'
+                                                    : 'Verify OTP',
+                                            isLoading: isVerifying,
+                                            onPressed: onOtpSubmit,
+                                          ),
+
+                                        SizedBox(height: t.spaceMD),
+
+                                        // ── Links row ────────────────────
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            TextButton(
+                                              onPressed: _onCancel,
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: Colors.black54,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        t.radiusSM,
+                                                      ),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Back',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black54,
+                                                    ),
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed:
+                                                  () => onOtpSend(
+                                                    email,
+                                                    mobileno,
+                                                  ),
+                                              style: TextButton.styleFrom(
+                                                foregroundColor: t.brandPrimary,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        t.radiusSM,
+                                                      ),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                'Resend OTP',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: t.brandPrimary,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
+                              ),
 
-                                /// Visible Blocks matching the Mockup
-                                GestureDetector(
-                                  behavior: HitTestBehavior.opaque,
-                                  onTap: () {
-                                    if (_otpFocusNode.hasFocus) {
-                                      _otpFocusNode.unfocus();
-                                    }
-                                    Future.delayed(
-                                      const Duration(milliseconds: 50),
-                                      () {
-                                        if (mounted) {
-                                          FocusScope.of(
-                                            context,
-                                          ).requestFocus(_otpFocusNode);
-                                        }
-                                      },
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: List.generate(4, (index) {
-                                      String char = '';
-                                      if (_otpController.text.length > index) {
-                                        char = _otpController.text[index];
-                                      }
-                                      bool isFocused =
-                                          _otpFocusNode.hasFocus &&
-                                          _otpController.text.length == index;
-                                      if (_otpController.text.length == 4 &&
-                                          index == 3) {
-                                        isFocused = _otpFocusNode.hasFocus;
-                                      }
+                              SizedBox(height: t.spaceLG),
 
-                                      // Colors targeting Mockup aesthetics
-                                      Color bgColor = Colors.grey.shade200;
-                                      Color borderColor = Colors.transparent;
-
-                                      if (_isError) {
-                                        borderColor = Colors.redAccent;
-                                        bgColor = Colors.red.shade50;
-                                      } else if (_isSuccess) {
-                                        borderColor = Colors.green;
-                                        bgColor = Colors.green.shade50;
-                                      } else if (isFocused) {
-                                        borderColor = const Color(
-                                          0xFFFF528A,
-                                        ); // Pink Accent
-                                        bgColor = Colors.white;
-                                      }
-
-                                      return AnimatedContainer(
-                                        duration: const Duration(
-                                          milliseconds: 200,
-                                        ),
-                                        margin: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                        ),
-                                        width: 55,
-                                        height: 65,
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: bgColor,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
-                                            color: borderColor,
-                                            width:
-                                                isFocused ||
-                                                        _isError ||
-                                                        _isSuccess
-                                                    ? 2
-                                                    : 1.5,
-                                          ),
-                                          boxShadow:
-                                              isFocused
-                                                  ? [
-                                                    BoxShadow(
-                                                      color: const Color(
-                                                        0xFFFF528A,
-                                                      ).withOpacity(0.2),
-                                                      blurRadius: 8,
-                                                      offset: const Offset(
-                                                        0,
-                                                        2,
-                                                      ),
-                                                    ),
-                                                  ]
-                                                  : [],
-                                        ),
-                                        child: Text(
-                                          char,
-                                          style: const TextStyle(
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black87,
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                                  ),
+                              // ── Legal text ──────────────────────────────
+                              Text(
+                                'Your code expires in 10 minutes',
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                  height: 1.5,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          if (_isError)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 12),
-                              child: Text(
-                                "Invalid OTP entered.",
-                                style: TextStyle(
-                                  color: Colors.redAccent,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            )
-                          else if (_isSuccess)
-                            const Padding(
-                              padding: EdgeInsets.only(top: 12),
-                              child: Text(
-                                "Success!",
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-
-                          const SizedBox(height: 40),
-
-                          /// Send Again Button
-                          SizedBox(
-                            width: 220,
-                            height: 50,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(
-                                  0xFFFF528A,
-                                ), // Pink from mockup
-                                elevation: 0,
-                                shadowColor: Colors.transparent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                              ),
-                              onPressed: () => onOtpSend(email, mobileno),
-                              child: const Text(
-                                'Send Again',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-
-                          /// Cancel Button
-                          TextButton(
-                            onPressed: _onCancel,
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.black54,
-                            ),
-                            child: const Text(
-                              'Cancel',
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 40),
-                        ],
+                        ),
                       ),
                     ),
                   ),

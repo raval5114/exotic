@@ -1,13 +1,13 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticPage.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/controllers/products/productShellController.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_bloc.dart';
 import 'package:exotic/data/blocs/products/bloc/fetch_products_event.dart';
 import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:exotic/data/providers/interaction_provider.dart';
-import 'package:exotic/data/providers/product_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/controllers/searchProduct/searchQuerySectionComponent.dart';
 import 'package:exotic/data/blocs/searchProduct/bloc/search_product_bloc.dart';
-import 'package:exotic/view/searchProduct/searchProductGrid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +25,7 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
   final TextEditingController controller = TextEditingController();
   final SearchProductProvider _searchProvider = SearchProductProvider();
 
+  //bool _isLoggedIn = false;
   @override
   void initState() {
     super.initState();
@@ -46,9 +47,20 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
 
   @override
   Widget build(BuildContext context) {
-    context.read<InteractionProvider>().addInteraction(
-      interactionType: InteractionType.searchPage,
-      pageName: 'Search Product Page',
+    // context.read<InteractionProvider>().addInteraction(
+    //   interactionType: InteractionType.searchPage,
+    //   pageName: 'Search Product Page',
+    // );
+    context.read<InteractionTestProvider>().addInteraction(
+      Exoticpage(
+        tabBarName: '',
+        pageName: 'Search-Product',
+        isTabBar: false,
+        createdAt: DateTime.now().toString(),
+        interactionId: 05,
+        interactionType: 'page',
+        updatedAt: DateTime.now().toString(),
+      ),
     );
     return ChangeNotifierProvider.value(
       value: _searchProvider,

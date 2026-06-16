@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class MobileCharmSliderWidget extends StatelessWidget {
   final MobileCharmSliderElement element;
-
-  const MobileCharmSliderWidget({super.key, required this.element});
+  final String tabName;
+  const MobileCharmSliderWidget({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   Color _hexToColor(String hex) {
     if (hex.isEmpty) return Colors.transparent;
@@ -52,9 +56,10 @@ class MobileCharmSliderWidget extends StatelessWidget {
                         fontFamily: 'Roboto',
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: titleColor.opacity > 0
-                            ? titleColor
-                            : const Color(0xFF111827),
+                        color:
+                            titleColor.opacity > 0
+                                ? titleColor
+                                : const Color(0xFF111827),
                         letterSpacing: -0.3,
                       ),
                     ),
@@ -86,7 +91,12 @@ class MobileCharmSliderWidget extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final item = element.items[index];
-                  return CharmCard(item: item, config: config);
+                  return CharmCard(
+                    item: item,
+                    config: config,
+                    title: element.title,
+                    tabName: tabName,
+                  );
                 },
               ),
             ),

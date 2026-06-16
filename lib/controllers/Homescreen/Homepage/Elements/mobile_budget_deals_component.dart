@@ -1,14 +1,18 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/controllers/Homescreen/Homepage/Elements/src/mobile_budget_deals_card.dart';
 import 'package:exotic/data/models/Homepage/elements/mobile_budget_deals.dart';
-import 'package:exotic/data/models/Interaction/interactions.dart';
-import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MobileBudgetDealsComponent extends StatelessWidget {
   final MobileBudgetDealsElement element;
-
-  const MobileBudgetDealsComponent({super.key, required this.element});
+  final String tabName;
+  const MobileBudgetDealsComponent({
+    super.key,
+    required this.element,
+    required this.tabName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +54,21 @@ class MobileBudgetDealsComponent extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                context.read<InteractionProvider>().addInteraction(
-                  interactionType: InteractionType.mobileBudgetDeals,
-                  pageName:
-                      "Homepage/budget-deals/${element.config.sectionTitle.trim()}",
+                // context.read<InteractionProvider>().addInteraction(
+                //   interactionType: InteractionType.mobileBudgetDeals,
+                //   pageName:
+                //       "Homepage/budget-deals/${element.config.sectionTitle.trim()}",
+                // );
+                context.read<InteractionTestProvider>().addInteraction(
+                  ExotichomepageElement(
+                    createdAt: DateTime.now().toString(),
+                    interactionId: 1,
+                    interactionType: "homepage-element",
+                    updatedAt: DateTime.now().toString(),
+                    elementName: "${element.title}",
+                    elementType: "mobile-budget-deals",
+                    tabBarName: tabName,
+                  ),
                 );
               },
               child: Container(
@@ -94,7 +109,11 @@ class MobileBudgetDealsComponent extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final deal = element.items[index];
-            return BudgetDealCard(deal: deal);
+            return BudgetDealCard(
+              deal: deal,
+              title: element.title,
+              tabName: tabName,
+            );
           },
         ),
       ],

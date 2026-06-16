@@ -1,3 +1,5 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/elements/exoticHomepageElement.dart';
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
 import 'package:exotic/data/models/Homepage/elements/Items/mobile_3d_icon_tray.dart';
 import 'package:exotic/data/models/Interaction/interactions.dart';
 import 'package:exotic/data/providers/interaction_provider.dart';
@@ -8,17 +10,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class EnhancedTrayItem extends StatelessWidget {
   final Mobile3DIconTrayItem item;
   final Color labelColor;
-
-  const EnhancedTrayItem({required this.item, required this.labelColor});
+  final String tab;
+  const EnhancedTrayItem({
+    required this.item,
+    required this.labelColor,
+    required this.tab,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         // TODO: navigation logic using item.url
-        context.read<InteractionProvider>().addInteraction(
-          interactionType: InteractionType.mobile3dIconGallery,
-          pageName: "HomePage/3d-icon-tray/${item.label}",
+        // context.read<InteractionProvider>().addInteraction(
+        //   interactionType: InteractionType.mobile3dIconGallery,
+        //   pageName: "HomePage/3d-icon-tray/${item.label}",
+        // );
+        context.read<InteractionTestProvider>().addInteraction(
+          ExotichomepageElement(
+            createdAt: DateTime.now().toString(),
+            interactionId: 1,
+            interactionType: "homepage-element",
+            updatedAt: DateTime.now().toString(),
+            elementName: "${item.label}",
+            elementType: "mobile-icon-tray",
+            tabBarName: tab,
+          ),
         );
       },
       child: SizedBox(
