@@ -16,6 +16,7 @@ import 'package:exotic/data/providers/product_provider.dart';
 import 'package:exotic/utils/newProductList.dart';
 import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ProductScreenComponent extends StatefulWidget {
@@ -129,6 +130,14 @@ class _ProductScreenComponentState extends State<ProductScreenComponent> {
                       itemList: recentItems,
                       frontItemLength: recentItems.length.clamp(1, 10),
                       rows: 1,
+                      redirectTo:
+                          () => context.push(
+                            '/productGrid',
+                            extra: {
+                              "title": "Recently Viewed",
+                              "items": recentItems,
+                            },
+                          ),
                     ),
                   );
                 },

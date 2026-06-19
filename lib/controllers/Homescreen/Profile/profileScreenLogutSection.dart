@@ -3,7 +3,6 @@ import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_event.dart';
 import 'package:exotic/data/providers/address_provider.dart';
 import 'package:exotic/data/providers/cart_provider.dart';
-import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // ─── Brand tokens ─────────────────────────────────────────────────────────────
+const _kBrand = Color(0xFF7C3AED);
 const _kBrandSecondary = Color(0xFF9747FF);
 const _kDanger = Color(0xFFE53935);
 
@@ -23,9 +23,32 @@ class ProfileScreenLogoutSection extends StatefulWidget {
       _ProfileScreenLogoutSectionState();
 }
 
-class _ProfileScreenLogoutSectionState
-    extends State<ProfileScreenLogoutSection> {
+class _ProfileScreenLogoutSectionState extends State<ProfileScreenLogoutSection>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = false;
+
+  // Arrow slide animation (mirrors profileScreenOptions pattern)
+  late final AnimationController _ctrl;
+  late final Animation<double> _arrowSlide;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _arrowSlide = Tween<double>(
+      begin: 0,
+      end: 4,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   Future<void> _doLogout() async {
     setState(() => _isLoading = true);
@@ -61,84 +84,187 @@ class _ProfileScreenLogoutSectionState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Container(
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Section header
+          // ── Section header (matches profileScreenOptions style) ───────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-            child: Text(
-              "Account",
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: Colors.black45,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.4,
-              ),
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+            child: Row(
+              children: [
+                Container(
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [_kDanger, Color(0xFFFF6B6B)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.manage_accounts_rounded,
+                    color: Colors.white,
+                    size: 15,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  'Account',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black54,
+                    fontFamily: 'Roboto',
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ),
           ),
-          const Divider(height: 0.5, thickness: 0.5, indent: 16, endIndent: 16),
 
-          // Log Out tile
-          InkWell(
-            onTap: _isLoading ? null : _confirmLogout,
-            splashColor: _kDanger.withOpacity(0.06),
-            highlightColor: _kDanger.withOpacity(0.03),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: [
-                  // Icon badge
-                  Container(
-                    width: 36,
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: _kDanger.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child:
-                        _isLoading
-                            ? const Center(
-                              child: SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: _kDanger,
+          // Thin red accent divider
+          Container(
+            height: 1,
+            margin: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [_kDanger.withOpacity(0.3), _kDanger.withOpacity(0.05)],
+              ),
+              borderRadius: BorderRadius.circular(1),
+            ),
+          ),
+          const SizedBox(height: 4),
+
+          // ── Log Out tile ─────────────────────────────────────────────────
+          GestureDetector(
+            onTapDown: _isLoading ? null : (_) => _ctrl.forward(),
+            onTapUp:
+                _isLoading
+                    ? null
+                    : (_) {
+                      _ctrl.reverse();
+                      _confirmLogout();
+                    },
+            onTapCancel: () => _ctrl.reverse(),
+            child: InkWell(
+              onTap: _isLoading ? null : _confirmLogout,
+              splashColor: _kDanger.withOpacity(0.06),
+              highlightColor: _kDanger.withOpacity(0.03),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 10,
+                ),
+                child: Row(
+                  children: [
+                    // ── Gradient icon badge ──────────────────────────────────
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            _kDanger.withOpacity(0.12),
+                            const Color(0xFFFF6B6B).withOpacity(0.18),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _kDanger.withOpacity(0.15),
+                          width: 1,
+                        ),
+                      ),
+                      child:
+                          _isLoading
+                              ? const Center(
+                                child: SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: _kDanger,
+                                  ),
                                 ),
+                              )
+                              : const Icon(
+                                Icons.logout_rounded,
+                                color: _kDanger,
+                                size: 19,
                               ),
-                            )
-                            : const Icon(
-                              Icons.logout_rounded,
-                              color: _kDanger,
-                              size: 18,
-                            ),
-                  ),
-                  const SizedBox(width: 14),
+                    ),
+                    const SizedBox(width: 14),
 
-                  // Label
-                  Expanded(
-                    child: Text(
-                      "Log Out",
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: _kDanger,
-                        fontWeight: FontWeight.w600,
+                    // ── Label + subtitle ──────────────────────────────────────
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Log Out',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: _kDanger,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Sign out of your account',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black38,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
 
-                  const Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 13,
-                    color: Colors.black26,
-                  ),
-                ],
+                    // ── Animated arrow ────────────────────────────────────────
+                    AnimatedBuilder(
+                      animation: _arrowSlide,
+                      builder:
+                          (_, __) => Transform.translate(
+                            offset: Offset(_arrowSlide.value, 0),
+                            child: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 13,
+                              color: _kDanger.withOpacity(0.45),
+                            ),
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+
+          const SizedBox(height: 4),
+
+          // ── App version watermark ────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+            child: Center(
+              child: Text(
+                'Xotic v1.0.0',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.black26,
+                  fontFamily: 'Roboto',
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -152,54 +278,67 @@ class _LogoutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext dialogCtx) {
-    final theme = Theme.of(dialogCtx);
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       elevation: 0,
       backgroundColor: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 28, 24, 24),
+        padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon
+            // ── Icon with gradient ring ───────────────────────────────────
             Container(
-              width: 60,
-              height: 60,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
-                color: _kBrandSecondary.withOpacity(0.1),
                 shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    _kDanger.withOpacity(0.15),
+                    _kDanger.withOpacity(0.04),
+                  ],
+                ),
+                border: Border.all(
+                  color: _kDanger.withOpacity(0.2),
+                  width: 1.5,
+                ),
               ),
               child: const Icon(
                 Icons.logout_rounded,
-                color: _kBrandSecondary,
-                size: 28,
+                color: _kDanger,
+                size: 30,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // Title
-            Text(
-              "Log Out?",
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+            // ── Title ─────────────────────────────────────────────────────
+            const Text(
+              'Log Out?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
                 color: Colors.black87,
+                fontFamily: 'Roboto',
               ),
             ),
             const SizedBox(height: 8),
 
-            // Subtitle
-            Text(
+            // ── Subtitle ──────────────────────────────────────────────────
+            const Text(
               "You'll need to sign in again\nto access your account.",
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodySmall?.copyWith(
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w400,
                 color: Colors.black45,
-                height: 1.5,
+                fontFamily: 'Roboto',
+                height: 1.55,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 28),
 
-            // Actions
+            // ── Actions ───────────────────────────────────────────────────
             Row(
               children: [
                 // Cancel
@@ -207,40 +346,63 @@ class _LogoutDialog extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(dialogCtx, false),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                      side: const BorderSide(color: Color(0xFFE0E0E0)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: BorderSide(color: Colors.grey.shade200, width: 1.5),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Text(
-                      "Cancel",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.black54,
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
+                        color: Colors.black54,
+                        fontFamily: 'Roboto',
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Log Out
+
+                // Log Out (red gradient button)
                 Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(dialogCtx, true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _kBrandSecondary,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(vertical: 13),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [_kDanger, Color(0xFFFF6B6B)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: _kDanger.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      "Log Out",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(dialogCtx, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text(
+                        'Log Out',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),

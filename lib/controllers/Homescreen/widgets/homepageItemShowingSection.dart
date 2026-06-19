@@ -15,7 +15,7 @@ class HomePageItemShowingSection extends StatefulWidget {
   final bool useCarousel;
   final int rows;
   final int columns;
-
+  final VoidCallback redirectTo;
   const HomePageItemShowingSection({
     super.key,
     required this.title,
@@ -24,6 +24,7 @@ class HomePageItemShowingSection extends StatefulWidget {
     this.useCarousel = false,
     this.rows = 1,
     this.columns = 2,
+    required this.redirectTo,
   });
 
   @override
@@ -358,7 +359,8 @@ class _HomePageItemShowingSectionState
           ),
           // "See All" arrow button
           GestureDetector(
-            onTap: () => context.push('/productsTesting'),
+            onTap: widget.redirectTo,
+            //onTap: () => context.push('/productsTesting'),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(

@@ -1,11 +1,16 @@
-import 'package:exotic/controllers/ProductViewer/productViewer.dart';
+import 'package:exotic/controllers/productgrid/productgridController.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ProductViewer extends StatelessWidget {
-  final String url;
+class ProductGridViewer extends StatelessWidget {
+  final List<Map<String, dynamic>> items;
   final String title;
-  const ProductViewer({super.key, required this.url, required this.title});
+
+  const ProductGridViewer({
+    super.key,
+    required this.items,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +45,12 @@ class ProductViewer extends StatelessWidget {
             icon: const Icon(Icons.search, color: Colors.white, size: 22),
             onPressed: () => context.pop(),
             splashRadius: 24,
-            tooltip: 'Search Again',
+            tooltip: 'Search',
           ),
           const SizedBox(width: 4),
         ],
       ),
-
-      body: ProductViewerComponent(url: url, pageName: title),
+      body: ProductGridController(items: items),
     );
   }
 }

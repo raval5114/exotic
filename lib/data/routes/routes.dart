@@ -1,5 +1,6 @@
 import 'package:exotic/Test/AdTesting/AdTesting.dart';
 import 'package:exotic/view/productViewer/productViewer.dart';
+import 'package:exotic/view/productgrid/productgridViewer.dart';
 import 'package:exotic/view/reviews/ReviewScreen.dart';
 import 'package:exotic/data/providers/reviews_provider.dart';
 import 'package:exotic/Test/product_showing_testing.dart';
@@ -46,6 +47,16 @@ final goRoutes = GoRouter(
         return ProductViewer(
           url: extra['url'] as String,
           title: extra['title'] as String,
+        );
+      },
+    ),
+    GoRoute(
+      path: '/productGrid',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        return ProductGridViewer(
+          title: extra['title'] as String,
+          items: (extra['items'] as List).cast<Map<String, dynamic>>(),
         );
       },
     ),

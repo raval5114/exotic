@@ -123,11 +123,11 @@ class _CartScreenTestingComponentState
                         children: [
                           //CartItmeBuilder(),
                           CartPriceingComponent(),
-                          HomePageItemShowingSection(
-                            title: "Recently Viewed",
-                            itemList: [],
-                            frontItemLength: 4,
-                          ),
+                          // HomePageItemShowingSection(
+                          //   title: "Recently Viewed",
+                          //   itemList: [],
+                          //   frontItemLength: 4,
+                          // ),
                         ],
                       ),
                     ),

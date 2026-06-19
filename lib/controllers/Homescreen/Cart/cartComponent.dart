@@ -222,6 +222,14 @@ class _CartComponentState extends State<CartComponent> {
                       itemList: recentItems,
                       frontItemLength: recentItems.length.clamp(1, 10),
                       rows: 1,
+                      redirectTo:
+                          () => context.push(
+                            '/productGrid',
+                            extra: {
+                              "title": "Recently Viewed",
+                              "items": recentItems,
+                            },
+                          ),
                     ),
                   ),
                   const SizedBox(height: 12),

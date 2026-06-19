@@ -19,21 +19,21 @@ class ProfileScreenSection extends StatelessWidget {
     return Column(
       children: [
         // ── Hero Header ──────────────────────────────────────────────────────
-        _ProfileHeader(user: user, theme: theme),
+        ProfileHeader(user: user, theme: theme),
         const SizedBox(height: 2),
         // ── Quick-action grid ────────────────────────────────────────────────
-        _QuickActionsGrid(),
+        ProfileQuickActionsGrid(),
       ],
     );
   }
 }
 
 // ─── Header Section ───────────────────────────────────────────────────────────
-class _ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatelessWidget {
   final dynamic user;
   final ThemeData theme;
 
-  const _ProfileHeader({required this.user, required this.theme});
+  const ProfileHeader({super.key, required this.user, required this.theme});
 
   @override
   Widget build(BuildContext context) {
@@ -143,49 +143,40 @@ class _ProfileHeader extends StatelessWidget {
 }
 
 // ─── Quick Actions Grid ───────────────────────────────────────────────────────
-class _QuickActionsGrid extends StatelessWidget {
-  const _QuickActionsGrid();
+class ProfileQuickActionsGrid extends StatelessWidget {
+  const ProfileQuickActionsGrid();
+
+  static const _items = [
+    (Icons.inventory_2_rounded, 'Orders', '/orderList'),
+    (Icons.favorite_rounded, 'Wishlist', '/wishlist'),
+    (Icons.card_giftcard_rounded, 'Coupons', '/coupensAndOffers'),
+    (Icons.help_rounded, 'Help', ''),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 4,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 0.85,
-        children: [
-          _QuickActionTile(
-            icon: Icons.inventory_2_outlined,
-            label: "Orders",
-            onTap: () => context.push('/orderList'),
-          ),
-          _QuickActionTile(
-            icon: Icons.favorite_border_rounded,
-            label: "Wishlist",
-            onTap: () => context.push('/wishlist'),
-          ),
-          _QuickActionTile(
-            icon: Icons.card_giftcard_outlined,
-            label: "Coupons",
-            onTap: () => context.push('/coupensAndOffers'),
-          ),
-          _QuickActionTile(
-            icon: Icons.help_outline_rounded,
-            label: "Help",
-            onTap: () {},
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        children:
+            _items.map((item) {
+              final (icon, label, route) = item;
+              return Expanded(
+                child: _QuickActionTile(
+                  icon: icon,
+                  label: label,
+                  onTap: route.isNotEmpty ? () => context.push(route) : () {},
+                ),
+              );
+            }).toList(),
       ),
     );
   }
 }
 
-class _QuickActionTile extends StatelessWidget {
+// ─── Individual Tile ──────────────────────────────────────────────────────────
+class _QuickActionTile extends StatefulWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
@@ -197,43 +188,83 @@ class _QuickActionTile extends StatelessWidget {
   });
 
   @override
+  State<_QuickActionTile> createState() => _QuickActionTileState();
+}
+
+class _QuickActionTileState extends State<_QuickActionTile>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+      lowerBound: 0.0,
+      upperBound: 0.06,
+    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 0.94,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        splashColor: _kBrandSecondary.withOpacity(0.08),
-        highlightColor: _kBrandSecondary.withOpacity(0.04),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-          decoration: BoxDecoration(
-            color: _kBrandSecondary.withOpacity(0.05),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _kBrandSecondary.withOpacity(0.12),
-              width: 1,
-            ),
-          ),
+    return GestureDetector(
+      onTapDown: (_) => _ctrl.forward(),
+      onTapUp: (_) {
+        _ctrl.reverse();
+        widget.onTap();
+      },
+      onTapCancel: () => _ctrl.reverse(),
+      child: ScaleTransition(
+        scale: _scale,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
+              // ── Icon bubble ─────────────────────────────────────────────
               Container(
-                padding: const EdgeInsets.all(8),
+                width: 52,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: _kBrandSecondary.withOpacity(0.1),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF7C3AED), Color(0xFF9747FF)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                   shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF7C3AED).withOpacity(0.28),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Icon(icon, color: _kBrandSecondary, size: 20),
+                child: Icon(widget.icon, color: Colors.white, size: 22),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 7),
+
+              // ── Label ────────────────────────────────────────────────────
               Text(
-                label,
-                style: theme.textTheme.labelSmall?.copyWith(
+                widget.label,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
                   color: Colors.black87,
-                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Roboto',
+                  letterSpacing: 0.1,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 1,
