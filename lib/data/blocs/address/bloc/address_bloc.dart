@@ -11,6 +11,15 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     on<AddAddressEvent>(_onAddAddress);
     on<UpdateAddressEvent>(_onUpdateAddress);
     on<DeleteAddressEvent>(_onDeleteAddress);
+    on<ClearAddressesEvent>(_onClearAddresses);
+  }
+
+  /// Resets bloc state to initial + empty list (called on logout).
+  void _onClearAddresses(
+    ClearAddressesEvent event,
+    Emitter<AddressState> emit,
+  ) {
+    emit(AddressState());
   }
 
   Future<void> _onFetchAddresses(

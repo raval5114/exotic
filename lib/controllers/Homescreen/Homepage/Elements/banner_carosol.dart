@@ -87,7 +87,7 @@ class _BannerCarouselWidgetState extends State<BannerCarouselWidget> {
         interactionType: "homepage-element",
         updatedAt: DateTime.now().toString(),
         elementName: widget.title ?? "",
-        elementType: "Banner",
+        elementType: "${widget.title}",
         tabBarName: "" ?? "",
       ),
     );

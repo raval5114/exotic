@@ -57,9 +57,6 @@ class InteractionTestProvider extends ChangeNotifier {
   /// - Persists state to [SharedPreferences].
   /// - Calls [notifyListeners].
   void addInteraction(InteractionShell interaction) {
-    _interaction.interactions.removeWhere(
-      (e) => e.interactionId == interaction.interactionId,
-    );
     _interaction.addInteraction(interaction);
 
     _saveToPrefs();
@@ -102,7 +99,7 @@ class InteractionTestProvider extends ChangeNotifier {
   Future<void> _saveToPrefs() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final now = DateTime.now().toIso8601String();
+      final now = DateTime.now().toString();
 
       // Preserve the original createdAt if already stored.
       String createdAt = now;

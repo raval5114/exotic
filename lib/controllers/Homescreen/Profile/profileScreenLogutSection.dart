@@ -1,4 +1,11 @@
+import 'package:exotic/Test/HomepagesTesting/model/interactions/providers/interaction_provider.dart';
+import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_event.dart';
+import 'package:exotic/data/providers/address_provider.dart';
+import 'package:exotic/data/providers/cart_provider.dart';
+import 'package:exotic/data/providers/interaction_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
+import 'package:exotic/data/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -23,10 +30,22 @@ class _ProfileScreenLogoutSectionState
   Future<void> _doLogout() async {
     setState(() => _isLoading = true);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove("email");
-    await prefs.remove("password");
+
+    await prefs.clear();
     if (mounted) {
+      // Clear all providers BEFORE navigating so the home screen
+      // renders with a clean state (no stale address/cart/user data).
+      context.read<AddressProvider>().clearAddress();
+      context.read<CartProvider>().clearCart();
+      context.read<WishlistProvider>().clear();
+      context.read<InteractionTestProvider>().clearAllInteractions();
       context.read<UserProvider>().clearUser();
+
+      // Reset the AddressBloc to initial+empty state so the BlocListener
+      // in sliver_app_bar.dart doesn't re-populate AddressProvider with
+      // the previous user's stale address data on navigation.
+      context.read<AddressBloc>().add(ClearAddressesEvent());
+
       context.go('/home');
     }
   }
@@ -79,22 +98,23 @@ class _ProfileScreenLogoutSectionState
                       color: _kDanger.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: _isLoading
-                        ? const Center(
-                            child: SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: _kDanger,
+                    child:
+                        _isLoading
+                            ? const Center(
+                              child: SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: _kDanger,
+                                ),
                               ),
+                            )
+                            : const Icon(
+                              Icons.logout_rounded,
+                              color: _kDanger,
+                              size: 18,
                             ),
-                          )
-                        : const Icon(
-                            Icons.logout_rounded,
-                            color: _kDanger,
-                            size: 18,
-                          ),
                   ),
                   const SizedBox(width: 14),
 

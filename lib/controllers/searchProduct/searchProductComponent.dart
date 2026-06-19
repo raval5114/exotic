@@ -51,17 +51,17 @@ class _SearchProductComponentState extends State<SearchProductComponent> {
     //   interactionType: InteractionType.searchPage,
     //   pageName: 'Search Product Page',
     // );
-    context.read<InteractionTestProvider>().addInteraction(
-      Exoticpage(
-        tabBarName: '',
-        pageName: 'Search-Product',
-        isTabBar: false,
-        createdAt: DateTime.now().toString(),
-        interactionId: 05,
-        interactionType: 'page',
-        updatedAt: DateTime.now().toString(),
-      ),
-    );
+    // context.read<InteractionTestProvider>().addInteraction(
+    //   Exoticpage(
+    //     tabBarName: '',
+    //     pageName: 'Search-Product',
+    //     isTabBar: false,
+    //     createdAt: DateTime.now().toString(),
+    //     interactionId: 05,
+    //     interactionType: 'page',
+    //     updatedAt: DateTime.now().toString(),
+    //   ),
+    // );
     return ChangeNotifierProvider.value(
       value: _searchProvider,
       child: Scaffold(

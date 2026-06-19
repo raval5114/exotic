@@ -1,3 +1,5 @@
+import 'package:exotic/data/models/address_model.dart';
+import 'package:exotic/data/providers/address_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
@@ -25,6 +27,36 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
     }
   }
 
+  void onSetDefaultEvent({
+    required Address address,
+    required BuildContext context,
+  }) {
+    context.read<AddressProvider>().setDefaultAddress(
+      address.caId!,
+      context.read<UserProvider>().user!.customerId.toString(),
+    );
+    // if (address.caId != null && address.cId != null) {
+    //   context.read<AddressBloc>().add(
+    //     UpdateAddressEvent(
+    //       caId: address.caId!,
+    //       cId: address.cId!,
+    //       caName: address.caName ?? '',
+    //       caAddress1: address.caAddress1 ?? '',
+    //       caAddress2: address.caAddress2 ?? '',
+    //       caLocality: address.caLocality ?? '',
+    //       caCity: address.caCity ?? '',
+    //       caState: address.caState ?? '',
+    //       caPincode: address.caPincode ?? '',
+    //       caMobileNo: address.caMobileNo ?? '',
+    //       caAlternateMobileNo: address.caAlternateMobileNo ?? '',
+    //       caType: address.caType ?? 'shipping',
+    //       caBadge: address.caBadge ?? 'Home',
+    //       caIsDefault: 1,
+    //     ),
+    //   );
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +67,9 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
       ),
       body: BlocConsumer<AddressBloc, AddressState>(
         listener: (context, state) {
+          if (state.status == AddressStatus.loaded) {
+            context.read<AddressProvider>().setAddresses(state.addresses);
+          }
           if (state.status == AddressStatus.added) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -74,12 +109,11 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
             return Center(child: Text("Error: ${state.message}"));
           }
 
-          final addresses = state.addresses;
+          final addresses = context.watch<AddressProvider>().addresses;
 
           if (addresses.isEmpty) {
             return const Center(child: Text("No saved addresses found."));
           }
-
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: addresses.length,
@@ -93,14 +127,15 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: isDefault
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade200,
+                    color:
+                        isDefault
+                            ? Theme.of(context).primaryColor
+                            : Colors.grey.shade200,
                     width: isDefault ? 2 : 1,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
+                      color: Colors.black.withValues(alpha: 0.03),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
@@ -142,9 +177,9 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                                         vertical: 3,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(0.1),
+                                        color: Theme.of(
+                                          context,
+                                        ).primaryColor.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
@@ -184,7 +219,10 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    context.push('/updateAddress', extra: address);
+                                    context.push(
+                                      '/updateAddress',
+                                      extra: address,
+                                    );
                                   },
                                   child: const Icon(
                                     Icons.edit_outlined,
@@ -250,29 +288,11 @@ class _ViewAddressComponentState extends State<ViewAddressComponent> {
                             alignment: Alignment.centerLeft,
                             child: InkWell(
                               borderRadius: BorderRadius.circular(8),
-                              onTap: () {
-                                if (address.caId != null && address.cId != null) {
-                                  context.read<AddressBloc>().add(
-                                    UpdateAddressEvent(
-                                      caId: address.caId!,
-                                      cId: address.cId!,
-                                      caName: address.caName ?? '',
-                                      caAddress1: address.caAddress1 ?? '',
-                                      caAddress2: address.caAddress2 ?? '',
-                                      caLocality: address.caLocality ?? '',
-                                      caCity: address.caCity ?? '',
-                                      caState: address.caState ?? '',
-                                      caPincode: address.caPincode ?? '',
-                                      caMobileNo: address.caMobileNo ?? '',
-                                      caAlternateMobileNo:
-                                          address.caAlternateMobileNo ?? '',
-                                      caType: address.caType ?? 'shipping',
-                                      caBadge: address.caBadge ?? 'Home',
-                                      caIsDefault: 1,
-                                    ),
-                                  );
-                                }
-                              },
+                              onTap:
+                                  () => onSetDefaultEvent(
+                                    address: address,
+                                    context: context,
+                                  ),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 14,

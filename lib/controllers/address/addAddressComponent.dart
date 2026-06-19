@@ -6,7 +6,7 @@ import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_event.dart';
 import 'package:exotic/data/blocs/address/bloc/address_state.dart';
 import 'package:exotic/data/models/address_model.dart';
-import 'package:exotic/Test/SearchProduct/providers/address_provider.dart';
+import 'package:exotic/data/providers/address_provider.dart';
 import 'package:exotic/data/providers/user_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/data/helpers/zip_code_getter.dart';
@@ -78,7 +78,7 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
     }
   }
 
-  void _saveAddress() {
+  void _saveAddress(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       context.read<AddressBloc>().add(
         AddAddressEvent(
@@ -102,6 +102,11 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
           caIsDefault: _isDefault ? 1 : 0,
         ),
       );
+      // if (_isDefault) {
+      //   context.read<AddressProvider>().setDefaultAddress(
+      //     context.read<AddressBloc>().state.,
+      //   );
+      // }
     }
   }
 
@@ -208,6 +213,15 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
               createdAt: DateTime.now().toString(),
             );
             context.read<AddressProvider>().addAddress(newAddress);
+            if (_isDefault) {
+              final user = context.read<UserProvider>().user;
+              if (user != null) {
+                context.read<AddressProvider>().setDefaultAddress(
+                  newAddress.caId!,
+                  user.customerId.toString(),
+                );
+              }
+            }
 
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -384,7 +398,7 @@ class _AddAddressComponentState extends State<AddAddressComponent> {
                     onPressed:
                         state.status == AddressStatus.adding
                             ? null
-                            : _saveAddress,
+                            : () => _saveAddress(context),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Theme.of(context).primaryColor,

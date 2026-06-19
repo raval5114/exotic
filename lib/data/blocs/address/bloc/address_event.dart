@@ -1,5 +1,9 @@
 abstract class AddressEvent {}
 
+/// Resets the bloc to its initial state (empty addresses).
+/// Use this on logout to prevent stale data from re-populating the UI.
+class ClearAddressesEvent extends AddressEvent {}
+
 class FetchAddressesEvent extends AddressEvent {
   final int cId;
   FetchAddressesEvent({required this.cId});

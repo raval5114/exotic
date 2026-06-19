@@ -8,6 +8,62 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_state.dart';
 import 'package:go_router/go_router.dart';
+import 'package:exotic/data/providers/address_provider.dart';
+
+// ─── Animated tab chip ────────────────────────────────────────────────────────
+class _AnimatedTabItem extends StatelessWidget {
+  final String label;
+  final IconData unselectedIcon;
+  final IconData selectedIcon;
+  final bool isSelected;
+
+  const _AnimatedTabItem({
+    required this.label,
+    required this.unselectedIcon,
+    required this.selectedIcon,
+    required this.isSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const brand = Color(0xFF7C3AED);
+    final color = isSelected ? brand : Colors.black45;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeInOut,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            transitionBuilder:
+                (child, anim) => ScaleTransition(scale: anim, child: child),
+            child: Icon(
+              isSelected ? selectedIcon : unselectedIcon,
+              key: ValueKey(isSelected),
+              size: 22,
+              color: color,
+            ),
+          ),
+          const SizedBox(height: 4),
+          AnimatedDefaultTextStyle(
+            duration: const Duration(milliseconds: 200),
+            style: TextStyle(
+              fontSize: 11,
+              fontFamily: 'Roboto',
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+              color: color,
+              letterSpacing: isSelected ? 0.3 : 0,
+            ),
+            child: Text(label),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class ExoticSliverAppBar extends StatelessWidget {
   const ExoticSliverAppBar({super.key, required this.controller});
@@ -18,184 +74,443 @@ class ExoticSliverAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.read<UserProvider>().user;
     final isLoggedIn = user != null && user.customerId != 0;
+    final defaultAddress = context.watch<AddressProvider>().defaultAddress;
 
-    return Consumer<HomepageProvider>(
-      builder: (context, provider, _) {
-        final tabs = provider.tabs;
+    final String badgeText;
+    final IconData badgeIcon;
+    final String addressDetails;
 
-        return SliverAppBar(
-          backgroundColor: const Color(0xFF7C3AED),
-          pinned: true,
-          expandedHeight: 170,
-          toolbarHeight: 0,
-          elevation: 0,
-          surfaceTintColor: Colors.transparent,
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF7C3AED), Color(0xFF9F67FF)],
+    if (defaultAddress != null) {
+      badgeText = defaultAddress.caBadge?.toUpperCase() ?? 'HOME';
+      final String lowerBadge = badgeText.toLowerCase();
+      if (lowerBadge == 'home') {
+        badgeIcon = Icons.home_rounded;
+      } else if (lowerBadge == 'work' || lowerBadge == 'office') {
+        badgeIcon = Icons.work_rounded;
+      } else {
+        badgeIcon = Icons.location_on_rounded;
+      }
+
+      final parts = <String>[];
+      if (defaultAddress.caAddress1 != null &&
+          defaultAddress.caAddress1!.isNotEmpty) {
+        parts.add(defaultAddress.caAddress1!);
+      }
+      if (defaultAddress.caAddress2 != null &&
+          defaultAddress.caAddress2!.isNotEmpty) {
+        parts.add(defaultAddress.caAddress2!);
+      }
+      if (defaultAddress.caLocality != null &&
+          defaultAddress.caLocality!.isNotEmpty) {
+        parts.add(defaultAddress.caLocality!);
+      }
+      if (defaultAddress.caCity != null && defaultAddress.caCity!.isNotEmpty) {
+        parts.add(defaultAddress.caCity!);
+      }
+      addressDetails = parts.join(', ');
+    } else {
+      badgeText = '';
+      badgeIcon = Icons.home_rounded;
+      addressDetails =
+          isLoggedIn
+              ? 'Set your delivery address'
+              : 'Login to set delivery address';
+    }
+
+    return BlocListener<AddressBloc, AddressState>(
+      listener: (context, state) {
+        if (state.status == AddressStatus.loaded) {
+          context.read<AddressProvider>().setAddresses(state.addresses);
+        }
+      },
+      child: Consumer<HomepageProvider>(
+        builder: (context, provider, _) {
+          final tabs = provider.tabs;
+
+          return SliverAppBar(
+            backgroundColor: const Color(0xFF6D28D9),
+            pinned: true,
+            expandedHeight: 260,
+            toolbarHeight: 0,
+            elevation: 0,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF5B21B6),
+                    Color(0xFF7C3AED),
+                    Color(0xFFAB6BFF),
+                  ],
+                  stops: [0.0, 0.55, 1.0],
+                ),
               ),
-            ),
-            child: FlexibleSpaceBar(
-              background: SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
+              child: FlexibleSpaceBar(
+                background: SafeArea(
+                  bottom: false,
+                  child: Stack(
+                    clipBehavior: Clip.none,
                     children: [
-                      // --- ADDRESS BAR ---
-                      InkWell(
-                        onTap:
-                            () => _showAddressBottomSheet(context, isLoggedIn),
-                        borderRadius: BorderRadius.circular(10),
-                        child: Row(
+                      // -- Decorative blob top-right --
+                      Positioned(
+                        top: -24,
+                        right: -32,
+                        child: Container(
+                          width: 160,
+                          height: 160,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withValues(alpha: 0.06),
+                          ),
+                        ),
+                      ),
+                      // -- Decorative blob bottom-left --
+                      Positioned(
+                        bottom: 10,
+                        left: -48,
+                        child: Container(
+                          width: 130,
+                          height: 130,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withValues(alpha: 0.05),
+                          ),
+                        ),
+                      ),
+                      // -- Decorative small dot top-center --
+                      Positioned(
+                        top: 10,
+                        right: 100,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withValues(alpha: 0.3),
+                          ),
+                        ),
+                      ),
+
+                      // -- Main content --
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              size: 16,
-                              color: Colors.white,
+                            // --- GREETING ROW ---
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        isLoggedIn
+                                            ? 'Hey, ${user.firstName} 👋'
+                                            : 'Hey, Guest 👋',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.8,
+                                          ),
+                                          fontFamily: 'Roboto',
+                                        ),
+                                      ),
+                                      const SizedBox(height: 1),
+                                      const Text(
+                                        'What are you looking for?',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w800,
+                                          color: Colors.white,
+                                          fontFamily: 'Roboto',
+                                          letterSpacing: 0.2,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Notification bell
+                                Container(
+                                  width: 38,
+                                  height: 38,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      const Icon(
+                                        Icons.notifications_none_rounded,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      // Unread dot
+                                      Positioned(
+                                        top: 8,
+                                        right: 8,
+                                        child: Container(
+                                          width: 7,
+                                          height: 7,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFFFD700),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              child: RichText(
-                                text: const TextSpan(
+                            const SizedBox(height: 10),
+
+                            // --- ADDRESS BAR ---
+                            GestureDetector(
+                              onTap:
+                                  () => _showAddressBottomSheet(
+                                    context,
+                                    isLoggedIn,
+                                  ),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.4),
+                                    width: 1.2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
                                   children: [
-                                    TextSpan(
-                                      text: "Deliver to ",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.white70,
-                                        fontFamily: 'Roboto',
+                                    Container(
+                                      width: 34,
+                                      height: 34,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.25,
+                                        ),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.5,
+                                          ),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        badgeIcon,
+                                        size: 17,
+                                        color: Colors.white,
                                       ),
                                     ),
-                                    TextSpan(
-                                      text: "388440 ▾",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w700,
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if (isLoggedIn)
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  'Deliver to',
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.7),
+                                                    fontFamily: 'Roboto',
+                                                    letterSpacing: 0.3,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 5),
+                                                Container(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 1,
+                                                      ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.25,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
+                                                  ),
+                                                  child: Text(
+                                                    badgeText,
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      color: Colors.white,
+                                                      fontFamily: 'Roboto',
+                                                      letterSpacing: 0.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          const SizedBox(height: 2),
+                                          Text(
+                                            addressDetails,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        size: 16,
                                         color: Colors.white,
-                                        fontFamily: 'Roboto',
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.18),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.35),
-                                  width: 1,
+                            const SizedBox(height: 10),
+
+                            // --- SEARCH BAR ---
+                            Row(
+                              children: [
+                                const Expanded(child: BuildSearchBar()),
+                                const SizedBox(width: 10),
+                                _IconButton(
+                                  icon: Icons.qr_code_scanner_rounded,
+                                  onTap: () {},
                                 ),
-                              ),
-                              child: const Text(
-                                "Change",
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  fontFamily: 'Roboto',
-                                ),
-                              ),
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 10),
-
-                      // --- SEARCH BAR SECTION ---
-                      Row(
-                        children: [
-                          const Expanded(child: BuildSearchBar()),
-                          const SizedBox(width: 10),
-                          _IconButton(
-                            icon: Icons.qr_code_scanner_rounded,
-                            onTap: () {},
-                          ),
-                        ],
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-          ),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(48),
-            child: Container(
-              color: Colors.white,
-              child:
-                  tabs.isEmpty
-                      ? const SizedBox(
-                        height: 48,
-                        child: Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      )
-                      : TabBar(
-                        controller: controller,
-                        isScrollable: true,
-                        tabAlignment: TabAlignment.start,
-                        padding: EdgeInsets.zero,
-                        physics: const BouncingScrollPhysics(),
-                        dividerColor: Colors.grey.shade200,
-                        dividerHeight: 1,
-                        labelColor: const Color(0xFF7C3AED),
-                        unselectedLabelColor: Colors.black54,
-                        labelStyle: const TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
-                          letterSpacing: 0.1,
-                        ),
-                        unselectedLabelStyle: const TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 13,
-                        ),
-                        indicator: const UnderlineTabIndicator(
-                          borderSide: BorderSide(
-                            color: Color(0xFF7C3AED),
-                            width: 2.5,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(70),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.06),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child:
+                    tabs.isEmpty
+                        ? const SizedBox(
+                          height: 70,
+                          child: Center(
+                            child: CircularProgressIndicator(strokeWidth: 2),
                           ),
-                          insets: EdgeInsets.symmetric(horizontal: 12),
-                        ),
-                        tabs:
-                            tabs.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final e = entry.value;
-                              final iconData = _tabIcon(index);
-                              return Tab(
-                                height: 46,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(iconData, size: 16),
-                                    const SizedBox(width: 6),
-                                    Text(e.title),
-                                  ],
+                        )
+                        : AnimatedBuilder(
+                          animation: controller,
+                          builder: (context, _) {
+                            return TabBar(
+                              controller: controller,
+                              isScrollable: true,
+                              tabAlignment: TabAlignment.start,
+                              padding: EdgeInsets.zero,
+                              physics: const BouncingScrollPhysics(),
+                              dividerColor: Colors.transparent,
+                              labelPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                              ),
+                              indicator: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: const Color(0xFF7C3AED),
+                                    width: 3,
+                                  ),
                                 ),
-                              );
-                            }).toList(),
-                      ),
+                              ),
+                              indicatorSize: TabBarIndicatorSize.tab,
+                              overlayColor: WidgetStateProperty.all(
+                                const Color(0xFF7C3AED).withValues(alpha: 0.07),
+                              ),
+                              tabs:
+                                  tabs.asMap().entries.map((entry) {
+                                    final index = entry.key;
+                                    final e = entry.value;
+                                    final selected = controller.index == index;
+                                    return Tab(
+                                      height: 68,
+                                      child: _AnimatedTabItem(
+                                        label: e.title,
+                                        unselectedIcon: _tabIconOutlined(index),
+                                        selectedIcon: _tabIconFilled(index),
+                                        isSelected: selected,
+                                      ),
+                                    );
+                                  }).toList(),
+                            );
+                          },
+                        ),
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 
-  IconData _tabIcon(int index) {
+  // Outlined icons for unselected tabs
+  IconData _tabIconOutlined(int index) {
     switch (index % 6) {
       case 0:
         return Icons.style_outlined;
@@ -204,13 +519,33 @@ class ExoticSliverAppBar extends StatelessWidget {
       case 2:
         return Icons.smartphone_outlined;
       case 3:
-        return Icons.face_retouching_natural;
+        return Icons.face_retouching_natural_outlined;
       case 4:
         return Icons.computer_outlined;
       case 5:
         return Icons.weekend_outlined;
       default:
         return Icons.category_outlined;
+    }
+  }
+
+  // Filled icons for selected tabs
+  IconData _tabIconFilled(int index) {
+    switch (index % 6) {
+      case 0:
+        return Icons.style_rounded;
+      case 1:
+        return Icons.checkroom_rounded;
+      case 2:
+        return Icons.smartphone_rounded;
+      case 3:
+        return Icons.face_retouching_natural;
+      case 4:
+        return Icons.computer_rounded;
+      case 5:
+        return Icons.weekend_rounded;
+      default:
+        return Icons.category_rounded;
     }
   }
 
@@ -370,7 +705,21 @@ class ExoticSliverAppBar extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12),
                               child: InkWell(
-                                onTap: () => Navigator.of(context).pop(),
+                                onTap: () {
+                                  if (addr.caId != null && isLoggedIn) {
+                                    final user =
+                                        context.read<UserProvider>().user;
+                                    if (user != null) {
+                                      context
+                                          .read<AddressProvider>()
+                                          .setDefaultAddress(
+                                            addr.caId!,
+                                            user.customerId.toString(),
+                                          );
+                                    }
+                                  }
+                                  Navigator.of(context).pop();
+                                },
                                 borderRadius: BorderRadius.circular(14),
                                 child: Container(
                                   padding: const EdgeInsets.all(14),
@@ -387,7 +736,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                                         isDefault
                                             ? const Color(
                                               0xFF7C3AED,
-                                            ).withOpacity(0.04)
+                                            ).withValues(alpha: 0.04)
                                             : Colors.white,
                                   ),
                                   child: Row(
@@ -397,7 +746,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           color: const Color(
                                             0xFF7C3AED,
-                                          ).withOpacity(0.1),
+                                          ).withValues(alpha: 0.1),
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
@@ -445,7 +794,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                                                     decoration: BoxDecoration(
                                                       color: const Color(
                                                         0xFF7C3AED,
-                                                      ).withOpacity(0.12),
+                                                      ).withValues(alpha: 0.12),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             4,
@@ -520,9 +869,12 @@ class _IconButton extends StatelessWidget {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.18),
+          color: Colors.white.withValues(alpha: 0.18),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 1,
+          ),
         ),
         child: Icon(icon, color: Colors.white, size: 24),
       ),
