@@ -64,3 +64,6 @@ android/build/
 # IDE
 .vscode/
 .idea/
+
+# Project Notes (local only)
+lib/contexts/homepage/pendingWork.txt
