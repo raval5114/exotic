@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:exotic/controllers/ProductViewer/src/ProductViewerCard.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/view/widgets/searched_items_widget.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:exotic/data/providers/search_product_provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:exotic/data/blocs/cart/bloc/cart_bloc.dart';
+import 'package:exotic/controllers/src/ad_blocks/widgets/ad_block.dart';
 
 class ProductViewerItemsWidget extends StatelessWidget {
   final List<SearchedItems> items;
@@ -90,26 +92,15 @@ class ProductViewerItemsWidget extends StatelessWidget {
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  // Automatically determine aspect ratio based on available width
-                  // A standard 2-column grid will give approx (constraints.maxWidth - 36) / 2 width per item
                   final itemWidth = (constraints.maxWidth - 36) / 2;
-                  // Assume fixed vertical size for text components (~145px) + width for image
                   final aspect = itemWidth / (itemWidth + 145);
+                  final clampedAspect =
+                      aspect < 0.5 ? 0.5 : (aspect > 0.8 ? 0.8 : aspect);
 
-                  return GridView.builder(
-                    padding: const EdgeInsets.all(12),
-                    itemCount: filteredItems.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
-                      childAspectRatio:
-                          aspect < 0.5 ? 0.5 : (aspect > 0.8 ? 0.8 : aspect),
-                    ),
-                    itemBuilder: (context, index) {
-                      final item = filteredItems[index];
-                      return _buildProductCard(item, context);
-                    },
+                  return _buildGridWithAds(
+                    context,
+                    filteredItems,
+                    clampedAspect,
                   );
                 },
               ),
@@ -117,6 +108,70 @@ class ProductViewerItemsWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Builds a [CustomScrollView] that mixes product grid chunks with full-width
+  /// [AdBlock] widgets injected every 15–20 items (randomised per chunk).
+  Widget _buildGridWithAds(
+    BuildContext context,
+    List<SearchedItems> items,
+    double childAspectRatio,
+  ) {
+    final random = Random();
+
+    // Randomised ad positions to cycle through for visual variety
+    const adPositions = ['middle', 'bottom', 'sidebar'];
+    int positionIndex = random.nextInt(adPositions.length);
+
+    final slivers = <Widget>[];
+    int cursor = 0;
+
+    while (cursor < items.length) {
+      // Random chunk size between 15 and 20 (inclusive)
+      final chunkSize = 5 + random.nextInt(6); // 15..20
+      final end = (cursor + chunkSize).clamp(0, items.length);
+      final chunk = items.sublist(cursor, end);
+
+      // ── Product grid sliver ──────────────────────────────────────────────
+      slivers.add(
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            12,
+            cursor == 0 ? 12 : 0, // only top-pad the very first chunk
+            12,
+            12,
+          ),
+          sliver: SliverGrid(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => _buildProductCard(chunk[index], context),
+              childCount: chunk.length,
+            ),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: childAspectRatio,
+            ),
+          ),
+        ),
+      );
+
+      cursor = end;
+
+      // ── Ad block sliver (only between chunks, not after the last one) ────
+      if (cursor < items.length) {
+        final position = adPositions[positionIndex % adPositions.length];
+        positionIndex++;
+
+        slivers.add(
+          SliverToBoxAdapter(
+            child: AdBlock(page: 'product', position: position, limit: 4),
+          ),
+        );
+      }
+    }
+
+    return CustomScrollView(slivers: slivers);
   }
 
   Widget _buildFilters(BuildContext context) {

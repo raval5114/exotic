@@ -64,7 +64,10 @@ class _OrderListSearchingComponentState
               },
               borderRadius: BorderRadius.circular(10),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF9747FF).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),

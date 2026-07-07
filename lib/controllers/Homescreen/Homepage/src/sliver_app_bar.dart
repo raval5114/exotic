@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:exotic/data/blocs/address/bloc/address_bloc.dart';
+import 'package:exotic/data/blocs/address/bloc/address_event.dart';
 import 'package:exotic/data/blocs/address/bloc/address_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:exotic/data/providers/address_provider.dart';
@@ -65,10 +66,40 @@ class _AnimatedTabItem extends StatelessWidget {
   }
 }
 
-class ExoticSliverAppBar extends StatelessWidget {
+class ExoticSliverAppBar extends StatefulWidget {
   const ExoticSliverAppBar({super.key, required this.controller});
 
   final TabController controller;
+
+  @override
+  State<ExoticSliverAppBar> createState() => _ExoticSliverAppBarState();
+}
+
+class _ExoticSliverAppBarState extends State<ExoticSliverAppBar> {
+  // Keep a reference so we can use controller in instance methods.
+  TabController get controller => widget.controller;
+
+  @override
+  void initState() {
+    super.initState();
+    // Dispatch FetchAddressesEvent as soon as the app bar mounts, but only
+    // when the user is logged in and addresses haven't been fetched yet.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final user = context.read<UserProvider>().user;
+      final isLoggedIn = user != null && user.customerId != 0;
+      if (!isLoggedIn) return;
+
+      final currentStatus = context.read<AddressBloc>().state.status;
+      // Only fire if we haven't already loaded (avoid duplicate fetch).
+      if (currentStatus == AddressStatus.initial ||
+          currentStatus == AddressStatus.error) {
+        context.read<AddressBloc>().add(
+          FetchAddressesEvent(cId: user.customerId),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -664,6 +695,7 @@ class ExoticSliverAppBar extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
+
                         context.push('/viewAddress');
                       },
                       child: const Text(
@@ -679,168 +711,242 @@ class ExoticSliverAppBar extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
+
+                // ── Address list: driven by AddressBloc state ─────────────────────────────
                 BlocBuilder<AddressBloc, AddressState>(
-                  builder: (context, state) {
-                    if (state.status == AddressStatus.loading ||
-                        state.status == AddressStatus.initial) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state.status == AddressStatus.error) {
-                      return Center(child: Text("Error: ${state.message}"));
+                  builder: (context, blocState) {
+                    // ── Loading ──────────────────────────────────────────────
+                    if (blocState.status == AddressStatus.loading) {
+                      return _AddressShimmer();
                     }
 
-                    final addresses = state.addresses;
-                    if (addresses.isEmpty) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Text("No saved addresses found."),
+                    // ── Error ────────────────────────────────────────────────
+                    if (blocState.status == AddressStatus.error) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.wifi_off_rounded,
+                              color: Colors.black26,
+                              size: 36,
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              blocState.message ?? 'Failed to load addresses.',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.black45,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            TextButton.icon(
+                              onPressed: () {
+                                final user = context.read<UserProvider>().user;
+                                if (user != null) {
+                                  context.read<AddressBloc>().add(
+                                    FetchAddressesEvent(cId: user.customerId),
+                                  );
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.refresh_rounded,
+                                size: 16,
+                                color: Color(0xFF7C3AED),
+                              ),
+                              label: const Text(
+                                'Retry',
+                                style: TextStyle(
+                                  color: Color(0xFF7C3AED),
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
 
-                    return Column(
-                      children:
-                          addresses.take(3).map((addr) {
-                            final isDefault = addr.caIsDefault == 1;
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: InkWell(
-                                onTap: () {
-                                  if (addr.caId != null && isLoggedIn) {
-                                    final user =
-                                        context.read<UserProvider>().user;
-                                    if (user != null) {
-                                      context
-                                          .read<AddressProvider>()
-                                          .setDefaultAddress(
+                    // ── Loaded / other states: read from AddressProvider ─────
+                    return Consumer<AddressProvider>(
+                      builder: (context, addrProvider, _) {
+                        final addresses = addrProvider.addresses;
+                        final defaultAddr = addrProvider.defaultAddress;
+
+                        // Still initial (user not logged in or no fetch yet)
+                        if (addresses.isEmpty) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Text(
+                                'No saved addresses found.',
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  color: Colors.black45,
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+
+                        return Column(
+                          children:
+                              addresses.take(3).map((addr) {
+                                final isDefault =
+                                    defaultAddr != null &&
+                                    addr.caId != null &&
+                                    addr.caId == defaultAddr.caId;
+
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 12),
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (addr.caId != null && isLoggedIn) {
+                                        final user =
+                                            context.read<UserProvider>().user;
+                                        if (user != null) {
+                                          addrProvider.setDefaultAddress(
                                             addr.caId!,
                                             user.customerId.toString(),
                                           );
-                                    }
-                                  }
-                                  Navigator.of(context).pop();
-                                },
-                                borderRadius: BorderRadius.circular(14),
-                                child: Container(
-                                  padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color:
-                                          isDefault
-                                              ? const Color(0xFF7C3AED)
-                                              : Colors.grey.shade200,
-                                      width: isDefault ? 1.5 : 1,
-                                    ),
+                                        }
+                                      }
+                                      Navigator.of(context).pop();
+                                    },
                                     borderRadius: BorderRadius.circular(14),
-                                    color:
-                                        isDefault
-                                            ? const Color(
-                                              0xFF7C3AED,
-                                            ).withValues(alpha: 0.04)
-                                            : Colors.white,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: const Color(
-                                            0xFF7C3AED,
-                                          ).withValues(alpha: 0.1),
-                                          shape: BoxShape.circle,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(14),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color:
+                                              isDefault
+                                                  ? const Color(0xFF7C3AED)
+                                                  : Colors.grey.shade200,
+                                          width: isDefault ? 1.5 : 1,
                                         ),
-                                        child: Icon(
-                                          (addr.caBadge?.toLowerCase() ==
-                                                  'home')
-                                              ? Icons.home_rounded
-                                              : ((addr.caBadge?.toLowerCase() ==
+                                        borderRadius: BorderRadius.circular(14),
+                                        color:
+                                            isDefault
+                                                ? const Color(
+                                                  0xFF7C3AED,
+                                                ).withValues(alpha: 0.04)
+                                                : Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              color: const Color(
+                                                0xFF7C3AED,
+                                              ).withValues(alpha: 0.1),
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Icon(
+                                              addr.caBadge?.toLowerCase() ==
+                                                      'home'
+                                                  ? Icons.home_rounded
+                                                  : (addr.caBadge
+                                                              ?.toLowerCase() ==
                                                           'work' ||
                                                       addr.caBadge
                                                               ?.toLowerCase() ==
                                                           'office')
                                                   ? Icons.work_rounded
-                                                  : Icons.location_on_rounded),
-                                          color: const Color(0xFF7C3AED),
-                                          size: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                                  : Icons.location_on_rounded,
+                                              color: const Color(0xFF7C3AED),
+                                              size: 18,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  addr.caBadge?.isNotEmpty ==
-                                                          true
-                                                      ? addr.caBadge!
-                                                      : "Address",
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w700,
-                                                    fontSize: 14,
-                                                    fontFamily: 'Roboto',
-                                                  ),
-                                                ),
-                                                if (isDefault) ...[
-                                                  const SizedBox(width: 8),
-                                                  Container(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal: 6,
-                                                          vertical: 2,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: const Color(
-                                                        0xFF7C3AED,
-                                                      ).withValues(alpha: 0.12),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            4,
-                                                          ),
-                                                    ),
-                                                    child: const Text(
-                                                      "Default",
-                                                      style: TextStyle(
-                                                        color: Color(
-                                                          0xFF7C3AED,
-                                                        ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      addr.caBadge?.isNotEmpty ==
+                                                              true
+                                                          ? addr.caBadge!
+                                                          : 'Address',
+                                                      style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.w700,
-                                                        fontSize: 10,
+                                                        fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                       ),
                                                     ),
+                                                    if (isDefault) ...[
+                                                      const SizedBox(width: 8),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 6,
+                                                              vertical: 2,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color: const Color(
+                                                            0xFF7C3AED,
+                                                          ).withValues(
+                                                            alpha: 0.12,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                4,
+                                                              ),
+                                                        ),
+                                                        child: const Text(
+                                                          'Default',
+                                                          style: TextStyle(
+                                                            color: Color(
+                                                              0xFF7C3AED,
+                                                            ),
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                            fontSize: 10,
+                                                            fontFamily:
+                                                                'Roboto',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 3),
+                                                Text(
+                                                  '${addr.caAddress1}'
+                                                  '${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}'
+                                                  ', ${addr.caLocality}, ${addr.caCity}',
+                                                  style: const TextStyle(
+                                                    color: Colors.black45,
+                                                    fontSize: 12,
+                                                    fontFamily: 'Roboto',
                                                   ),
-                                                ],
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
                                               ],
                                             ),
-                                            const SizedBox(height: 3),
-                                            Text(
-                                              "${addr.caAddress1}${addr.caAddress2 != null && addr.caAddress2!.isNotEmpty ? ', ${addr.caAddress2}' : ''}, ${addr.caLocality}, ${addr.caCity}",
-                                              style: const TextStyle(
-                                                color: Colors.black45,
-                                                fontSize: 12,
-                                                fontFamily: 'Roboto',
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          const Icon(
+                                            Icons.chevron_right_rounded,
+                                            color: Colors.black26,
+                                            size: 20,
+                                          ),
+                                        ],
                                       ),
-                                      const Icon(
-                                        Icons.chevron_right_rounded,
-                                        color: Colors.black26,
-                                        size: 20,
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                                );
+                              }).toList(),
+                        );
+                      },
                     );
                   },
                 ),
@@ -852,6 +958,99 @@ class ExoticSliverAppBar extends StatelessWidget {
     } else {
       showLoginDialog(context);
     }
+  }
+}
+
+// ─── Address shimmer shown while AddressBloc is loading ──────────────────────
+class _AddressShimmer extends StatefulWidget {
+  @override
+  State<_AddressShimmer> createState() => _AddressShimmerState();
+}
+
+class _AddressShimmerState extends State<_AddressShimmer>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  late final Animation<double> _anim;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1100),
+    )..repeat(reverse: true);
+    _anim = CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _anim,
+      builder: (_, __) {
+        final shimmerColor =
+            Color.lerp(Colors.grey[200]!, Colors.grey[100]!, _anim.value)!;
+        return Column(
+          children: List.generate(2, (i) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Container(
+                height: 72,
+                decoration: BoxDecoration(
+                  color: shimmerColor,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 14),
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 11,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                          const SizedBox(height: 7),
+                          Container(
+                            height: 10,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                  ],
+                ),
+              ),
+            );
+          }),
+        );
+      },
+    );
   }
 }
 

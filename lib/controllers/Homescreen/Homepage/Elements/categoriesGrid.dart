@@ -54,45 +54,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
           builder: (context, state) {
             /// Loading shimmer
             if (state is HomepageLoadingState) {
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 10,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.72,
-                ),
-                itemBuilder: (context, index) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey.shade200,
-                    highlightColor: Colors.grey.shade50,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 56,
-                          height: 56,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          width: 40,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
+              return _buildShimmer();
             }
 
             if (state is HomePageCategoriesFetchedState) {
@@ -102,25 +64,7 @@ class _CategoriesGridState extends State<CategoriesGrid> {
                 return const Center(child: Text("No categories available"));
               }
 
-              return GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: categories.length > 10 ? 10 : categories.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 20,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: 0.72,
-                ),
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-
-                  return _CategoryItem(
-                    name: category.name,
-                    imageUrl: category.url,
-                  );
-                },
-              );
+              return _buildScrollableGrid(context, categories);
             }
 
             /// Error state
@@ -134,13 +78,122 @@ class _CategoriesGridState extends State<CategoriesGrid> {
       ],
     );
   }
+
+  /// Horizontally scrollable 2-row grid matching the design image
+  Widget _buildScrollableGrid(BuildContext context, List categories) {
+    const double itemSpacing = 10.0;
+    const int rowCount = 2;
+    const double itemHeight = 110.0; // image height + label height
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalWidth = constraints.maxWidth;
+        // Show ~5.5 items to hint scrollability
+        const double itemsVisible = 5.5;
+        final double itemWidth =
+            (totalWidth - (itemSpacing * (itemsVisible - 1))) / itemsVisible;
+
+        return SizedBox(
+          height: (itemHeight * rowCount) + itemSpacing,
+          child: GridView.builder(
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.horizontal,
+            itemCount: categories.length,
+            physics: const BouncingScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: rowCount,
+              crossAxisSpacing: itemSpacing,
+              mainAxisSpacing: itemSpacing,
+              childAspectRatio: itemHeight / itemWidth,
+            ),
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              return _CategoryItem(
+                name: category.name,
+                imageUrl: category.url,
+                photo: category.photo,
+                tabName: widget.tabName ?? '',
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  /// Shimmer placeholder matching same 2-row horizontal layout
+  Widget _buildShimmer() {
+    const double itemSpacing = 10.0;
+    const int rowCount = 2;
+    const double itemHeight = 110.0;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalWidth = constraints.maxWidth;
+        const double itemsVisible = 5.5;
+        final double itemWidth =
+            (totalWidth - (itemSpacing * (itemsVisible - 1))) / itemsVisible;
+
+        return SizedBox(
+          height: (itemHeight * rowCount) + itemSpacing,
+          child: GridView.builder(
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.horizontal,
+            itemCount: 12,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: rowCount,
+              crossAxisSpacing: itemSpacing,
+              mainAxisSpacing: itemSpacing,
+              childAspectRatio: itemHeight / itemWidth,
+            ),
+            itemBuilder: (context, index) {
+              return Shimmer.fromColors(
+                baseColor: Colors.grey.shade200,
+                highlightColor: Colors.grey.shade50,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: double.infinity,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _CategoryItem extends StatelessWidget {
   final String name;
   final String imageUrl;
+  final String? photo;
+  final String tabName;
 
-  const _CategoryItem({required this.name, required this.imageUrl});
+  const _CategoryItem({
+    required this.name,
+    required this.imageUrl,
+    required this.tabName,
+    this.photo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -154,65 +207,93 @@ class _CategoryItem extends StatelessWidget {
             updatedAt: DateTime.now().toString(),
             elementName: name,
             elementType: "category",
-            tabBarName: "tabBarName",
+            tabBarName: tabName,
           ),
         );
       },
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F3FF),
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF7C3AED).withOpacity(0.07),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
+          /// Image tile — fills the available space with rounded corners
+          Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child:
-                  imageUrl.isNotEmpty
-                      ? Image.asset(
-                        imageUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder:
-                            (context, error, stackTrace) => const Icon(
-                              Icons.category_rounded,
-                              color: Color(0xFF7C3AED),
-                              size: 24,
-                            ),
-                      )
-                      : const Icon(
-                        Icons.category_rounded,
-                        color: Color(0xFF7C3AED),
-                        size: 24,
-                      ),
+              borderRadius: BorderRadius.circular(10),
+              child: _buildImage(),
             ),
           ),
-          const SizedBox(height: 8),
+
+          const SizedBox(height: 5),
+
+          /// Category label
           Text(
             name,
             style: const TextStyle(
               fontFamily: 'Roboto',
               fontWeight: FontWeight.w600,
-              fontSize: 11,
-              color: Color(0xFF374151),
-              letterSpacing: -0.1,
+              fontSize: 11.5,
+              color: Color(0xFF111827),
               height: 1.2,
             ),
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildImage() {
+    // Prefer `photo` field (base64 or network), fallback to `url` (asset path)
+    final src = (photo != null && photo!.isNotEmpty) ? photo! : imageUrl;
+
+    if (src.isEmpty) {
+      return _placeholder();
+    }
+
+    // Network URL
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return Image.network(
+        src,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+        errorBuilder: (_, __, ___) => _placeholder(),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return _shimmerBox();
+        },
+      );
+    }
+
+    // Asset path
+    return Image.asset(
+      src,
+      fit: BoxFit.cover,
+      width: double.infinity,
+      height: double.infinity,
+      errorBuilder: (_, __, ___) => _placeholder(),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      color: const Color(0xFFF3F4F6),
+      child: const Center(
+        child: Icon(
+          Icons.category_rounded,
+          color: Color(0xFF9CA3AF),
+          size: 26,
+        ),
+      ),
+    );
+  }
+
+  Widget _shimmerBox() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade200,
+      highlightColor: Colors.grey.shade50,
+      child: Container(color: Colors.white),
     );
   }
 }

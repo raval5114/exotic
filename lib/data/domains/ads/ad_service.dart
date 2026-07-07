@@ -655,5 +655,144 @@ class AdService extends AdRepo {
         ],
       },
     },
+
+    // ── product-grid page: inline 2-column sponsored grid ──────────────────
+    'product-grid': {
+      'top': {
+        'placement': {
+          'id': 25,
+          'vc_name': 'Top Sponsored Picks',
+          'ad_type': 'promote_product',
+        },
+        'ads': [
+          {
+            'campaign_id': 74,
+            'product_id': 33,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&auto=format&fit=crop',
+            'product_name': 'AeroSport Pro Running Shoes',
+            'selling_price': 1899,
+            'mrp': 2999,
+          },
+          {
+            'campaign_id': 75,
+            'product_id': 34,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop',
+            'product_name': 'Vanguard Chronograph Watch',
+            'selling_price': 3499,
+            'mrp': 4999,
+          },
+          {
+            'campaign_id': 76,
+            'product_id': 35,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&auto=format&fit=crop',
+            'product_name': 'Retro Horizon Sunglasses',
+            'selling_price': 999,
+            'mrp': 1599,
+          },
+          {
+            'campaign_id': 77,
+            'product_id': 36,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&auto=format&fit=crop',
+            'product_name': 'Elegance Leather Handbag',
+            'selling_price': 2499,
+            'mrp': 3999,
+          },
+        ],
+      },
+      'middle': {
+        'placement': {
+          'id': 26,
+          'vc_name': 'You Might Also Like',
+          'ad_type': 'promote_product',
+        },
+        'ads': [
+          {
+            'campaign_id': 78,
+            'product_id': 37,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&auto=format&fit=crop',
+            'product_name': 'Ultra-Lightweight Running Jacket',
+            'selling_price': 1499,
+            'mrp': 2499,
+          },
+          {
+            'campaign_id': 79,
+            'product_id': 38,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop',
+            'product_name': 'Wireless Noise-Cancelling Earbuds',
+            'selling_price': 1599,
+            'mrp': 2499,
+          },
+          {
+            'campaign_id': 80,
+            'product_id': 39,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&auto=format&fit=crop',
+            'product_name': 'Titanium Sports Water Bottle',
+            'selling_price': 599,
+            'mrp': 999,
+          },
+          {
+            'campaign_id': 81,
+            'product_id': 40,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400&auto=format&fit=crop',
+            'product_name': 'Velvet Matte Lipstick Set',
+            'selling_price': 799,
+            'mrp': 1200,
+          },
+        ],
+      },
+      'bottom': {
+        'placement': {
+          'id': 27,
+          'vc_name': 'Trending Right Now',
+          'ad_type': 'promote_product',
+        },
+        'ads': [
+          {
+            'campaign_id': 82,
+            'product_id': 41,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1627124765135-56a5181732e4?w=400&auto=format&fit=crop',
+            'product_name': 'Leather Bi-Fold Wallet',
+            'selling_price': 899,
+            'mrp': 1499,
+          },
+          {
+            'campaign_id': 83,
+            'product_id': 42,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=400&auto=format&fit=crop',
+            'product_name': 'Aviator Metal Sunglasses',
+            'selling_price': 1199,
+            'mrp': 1999,
+          },
+          {
+            'campaign_id': 84,
+            'product_id': 43,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&auto=format&fit=crop',
+            'product_name': 'Men\'s Solid Round Neck T-Shirt',
+            'selling_price': 315,
+            'mrp': 799,
+          },
+          {
+            'campaign_id': 85,
+            'product_id': 44,
+            'product_image_url':
+                'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&auto=format&fit=crop',
+            'product_name': 'Smart Fitness Tracker Band',
+            'selling_price': 1299,
+            'mrp': 1999,
+          },
+        ],
+      },
+    },
   };
 }
